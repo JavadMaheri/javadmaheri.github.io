@@ -1,0 +1,25 @@
+---
+layout: archive
+title: "Publications"
+permalink: /publications/
+author_profile: true
+description: "Publications by Javad Maheri (EURECOM / Sorbonne Université) on fundamental limits of distributed computing and learning, combinatorial design, and hypergraph partitioning."
+---
+
+{% include base_path %}
+
+{% if site.author.googlescholar %}
+<p>Full list also on <a href="{{ site.author.googlescholar }}">Google Scholar</a>.</p>
+{% endif %}
+
+{% assign sorted_pubs = site.publications | sort: 'date' | reverse %}
+{% assign years = sorted_pubs | map: 'year' | uniq %}
+
+{% for y in years %}
+<h2>{{ y }}</h2>
+{% for p in sorted_pubs %}
+{% if p.year == y %}
+{% include pub-entry.html post=p expanded=false %}
+{% endif %}
+{% endfor %}
+{% endfor %}

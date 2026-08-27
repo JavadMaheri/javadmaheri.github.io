@@ -1,0 +1,10 @@
+# Authors
+# Not currently referenced anywhere (no multi-author posts on this site),
+# kept for template compatibility. site.author in _config.yml is the
+# single source of truth for author info used across the site.
+
+Javad Maheri:
+  name        : "Javad Maheri"
+  email       : "j.maheri95@gmail.com"
+  bio          : "PhD, EURECOM / Sorbonne Université."
+  avatar      : "profile.png"
