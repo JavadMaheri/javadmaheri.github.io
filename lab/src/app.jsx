@@ -198,6 +198,7 @@ function HypergraphField({
   edgeAlpha = 0.18,
   hyperedges = true,
   interactive = true,
+  linkCursor = true,
   topBias = true,
   seed = 7,
   className = "",
@@ -289,12 +290,19 @@ function HypergraphField({
       nodes[i].glow = 1;
       for (const j of adj[i].slice(0, 5)) state.pulses.push({ from: i, to: j, age: 0, hop: 0, k: 1 });
     };
+    // Pointer position in this canvas's coordinates, read fresh each frame so scrolling stays accurate.
+    const p = pointerRef.current;
+    let local = null;
+    if (p) {
+      const r = ref.current.getBoundingClientRect();
+      const x = p.cx - r.left, y = p.cy - r.top;
+      if (x >= 0 && y >= 0 && x <= r.width && y <= r.height) local = { x, y };
+    }
     if (interactive) {
-      const p = pointerRef.current;
-      if (p && performance.now() - p.at < 120) {
+      if (local && performance.now() - p.at < 120) {
         let best = -1, bd = 70;
         for (let i = 0; i < n; i++) {
-          const d = Math.hypot(P[i].x - p.x, P[i].y - p.y);
+          const d = Math.hypot(P[i].x - local.x, P[i].y - local.y);
           if (d < bd) { bd = d; best = i; }
         }
         if (best >= 0) fire(best);
@@ -329,6 +337,31 @@ function HypergraphField({
     }
     state.pulses = next.slice(-140);
 
+    // The mouse cursor joins the graph: faint links to its nearest nodes.
+    if (linkCursor) {
+      const on = local && p.mouse ? 1 : 0;
+      state.cursorA = (state.cursorA || 0) + (on - (state.cursorA || 0)) * Math.min(1, dt / 180);
+      if (on) state.cursorPos = local;
+      if (state.cursorA > 0.01 && state.cursorPos) {
+        const c = state.cursorPos, R = 170;
+        const near = [];
+        for (let i = 0; i < n; i++) {
+          const d = Math.hypot(P[i].x - c.x, P[i].y - c.y);
+          if (d < R) near.push([i, d]);
+        }
+        near.sort((x, y) => x[1] - y[1]);
+        ctx.lineWidth = 1;
+        for (const [i, d] of near.slice(0, 3)) {
+          const k = (1 - d / R) * state.cursorA;
+          ctx.strokeStyle = white(0.32 * k);
+          ctx.beginPath(); ctx.moveTo(c.x, c.y); ctx.lineTo(P[i].x, P[i].y); ctx.stroke();
+          nodes[i].glow = Math.max(nodes[i].glow, 0.3 * k);
+        }
+        ctx.strokeStyle = white(0.45 * state.cursorA);
+        ctx.beginPath(); ctx.arc(c.x, c.y, 3.5, 0, 6.283); ctx.stroke();
+      }
+    }
+
     // Nodes.
     for (let i = 0; i < n; i++) {
       const q = nodes[i];
@@ -343,15 +376,18 @@ function HypergraphField({
   });
 
   useEffect(() => {
-    if (!interactive) return;
-    const canvas = ref.current;
+    if (!interactive && !linkCursor) return;
     const onMove = (e) => {
-      const r = canvas.getBoundingClientRect();
-      pointerRef.current = { x: e.clientX - r.left, y: e.clientY - r.top, at: performance.now() };
+      pointerRef.current = { cx: e.clientX, cy: e.clientY, at: performance.now(), mouse: e.pointerType === "mouse" };
     };
+    const onLeave = () => { pointerRef.current = null; };
     window.addEventListener("pointermove", onMove, { passive: true });
-    return () => window.removeEventListener("pointermove", onMove);
-  }, [interactive]);
+    document.documentElement.addEventListener("mouseleave", onLeave);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      document.documentElement.removeEventListener("mouseleave", onLeave);
+    };
+  }, [interactive, linkCursor]);
 
   return (
     <canvas
@@ -1155,7 +1191,7 @@ function Portrait() {
       ) : (
         <>
           <div className="absolute inset-0">
-            <HypergraphField density={0.35} edgeAlpha={0.22} interactive={false} topBias={false} seed={9} label="Small animated hypergraph behind the monogram" />
+            <HypergraphField density={0.35} edgeAlpha={0.22} interactive={false} linkCursor={false} topBias={false} seed={9} label="Small animated hypergraph behind the monogram" />
           </div>
           <div className="relative flex h-full flex-col items-center justify-center">
             <span className="font-heading text-[7rem] italic leading-none text-white">jm</span>
@@ -1559,84 +1595,11 @@ function Contact() {
   );
 }
 
-// A short tail of digits that follows a mouse pointer and fades out.
-// Drawn in difference blend mode so it stays visible over white buttons.
-const TRAIL_LIFE_MS = 900;
-const TRAIL_STEP_PX = 22;
-const TRAIL_MAX = 36;
-
-function CursorTrail() {
-  const ref = useRef(null);
-  const reduced = useReducedMotion();
-  useEffect(() => {
-    if (reduced || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-    const canvas = ref.current;
-    const ctx = canvas.getContext("2d");
-    const glyphs = [];
-    let raf = 0, last = null;
-    const resize = () => {
-      const dpr = Math.min(2, window.devicePixelRatio || 1);
-      canvas.width = Math.round(window.innerWidth * dpr);
-      canvas.height = Math.round(window.innerHeight * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
-    const tick = (now) => {
-      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      for (let i = glyphs.length - 1; i >= 0; i--) {
-        const g = glyphs[i];
-        const k = (now - g.born) / TRAIL_LIFE_MS;
-        if (k >= 1) { glyphs.splice(i, 1); continue; }
-        ctx.font = `${g.size}px ${MONO}`;
-        ctx.fillStyle = white(0.7 * (1 - k) * (1 - k));
-        ctx.fillText(g.ch, g.x + g.drift * k * 18, g.y - 16 * k);
-      }
-      raf = glyphs.length ? requestAnimationFrame(tick) : 0;
-    };
-    const onMove = (e) => {
-      if (e.pointerType && e.pointerType !== "mouse") return;
-      const p = { x: e.clientX, y: e.clientY };
-      if (last && Math.hypot(p.x - last.x, p.y - last.y) < TRAIL_STEP_PX) return;
-      last = p;
-      glyphs.push({
-        ch: String(Math.floor(Math.random() * 10)),
-        x: p.x, y: p.y + 4,
-        drift: Math.random() - 0.5,
-        size: 11 + Math.random() * 4,
-        born: performance.now(),
-      });
-      if (glyphs.length > TRAIL_MAX) glyphs.shift();
-      if (!raf) raf = requestAnimationFrame(tick);
-    };
-    const onLeave = () => { last = null; };
-    resize();
-    window.addEventListener("resize", resize);
-    window.addEventListener("pointermove", onMove, { passive: true });
-    document.addEventListener("pointerleave", onLeave);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", resize);
-      window.removeEventListener("pointermove", onMove);
-      document.removeEventListener("pointerleave", onLeave);
-    };
-  }, [reduced]);
-  return (
-    <canvas
-      ref={ref}
-      aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-[60] h-full w-full"
-      style={{ mixBlendMode: "difference" }}
-    />
-  );
-}
-
 function App() {
   return (
     <main className="bg-black font-body text-white">
       <Navbar />
       <SectionRail />
-      <CursorTrail />
       <Hero />
       <About />
       <Research />
