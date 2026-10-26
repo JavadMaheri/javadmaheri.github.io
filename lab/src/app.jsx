@@ -413,7 +413,7 @@ const K6_ROUNDS = Array.from({ length: 5 }, (_, r) => [
 ]);
 const K6_BLOCKS = K6_ROUNDS.flat();
 
-function AllocationViz() {
+function AllocationViz({ className = "h-40" }) {
   const ref = useCanvasLoop((ctx, { w, h, dt, state }) => {
     const COL_MS = 220, HOLD = 1800, OUT = 600;
     const cycle = K6_BLOCKS.length * COL_MS + HOLD + OUT;
@@ -477,7 +477,7 @@ function AllocationViz() {
     ctx.fillText("converse", cx + 5, by + 16);
   });
   return (
-    <canvas ref={ref} role="img" style={{ opacity: 0 }} className="block h-40 w-full"
+    <canvas ref={ref} role="img" style={{ opacity: 0 }} className={`block w-full ${className}`}
       aria-label="Fifteen data blocks placed on pairs of six servers, round by round, while the communication load shrinks onto the converse bound" />
   );
 }
@@ -498,7 +498,7 @@ const binom = (n, k) => { let r = 1; for (let i = 1; i <= k; i++) r = (r * (n - 
 const ES_PMF = Array.from({ length: ES_M + 1 }, (_, k) => binom(ES_M, k) * ES_P ** k * (1 - ES_P) ** (ES_M - k));
 const ES_TARGET = 200;
 
-function EdgeSamplingViz() {
+function EdgeSamplingViz({ className = "h-40" }) {
   const ref = useCanvasLoop((ctx, { w, h, dt, state, isStatic }) => {
     if (!state.hist) {
       state.hist = new Array(ES_M + 1).fill(0);
@@ -591,12 +591,12 @@ function EdgeSamplingViz() {
     ctx.fillText(label, w - ctx.measureText(label).width - 2, top + 10);
   }, { warmupMs: 200 });
   return (
-    <canvas ref={ref} role="img" style={{ opacity: 0 }} className="block h-40 w-full"
+    <canvas ref={ref} role="img" style={{ opacity: 0 }} className={`block w-full ${className}`}
       aria-label="Hyperedges switch on independently with probability p; a histogram of the resulting cut size builds up and matches the exact binomial law" />
   );
 }
 
-function GraphSignalViz() {
+function GraphSignalViz({ className = "h-40" }) {
   const ref = useCanvasLoop((ctx, { w, h, dt, state }) => {
     if (!state.pos) {
       const rand = mulberry32(5);
@@ -658,7 +658,7 @@ function GraphSignalViz() {
     ctx.fillText("x ← x − αLx", 2, h - 3);
   }, { warmupMs: 1800 });
   return (
-    <canvas ref={ref} role="img" style={{ opacity: 0 }} className="block h-40 w-full"
+    <canvas ref={ref} role="img" style={{ opacity: 0 }} className={`block w-full ${className}`}
       aria-label="A signal on the nodes of a graph diffuses by Laplacian smoothing while edge weights adapt to signal similarity" />
   );
 }
@@ -866,6 +866,23 @@ const HypergraphIcon = () => (
     <circle cx="12" cy="21" r="1.6" fill="currentColor" />
   </svg>
 );
+const BrandIcon = ({ d, className = "h-[18px] w-[18px]" }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={d} /></svg>
+);
+const MailIcon = ({ className = "h-[18px] w-[18px]" }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3.5 6.5 8.5 6.5 8.5-6.5" />
+  </svg>
+);
+const CvIcon = ({ className = "h-[18px] w-[18px]" }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5M9 13h6M9 17h4" />
+  </svg>
+);
+const SCHOLAR_PATH = "M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z";
+const LINKEDIN_PATH = "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z";
+const ORCID_PATH = "M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.025-5.325 5.025h-3.919V7.416zm1.444 1.303v7.444h2.297c3.272 0 4.022-2.484 4.022-3.722 0-2.016-1.284-3.722-4.097-3.722h-2.222z";
+const GITHUB_PATH = "M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12";
 const DNS_PATH = "M20 13H4c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h16c.55 0 1-.45 1-1v-6c0-.55-.45-1-1-1zM7 19c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM20 3H4c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h16c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1zM7 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z";
 const SHARE_PATH = "M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z";
 
@@ -873,7 +890,25 @@ const SHARE_PATH = "M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-
 /* Content (all sourced from the main site)                            */
 /* ------------------------------------------------------------------ */
 
-const CV_URL = "/files/javad-maheri-cv.pdf";
+// Empty on the real site; the off-site preview build sets it to the site's origin
+// so links into the rest of the site still resolve.
+const SITE_ORIGIN = typeof __SITE_ORIGIN__ === "string" ? __SITE_ORIGIN__ : "";
+const site = (href) => (href && href.startsWith("/") ? SITE_ORIGIN + href : href);
+const CV_URL = site("/files/javad-maheri-cv.pdf");
+
+// Which page this is, and where the others live, comes from data attributes on
+// #root set by each HTML shell (see _includes/lab-shell.html):
+//   data-page  "home" | "research"     data-topic  research slug
+//   data-base  URL of the lab root     data-home   URL of the home page
+//   data-index file appended to page URLs on hosts without directory indexes
+const ROOT_EL = document.getElementById("root");
+const PAGE = ROOT_EL.dataset.page || "home";
+const TOPIC = ROOT_EL.dataset.topic || "";
+const BASE = ROOT_EL.dataset.base ?? "";
+const HOME = ROOT_EL.dataset.home ?? "./";
+const INDEX = ROOT_EL.dataset.index || "";
+const homeHref = (id) => (PAGE === "home" ? `#${id}` : `${HOME}#${id}`);
+const researchHref = (slug, anchor) => `${BASE}research/${slug}/${INDEX}${anchor ? `#${anchor}` : ""}`;
 // External links and the PDF open in a new tab so the page stays put.
 const NEW_TAB = { target: "_blank", rel: "noopener noreferrer" };
 // Set to "/images/profile.png" once the placeholder there is replaced with a real photo.
@@ -886,6 +921,46 @@ const NAV = [
   { id: "experience", label: "Experience" },
   { id: "publications", label: "Publications" },
   { id: "contact", label: "Contact" },
+];
+
+const SCHOLAR_URL = "https://scholar.google.com/citations?user=jg3ifAUAAAAJ&hl=en";
+const SOCIALS = [
+  { label: "Email", href: "mailto:j.maheri95@gmail.com", icon: <MailIcon /> },
+  { label: "Google Scholar", href: SCHOLAR_URL, icon: <BrandIcon d={SCHOLAR_PATH} />, external: true },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/javad-maheri-845049169", icon: <BrandIcon d={LINKEDIN_PATH} />, external: true },
+  { label: "ORCID", href: "https://orcid.org/0009-0005-7148-713X", icon: <BrandIcon d={ORCID_PATH} />, external: true },
+  { label: "GitHub", href: "https://github.com/JavadMaheri", icon: <BrandIcon d={GITHUB_PATH} />, external: true },
+  { label: "CV (PDF)", href: CV_URL, icon: <CvIcon />, external: true },
+];
+
+function SocialRow({ size = "h-11 w-11", className = "", only }) {
+  const items = only ? SOCIALS.filter((s) => only.includes(s.label)) : SOCIALS;
+  return (
+    <ul className={`flex flex-wrap items-center justify-center gap-2 ${className}`}>
+      {items.map((s) => (
+        <li key={s.label}>
+          <a
+            href={s.href}
+            {...(s.external ? NEW_TAB : {})}
+            aria-label={s.label}
+            title={s.label}
+            className={`liquid-glass focus-ring flex ${size} items-center justify-center rounded-full text-white/85 transition-colors hover:bg-white hover:text-black`}
+          >
+            {s.icon}
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+const NEWS = [
+  { when: "Jul 2026", text: "Defended my PhD at EURECOM / Sorbonne Université.", href: homeHref("about") },
+  { when: "Jun 2026", text: "New preprint: Fundamental Limits of Hypergraph Edge Partitioning under Independent Edge Sampling — under review at SIAM J. Discrete Mathematics.", href: researchHref("hypergraph-partitioning", "paper-hypergraph-edge-partitioning") },
+  { when: "2026", text: "Order Optimal Task Allocation in Distributed Computing via Interweaved Cliques — accepted at ISIT 2026.", href: researchHref("allocation", "paper-interweaved-cliques") },
+  { when: "Jan 2026", text: "New preprint: Universal and Asymptotically Optimal Data and Task Allocation in Distributed Computing — under revision at IEEE Transactions on Information Theory.", href: researchHref("allocation", "paper-universal-allocation") },
+  { when: "2025", text: "Constructing Hamiltonian Decompositions of Complete k-Uniform Hypergraphs — published at ISIT 2025.", href: researchHref("hypergraph-partitioning", "paper-hamiltonian-decompositions") },
+  { when: "2024", text: "Drew against GM Vassilios Kotronias at the ISIT 2024 chess event." },
 ];
 
 const FACTS = [
@@ -919,6 +994,7 @@ const CARDS = [
     body: "One task-blind data assignment that is simultaneously optimal for every downstream workload — no re-planning per job.",
     viz: <AllocationViz />,
     caption: "6 servers · 15 blocks · each block on a pair of servers — the edges of K₆, placed round by round",
+    slug: "allocation",
   },
   {
     icon: <HypergraphIcon />,
@@ -927,6 +1003,7 @@ const CARDS = [
     body: "What partition quality is exactly achievable when edges are sampled at random — with the finite-size constant, not just the scaling exponent.",
     viz: <EdgeSamplingViz />,
     caption: "Each hyperedge appears with probability p; the cut size follows its exact law, sample by sample",
+    slug: "hypergraph-partitioning",
   },
   {
     icon: <MaterialIcon d={SHARE_PATH} />,
@@ -935,6 +1012,7 @@ const CARDS = [
     body: "GNNs, graph signal processing and Laplacian estimation — from market-dependency graphs to scene graphs for safety analytics.",
     viz: <GraphSignalViz />,
     caption: "A signal diffuses over the graph while edge weights adapt to what the data says",
+    slug: "graph-learning",
   },
 ];
 
@@ -946,7 +1024,9 @@ const PUBS = [
     venue: "SIAM Journal on Discrete Mathematics",
     status: "Under review",
     arxiv: "2606.13491",
-    url: "/publication/hypergraph-edge-partitioning-2026/",
+    bibtex: "@misc{maheri2026hypergraph,\n  title = {Fundamental Limits of Hypergraph Edge Partitioning under Independent Edge Sampling},\n  author = {Maheri, Javad and Namboodiri, K. K. Krishnan and Elia, Petros},\n  year = {2026},\n  eprint = {2606.13491},\n  archivePrefix = {arXiv},\n  note = {Under review, SIAM Journal on Discrete Mathematics}\n}",
+    topic: "hypergraph-partitioning",
+    slug: "hypergraph-edge-partitioning",
   },
   {
     year: "2026",
@@ -955,7 +1035,9 @@ const PUBS = [
     venue: "IEEE Transactions on Information Theory",
     status: "Under revision",
     arxiv: "2601.05873",
-    url: "/publication/universal-optimal-allocation-2026/",
+    bibtex: "@misc{maheri2026universal,\n  title = {Universal and Asymptotically Optimal Data and Task Allocation in Distributed Computing},\n  author = {Maheri, Javad and Namboodiri, K. K. Krishnan and Elia, Petros},\n  year = {2026},\n  eprint = {2601.05873},\n  archivePrefix = {arXiv},\n  note = {Under revision, IEEE Transactions on Information Theory}\n}",
+    topic: "allocation",
+    slug: "universal-allocation",
   },
   {
     year: "2026",
@@ -963,7 +1045,9 @@ const PUBS = [
     authors: ["Javad Maheri", "K. K. Krishnan Namboodiri", "Petros Elia"],
     venue: "IEEE International Symposium on Information Theory (ISIT) 2026",
     status: "Conference",
-    url: "/publication/interweaved-cliques-2026/",
+    topic: "allocation",
+    slug: "interweaved-cliques",
+    bibtex: "@inproceedings{maheri2026interweaved,\n  title = {Order Optimal Task Allocation in Distributed Computing via Interweaved Cliques},\n  author = {Maheri, Javad and Namboodiri, K. K. Krishnan and Elia, Petros},\n  booktitle = {Proc. IEEE International Symposium on Information Theory (ISIT)},\n  year = {2026}\n}",
   },
   {
     year: "2025",
@@ -971,7 +1055,9 @@ const PUBS = [
     authors: ["Javad Maheri", "Petros Elia"],
     venue: "IEEE International Symposium on Information Theory (ISIT) 2025",
     status: "Conference",
-    url: "/publication/hamiltonian-decompositions-2025/",
+    topic: "hypergraph-partitioning",
+    slug: "hamiltonian-decompositions",
+    bibtex: "@inproceedings{maheri2025hamiltonian,\n  title = {Constructing Hamiltonian Decompositions of Complete k-Uniform Hypergraphs},\n  author = {Maheri, Javad and Elia, Petros},\n  booktitle = {Proc. IEEE International Symposium on Information Theory (ISIT)},\n  year = {2025}\n}",
   },
 ];
 
@@ -1036,7 +1122,7 @@ function Navbar() {
   }, [open]);
   return (
     <nav ref={navRef} className="fixed left-0 right-0 top-4 z-50 flex items-center justify-between px-4 md:px-8 lg:px-16" aria-label="Primary">
-      <a href="#home" className="focus-ring flex items-center gap-3 rounded-full" aria-label="Javad Maheri — home">
+      <a href={homeHref("home")} className="focus-ring flex items-center gap-3 rounded-full" aria-label="Javad Maheri — home">
         <span className="liquid-glass flex h-12 w-12 items-center justify-center rounded-full">
           <span className="font-heading text-2xl italic leading-none text-white">jm</span>
         </span>
@@ -1044,7 +1130,7 @@ function Navbar() {
       </a>
       <div className="liquid-glass absolute left-1/2 hidden -translate-x-1/2 items-center rounded-full px-1.5 py-1.5 lg:flex">
         {NAV.map((l) => (
-          <a key={l.id} href={`#${l.id}`} className="focus-ring rounded-full px-3 py-2 font-body text-sm font-medium text-white/90 hover:text-white">
+          <a key={l.id} href={homeHref(l.id)} className="focus-ring rounded-full px-3 py-2 font-body text-sm font-medium text-white/90 hover:text-white">
             {l.label}
           </a>
         ))}
@@ -1052,6 +1138,7 @@ function Navbar() {
           Download CV <ArrowUpRight className="h-4 w-4" />
         </a>
       </div>
+      <SocialRow size="h-10 w-10" className="hidden xl:flex" only={["Email", "Google Scholar", "LinkedIn", "GitHub"]} />
       <button
         type="button"
         className="liquid-glass focus-ring flex h-12 w-12 items-center justify-center rounded-full text-white lg:hidden"
@@ -1070,7 +1157,7 @@ function Navbar() {
           className="liquid-glass-strong absolute left-4 right-4 top-16 flex flex-col gap-1 rounded-[1.5rem] p-3 lg:hidden"
         >
           {NAV.map((l) => (
-            <a key={l.id} href={`#${l.id}`} onClick={() => setOpen(false)} className="rounded-[0.75rem] px-4 py-3 font-body text-base text-white/90">
+            <a key={l.id} href={homeHref(l.id)} onClick={() => setOpen(false)} className="rounded-[0.75rem] px-4 py-3 font-body text-base text-white/90">
               {l.label}
             </a>
           ))}
@@ -1129,11 +1216,12 @@ function Hero() {
       </div>
       <div className="relative z-10 flex flex-1 flex-col">
         <div className="flex flex-1 flex-col items-center justify-center px-4 pb-10 pt-28 text-center">
-          <motion.div {...rise(0.3)} className="liquid-glass flex items-center gap-2 rounded-full p-1">
+          <motion.a {...rise(0.3)} href="#news" className="liquid-glass focus-ring group flex items-center gap-2 rounded-full p-1 transition-colors hover:bg-white/10">
             <span className="rounded-full bg-white px-3 py-1 font-body text-xs font-semibold text-black">New</span>
-            <span className="pr-3 font-body text-xs text-white/90 sm:text-sm">PhD defended — EURECOM / Sorbonne Université, July 2026</span>
-          </motion.div>
-          <motion.div {...rise(0.45)} className="mt-8 font-mono text-xs uppercase tracking-[0.2em] text-white/70 md:text-sm">
+            <span className="font-body text-xs text-white/90 sm:text-sm">PhD defended — EURECOM / Sorbonne Université, July 2026</span>
+            <ArrowDown className="mr-2 h-3.5 w-3.5 text-white/60 transition-colors group-hover:text-white" />
+          </motion.a>
+          <motion.div {...rise(0.45)} className="mt-6 font-mono text-xs uppercase tracking-[0.2em] text-white/70 md:text-sm">
             Information theory · Distributed learning · Graphs
           </motion.div>
           <BlurText
@@ -1145,40 +1233,109 @@ function Hero() {
           <motion.p {...rise(0.9)} className="mt-6 max-w-3xl font-heading text-2xl italic leading-tight text-white md:text-3xl">
             I prove exact, non-asymptotic limits for distributed computation and learning on graph-structured data — and I build the systems that use them.
           </motion.p>
-          <motion.p {...rise(1.05)} className="mt-4 max-w-2xl font-body text-sm font-light leading-snug text-white/85 md:text-base">
-            PhD in Communication Systems · Information theorist and ML engineer · Sophia Antipolis, France
+          <motion.p {...rise(1.05)} className="mt-4 max-w-3xl font-body text-sm font-light leading-snug text-white/85 md:text-base">
+            Information theorist and ML engineer · PhD,{" "}
+            <a href="https://www.eurecom.fr/" {...NEW_TAB} className="underline decoration-white/30 underline-offset-4 hover:decoration-white">EURECOM</a>
+            {" / "}
+            <a href="https://www.sorbonne-universite.fr/" {...NEW_TAB} className="underline decoration-white/30 underline-offset-4 hover:decoration-white">Sorbonne Université</a>
+            {" "}· Sophia Antipolis, France
           </motion.p>
-          <motion.div {...rise(1.2)} className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
-            <a href="#about" className="liquid-glass-strong focus-ring flex items-center gap-2 rounded-full px-5 py-2.5 font-body text-sm font-medium text-white">
+          <motion.div {...rise(1.15)} className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-4">
+            <a href="#about" className="liquid-glass-strong focus-ring flex h-11 items-center gap-2 rounded-full px-5 font-body text-sm font-medium text-white transition-colors hover:bg-white/10">
               Get to know me <ArrowDown />
             </a>
-            <a href={CV_URL} {...NEW_TAB} className="focus-ring flex items-center gap-2 rounded-full py-2.5 font-body text-sm font-medium text-white">
-              Download CV <ArrowUpRight className="h-4 w-4" />
-            </a>
+            <span className="hidden h-6 w-px bg-white/20 sm:block" aria-hidden="true" />
+            <SocialRow />
           </motion.div>
-          <motion.div {...rise(1.35)} className="mt-9 flex w-full flex-wrap items-stretch justify-center gap-4">
+          <motion.div {...rise(1.35)} className="mt-8 flex w-full flex-wrap items-stretch justify-center gap-4">
             {[
-              { icon: <TouchingCurves />, num: "PhD", label: "EURECOM / Sorbonne Université, defended July 2026" },
-              { icon: <PaperStack />, num: "4 Papers", label: "ISIT ’25 · ISIT ’26 · IEEE T-IT · SIAM J. DM" },
-              { icon: <MaterialIcon d={SHARE_PATH} />, num: "3 Roles", label: "Research at EURECOM, ML engineering at Zarebin and MAPNA" },
+              { icon: <TouchingCurves />, num: "PhD", label: "EURECOM / Sorbonne Université, defended July 2026", href: "#about" },
+              { icon: <PaperStack />, num: "4 Papers", label: "ISIT ’25 · ISIT ’26 · IEEE T-IT · SIAM J. DM", href: "#publications" },
+              { icon: <MaterialIcon d={SHARE_PATH} />, num: "3 Roles", label: "Research at EURECOM, ML engineering at Zarebin and MAPNA", href: "#experience" },
             ].map((s, i) => (
-              <div key={s.num} className={`liquid-glass ${i === 2 ? "hidden sm:flex" : "flex"} w-[calc(50%-8px)] max-w-[220px] flex-col justify-between gap-5 rounded-[1.25rem] p-4 text-left sm:w-[220px] sm:p-5`}>
-                {s.icon}
+              <a key={s.num} href={s.href} className={`liquid-glass glass-hover focus-ring group ${i === 2 ? "hidden sm:flex" : "flex"} w-[calc(50%-8px)] max-w-[220px] flex-col justify-between gap-5 rounded-[1.25rem] p-4 text-left transition-transform hover:-translate-y-0.5 sm:w-[220px] sm:p-5`}>
+                <div className="flex items-start justify-between">
+                  {s.icon}
+                  <ArrowDown className="h-4 w-4 text-white/40 transition-colors group-hover:text-white" />
+                </div>
                 <div>
                   <div className="font-heading text-3xl italic leading-none tracking-[-1px] text-white sm:text-4xl">{s.num}</div>
                   <div className="mt-2 font-body text-xs font-light text-white">{s.label}</div>
                 </div>
-              </div>
+              </a>
             ))}
           </motion.div>
         </div>
+        <motion.a
+          {...rise(1.7)}
+          href="#research"
+          className="focus-ring absolute left-16 top-[calc(100svh-5.5rem)] hidden max-w-[210px] font-mono text-[11px] leading-snug text-white/55 hover:text-white/90 xl:block"
+        >
+          Move your mouse over the graph: it passes messages between nodes, like a GNN. Why graphs? →
+        </motion.a>
+        <motion.a
+          {...rise(1.7)}
+          href="#about"
+          aria-label="Scroll to About"
+          className="focus-ring absolute right-16 top-[calc(100svh-4.75rem)] hidden flex-col items-center gap-1 font-mono text-[10px] uppercase tracking-[0.2em] text-white/55 hover:text-white xl:flex"
+        >
+          Scroll
+          <ScrollChevron />
+        </motion.a>
         <motion.div {...rise(1.5)} className="flex flex-col items-center gap-4 px-4 pb-8">
-          <span className="liquid-glass rounded-full px-3.5 py-1 font-body text-xs font-medium text-white">Research & engineering with</span>
+          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/55">Research & engineering with</span>
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 font-heading text-2xl italic tracking-tight text-white md:gap-x-14 md:text-3xl">
             {["EURECOM", "Sorbonne Université", "Sharif", "MAPNA", "Zarebin"].map((n) => <span key={n}>{n}</span>)}
           </div>
         </motion.div>
       </div>
+    </section>
+  );
+}
+
+function ScrollChevron() {
+  const reduced = useReducedMotion();
+  return (
+    <motion.svg
+      className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"
+      animate={reduced ? undefined : { y: [0, 4, 0] }}
+      transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+    >
+      <path d="m6 9 6 6 6-6" />
+    </motion.svg>
+  );
+}
+
+function News() {
+  const rise = useRiseInView();
+  return (
+    <section id="news" className="relative bg-black px-4 pt-24 md:px-16 lg:px-20" aria-labelledby="news-title">
+      <motion.div {...rise(0)} className="flex flex-col gap-8 lg:flex-row lg:gap-16">
+        <div className="lg:w-[380px] lg:shrink-0">
+          <Kicker>// News</Kicker>
+          <h2 id="news-title" className="font-heading text-5xl italic leading-[0.9] tracking-[-2px] text-white md:text-6xl">Lately</h2>
+        </div>
+        <ol className="min-w-0 flex-1 border-t border-white/15">
+          {NEWS.map((n) => {
+            const body = (
+              <>
+                <span className="w-20 shrink-0 font-mono text-xs text-white/55 tabular-nums">{n.when}</span>
+                <span className="flex-1 font-body text-sm font-light leading-snug text-white/90 md:text-base">{n.text}</span>
+                {n.href && <ArrowUpRight className="mt-0.5 h-4 w-4 shrink-0 text-white/40 transition-colors group-hover:text-white" />}
+              </>
+            );
+            return (
+              <li key={n.text} className="border-b border-white/15">
+                {n.href ? (
+                  <a href={site(n.href)} {...(n.external ? NEW_TAB : {})} className="focus-ring group flex items-start gap-4 py-4 hover:bg-white/[0.03]">{body}</a>
+                ) : (
+                  <div className="flex items-start gap-4 py-4">{body}</div>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </motion.div>
     </section>
   );
 }
@@ -1199,8 +1356,8 @@ function Portrait() {
         </>
       )}
       <div className="absolute inset-x-4 bottom-4 flex items-center justify-between gap-2">
-        <span className="liquid-glass rounded-full px-3 py-1 font-body text-xs text-white">Javad Maheri</span>
-        <span className="liquid-glass rounded-full px-3 py-1 font-mono text-[10px] text-white/80">Sophia Antipolis</span>
+        <span className="rounded-full bg-black/50 px-3 py-1 font-body text-xs text-white">Javad Maheri</span>
+        <span className="rounded-full bg-black/50 px-3 py-1 font-mono text-[10px] text-white/80">Sophia Antipolis</span>
       </div>
     </div>
   );
@@ -1257,7 +1414,7 @@ function About() {
           </p>
           <ul className="mt-6 flex flex-wrap gap-2">
             {INTERESTS.map((t) => (
-              <li key={t} className="liquid-glass rounded-full px-3 py-1.5 font-body text-xs text-white/90">{t}</li>
+              <li key={t} className="rounded-full border border-white/15 px-3 py-1 font-body text-xs text-white/70">{t}</li>
             ))}
           </ul>
         </motion.div>
@@ -1298,12 +1455,12 @@ function Research() {
         </motion.div>
         <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3">
           {CARDS.map((c, i) => (
-            <motion.article key={c.title} {...rise(0.15 * i)} className="liquid-glass flex min-h-[460px] flex-col rounded-[1.25rem] p-6">
+            <motion.a key={c.title} href={researchHref(c.slug)} {...rise(0.15 * i)} className="liquid-glass glass-hover focus-ring group flex min-h-[460px] flex-col rounded-[1.25rem] p-6">
               <div className="flex items-start justify-between gap-4">
-                <div className="liquid-glass flex h-11 w-11 shrink-0 items-center justify-center rounded-[0.75rem]">{c.icon}</div>
+                <div className="flex h-11 w-11 shrink-0 items-center justify-start text-white/85" aria-hidden="true">{c.icon}</div>
                 <div className="flex max-w-[75%] flex-wrap justify-end gap-1.5">
                   {c.tags.map((t) => (
-                    <span key={t} className="liquid-glass whitespace-nowrap rounded-full px-3 py-1 font-body text-[11px] text-white/90">{t}</span>
+                    <span key={t} className="whitespace-nowrap rounded-full border border-white/15 px-3 py-1 font-body text-[11px] text-white/70">{t}</span>
                   ))}
                 </div>
               </div>
@@ -1314,8 +1471,11 @@ function Research() {
               <div>
                 <h3 className="font-heading text-3xl italic leading-none tracking-[-1px] text-white md:text-4xl">{c.title}</h3>
                 <p className="mt-3 max-w-[36ch] font-body text-sm font-light leading-snug text-white/90">{c.body}</p>
+                <span className="mt-4 inline-flex items-center gap-1 font-body text-sm font-medium text-white">
+                  Explore this research <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                </span>
               </div>
-            </motion.article>
+            </motion.a>
           ))}
         </div>
       </div>
@@ -1349,13 +1509,13 @@ function GapSection() {
         </div>
         <div className="liquid-glass relative mt-6 rounded-[1.5rem] p-4 md:mt-8 md:p-8">
           <div className="mb-3 flex flex-wrap items-center gap-2">
-            <span className="liquid-glass flex items-center gap-2 rounded-full px-3 py-1 font-mono text-[11px] text-white/90">
+            <span className="flex items-center gap-2 pr-3 font-mono text-[11px] text-white/80">
               <span className="inline-block h-[2px] w-4 bg-white" /> converse
             </span>
-            <span className="liquid-glass flex items-center gap-2 rounded-full px-3 py-1 font-mono text-[11px] text-white/90">
+            <span className="flex items-center gap-2 pr-3 font-mono text-[11px] text-white/80">
               <span className="inline-block w-4 border-t border-dashed border-white/60" /> order-optimal
             </span>
-            <span className="liquid-glass flex items-center gap-2 rounded-full px-3 py-1 font-mono text-[11px] text-white/90">
+            <span className="flex items-center gap-2 pr-3 font-mono text-[11px] text-white/80">
               <span className="inline-block h-[3px] w-4 bg-white shadow-[0_0_8px_white]" /> this work
             </span>
             <span ref={readoutRef} className="ml-auto font-mono text-xs text-white/80" aria-live="off">gap = {GAP_START.toFixed(3)}</span>
@@ -1364,7 +1524,7 @@ function GapSection() {
             <GapChart progressRef={progressRef} readoutRef={readoutRef} />
             <motion.div
               style={{ opacity: reduced ? 1 : zeroOpacity, scale: reduced ? 1 : zeroScale }}
-              className="liquid-glass-strong pointer-events-none absolute right-2 top-2 rounded-full px-4 py-2 font-heading text-2xl italic text-white md:right-6 md:top-4 md:text-3xl"
+              className="pointer-events-none absolute right-2 top-2 rounded-full border border-white/30 bg-black/70 px-4 py-2 font-heading text-2xl italic text-white md:right-6 md:top-4 md:text-3xl"
             >
               gap = 0
             </motion.div>
@@ -1373,7 +1533,7 @@ function GapSection() {
         </div>
         <div className="mt-6 hidden flex-wrap gap-3 md:flex">
           {["Matching converses", "Explicit constructions", "Finite-size, not asymptotic"].map((t) => (
-            <span key={t} className="liquid-glass rounded-full px-4 py-2 font-body text-sm text-white/90">{t}</span>
+            <span key={t} className="rounded-full border border-white/15 px-4 py-1.5 font-body text-sm text-white/70">{t}</span>
           ))}
         </div>
       </div>
@@ -1383,7 +1543,6 @@ function GapSection() {
 
 function Experience() {
   const rise = useRiseInView();
-  const reduced = useReducedMotion();
   return (
     <section id="experience" className="relative bg-black px-4 pb-16 pt-28 md:px-16 lg:px-20">
       <motion.div {...rise(0)}>
@@ -1398,8 +1557,7 @@ function Experience() {
           <motion.article
             key={r.org}
             {...rise(0.1 * i)}
-            whileHover={reduced ? undefined : { y: -2 }}
-            className="liquid-glass glass-hover flex flex-col rounded-[1.25rem] p-6"
+            className="liquid-glass flex flex-col rounded-[1.25rem] p-6"
           >
             <div className="font-mono text-[11px] text-white/60">{r.meta}</div>
             <h3 className="mt-3 font-heading text-3xl italic leading-none tracking-[-1px] text-white">{r.org}</h3>
@@ -1419,46 +1577,90 @@ function Experience() {
   );
 }
 
+// Copies the BibTeX entry; if the clipboard is unavailable, shows it for manual selection.
+function BibtexButton({ bibtex, onFallback }) {
+  const [copied, setCopied] = useState(false);
+  const copy = () => {
+    const done = () => { setCopied(true); setTimeout(() => setCopied(false), 1800); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(bibtex).then(done, onFallback);
+    } else {
+      onFallback();
+    }
+  };
+  return (
+    <button type="button" onClick={copy} className="liquid-glass focus-ring rounded-full px-3 py-1 font-mono text-xs text-white transition-colors hover:bg-white/10" aria-live="polite">
+      {copied ? "Copied ✓" : "BibTeX"}
+    </button>
+  );
+}
+
+function PubRow({ p, i, onHome = true }) {
+  const rise = useRiseInView();
+  const [showBib, setShowBib] = useState(false);
+  return (
+    <motion.div {...rise(0.08 * i)} id={`paper-${p.slug}`} className="liquid-glass scroll-mt-28 rounded-[1.25rem] p-5">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-8">
+        <div className="font-heading text-4xl italic leading-none text-white md:w-24">{p.year}</div>
+        <div className="min-w-0 flex-1">
+          {onHome || p.arxiv ? (
+            <a
+              href={onHome ? researchHref(p.topic, `paper-${p.slug}`) : `https://arxiv.org/abs/${p.arxiv}`}
+              {...(onHome ? {} : NEW_TAB)}
+              className="focus-ring font-body text-base font-medium leading-snug text-white hover:underline md:text-lg"
+            >
+              {p.title}
+            </a>
+          ) : (
+            <span className="font-body text-base font-medium leading-snug text-white md:text-lg">{p.title}</span>
+          )}
+          <div className="mt-1 font-body text-sm font-light text-white/70">
+            {p.authors.map((a, j) => (
+              <React.Fragment key={a}>
+                {j > 0 && ", "}
+                <span className={a === "Javad Maheri" ? "text-white" : ""}>{a}</span>
+              </React.Fragment>
+            ))}
+          </div>
+          <div className="mt-1 font-body text-sm italic text-white/70">{p.venue}</div>
+        </div>
+        <div className="flex shrink-0 flex-wrap gap-2 md:max-w-[300px] md:justify-end">
+          <span className="rounded-full border border-white/25 px-3 py-1 font-body text-xs text-white/80">{p.status}</span>
+          {p.arxiv && (
+            <a href={`https://arxiv.org/pdf/${p.arxiv}`} {...NEW_TAB} className="liquid-glass focus-ring flex items-center gap-1 rounded-full px-3 py-1 font-mono text-xs text-white transition-colors hover:bg-white/10">
+              PDF <ArrowUpRight className="h-3 w-3" />
+            </a>
+          )}
+          {p.arxiv && (
+            <a href={`https://arxiv.org/abs/${p.arxiv}`} {...NEW_TAB} className="liquid-glass focus-ring flex items-center gap-1 rounded-full px-3 py-1 font-mono text-xs text-white transition-colors hover:bg-white/10">
+              arXiv:{p.arxiv} <ArrowUpRight className="h-3 w-3" />
+            </a>
+          )}
+          <BibtexButton bibtex={p.bibtex} onFallback={() => setShowBib(true)} />
+        </div>
+      </div>
+      {showBib && (
+        <pre className="mt-4 overflow-x-auto rounded-[0.75rem] bg-white/5 p-4 font-mono text-[11px] leading-relaxed text-white/85 select-all">{p.bibtex}</pre>
+      )}
+    </motion.div>
+  );
+}
+
 function Publications() {
   const rise = useRiseInView();
-  const reduced = useReducedMotion();
   return (
     <section id="publications" className="relative bg-black px-4 pb-24 pt-28 md:px-16 lg:px-20">
       <motion.div {...rise(0)}>
         <Kicker>// Publications</Kicker>
-        <h2 className="font-heading text-6xl italic leading-[0.9] tracking-[-3px] text-white md:text-7xl lg:text-[6rem]">Papers</h2>
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <h2 className="font-heading text-6xl italic leading-[0.9] tracking-[-3px] text-white md:text-7xl lg:text-[6rem]">Papers</h2>
+          <a href={SCHOLAR_URL} {...NEW_TAB} className="liquid-glass focus-ring flex items-center gap-2 rounded-full px-4 py-2 font-body text-sm text-white transition-colors hover:bg-white/10">
+            <BrandIcon d={SCHOLAR_PATH} className="h-4 w-4" /> Full list on Google Scholar <ArrowUpRight className="h-4 w-4" />
+          </a>
+        </div>
       </motion.div>
       <div className="mt-14 flex flex-col gap-4">
-        {PUBS.map((p, i) => (
-          <motion.div
-            key={p.title}
-            {...rise(0.08 * i)}
-            whileHover={reduced ? undefined : { y: -2 }}
-            className="liquid-glass glass-hover flex flex-col gap-4 rounded-[1.25rem] p-5 md:flex-row md:items-center md:gap-8"
-          >
-            <div className="font-heading text-4xl italic leading-none text-white md:w-24">{p.year}</div>
-            <div className="min-w-0 flex-1">
-              <a href={p.url} className="focus-ring font-body text-base font-medium leading-snug text-white hover:underline md:text-lg">{p.title}</a>
-              <div className="mt-1 font-body text-sm font-light text-white/70">
-                {p.authors.map((a, j) => (
-                  <React.Fragment key={a}>
-                    {j > 0 && ", "}
-                    <span className={a === "Javad Maheri" ? "text-white" : ""}>{a}</span>
-                  </React.Fragment>
-                ))}
-              </div>
-              <div className="mt-1 font-body text-sm italic text-white/70">{p.venue}</div>
-            </div>
-            <div className="flex shrink-0 flex-wrap gap-2">
-              <span className="liquid-glass rounded-full px-3 py-1 font-body text-xs text-white/90">{p.status}</span>
-              {p.arxiv && (
-                <a href={`https://arxiv.org/abs/${p.arxiv}`} {...NEW_TAB} className="liquid-glass focus-ring flex items-center gap-1 rounded-full px-3 py-1 font-mono text-xs text-white">
-                  arXiv:{p.arxiv} <ArrowUpRight className="h-3 w-3" />
-                </a>
-              )}
-            </div>
-          </motion.div>
-        ))}
+        {PUBS.map((p, i) => <PubRow key={p.title} p={p} i={i} />)}
       </div>
     </section>
   );
@@ -1585,9 +1787,9 @@ function Contact() {
           <a href="mailto:j.maheri95@gmail.com" className="liquid-glass-strong focus-ring flex items-center gap-2 rounded-full px-5 py-2.5 font-body text-sm font-medium text-white">
             j.maheri95@gmail.com <ArrowUpRight />
           </a>
-          <a href="https://github.com/JavadMaheri" {...NEW_TAB} className="liquid-glass focus-ring rounded-full px-4 py-2.5 font-body text-sm text-white">GitHub</a>
-          <a href={CV_URL} {...NEW_TAB} className="liquid-glass focus-ring rounded-full px-4 py-2.5 font-body text-sm text-white">CV (PDF)</a>
-          <a href="/" className="liquid-glass focus-ring rounded-full px-4 py-2.5 font-body text-sm text-white">Classic site</a>
+        </motion.div>
+        <motion.div {...rise(0.7)} className="mt-6">
+          <SocialRow only={["Google Scholar", "LinkedIn", "ORCID", "GitHub", "CV (PDF)"]} />
         </motion.div>
       </div>
       <footer className="relative z-10 pb-6 text-center font-body text-xs text-white/40">© 2026 Javad Maheri</footer>
@@ -1596,11 +1798,13 @@ function Contact() {
 }
 
 function App() {
+  useHashScroll();
   return (
     <main className="bg-black font-body text-white">
       <Navbar />
       <SectionRail />
       <Hero />
+      <News />
       <About />
       <Research />
       <GapSection />
@@ -1611,4 +1815,301 @@ function App() {
   );
 }
 
-createRoot(document.getElementById("root")).render(<App />);
+/* ------------------------------------------------------------------ */
+/* Research pages                                                      */
+/* ------------------------------------------------------------------ */
+
+const TOPIC_ORDER = ["allocation", "hypergraph-partitioning", "graph-learning"];
+
+const TOPICS = {
+  allocation: {
+    kicker: "Distributed computing",
+    title: "Universally Optimal Allocation",
+    lead: "One task-blind data assignment that is optimal for every downstream workload at once.",
+    tags: ["Distributed Computing", "Task-Blind", "Interweaved Cliques", "Matching Converse"],
+    viz: (cls) => <AllocationViz className={cls} />,
+    vizCaption: "Illustration: 6 servers and 15 data blocks, each stored on a pair of servers (the edges of K₆), placed round by round. The bar shows communication load falling to the converse.",
+    question: {
+      heading: "How should data be placed when you don’t know the job?",
+      paras: [
+        "In distributed computing, data and tasks are spread across many machines, and the machines exchange intermediate results to finish a job. That exchange is often the bottleneck.",
+        "Data placement is usually tuned to one workload and re-planned for the next. I ask for more: a single task-blind allocation that is optimal for every downstream computation at once, with optimality proven exactly rather than up to constants.",
+      ],
+    },
+    approach: [
+      { title: "A combinatorial lens", body: "Task and data allocation can be cast as a hypergraph coloring and covering-design problem, which turns a systems question into a question about structured set systems." },
+      { title: "Interweaved cliques", body: "Structured overlays of clique decompositions across compute nodes give allocation schemes that are optimal across every downstream task, rather than tuned to one workload at a time." },
+      { title: "Designs where cliques run out", body: "Where such constructions do not exist directly, Steiner-type systems and their near-resolvable relatives supply the scaffolding, in the same lineage of ideas as coded caching’s placement–delivery tradeoff." },
+      { title: "Matching converses", body: "Information-theoretic lower bounds that the constructions meet, cutting inter-node communication to its provable minimum on MapReduce-style workloads." },
+    ],
+    gap: true,
+  },
+  "hypergraph-partitioning": {
+    kicker: "Combinatorics & probability",
+    title: "Hypergraph Edge Partitioning",
+    lead: "What partition quality is exactly achievable when a hypergraph’s edges appear at random?",
+    tags: ["Hypergraphs", "Edge Sampling", "Finite-Size Exact", "Combinatorics"],
+    viz: (cls) => <EdgeSamplingViz className={cls} />,
+    vizCaption: "Illustration: each hyperedge is kept independently with probability p. The histogram of the resulting cut size builds up sample by sample and matches its exact binomial law.",
+    question: {
+      heading: "Exact answers for random hypergraphs",
+      paras: [
+        "Take a hypergraph and a random model that keeps each of its edges independently. How well can the sampled edges be partitioned, and what is the exact finite-size constant rather than only the scaling exponent?",
+        "Working at that precision rules out the usual heuristics. The claim is a matching converse, so the combinatorics has to be exact.",
+      ],
+    },
+    approach: [
+      { title: "Independent edge sampling", body: "A hypergraph plus a random model over its edges: each edge is kept or dropped independently, so partition quality becomes a random quantity with an exact law." },
+      { title: "Exact combinatorics", body: "Enumerative and constructive arguments instead of concentration-of-measure heuristics, because the goal is a bound that is tight at finite size, not only asymptotically." },
+      { title: "Structure in complete hypergraphs", body: "Related work constructs Hamiltonian decompositions of complete k-uniform hypergraphs: explicit structure inside the most symmetric hypergraphs." },
+    ],
+  },
+  "graph-learning": {
+    kicker: "Machine learning",
+    title: "Learning on Graphs",
+    lead: "Graph neural networks, graph signal processing, and learning the graph itself from data.",
+    tags: ["GNNs", "Graph Signal Processing", "Laplacian Learning", "Spatiotemporal"],
+    viz: (cls) => <GraphSignalViz className={cls} />,
+    vizCaption: "Illustration: a signal on the nodes diffuses through the graph Laplacian, while edge weights adapt to how similar their endpoints are.",
+    question: {
+      heading: "When the data is a graph",
+      paras: [
+        "Markets, cameras on an industrial site and wireless networks all produce data that lives on a graph. Learning well from it means using that structure, and often learning the structure itself.",
+        "This is where my industry work started, and where I want to take the exact-limits toolkit next.",
+      ],
+    },
+    approach: [
+      { title: "Graph signal processing", body: "Signals on nodes, filtered and smoothed through the graph Laplacian. The animation above is one diffusion step after another." },
+      { title: "Learning the structure", body: "Estimating the graph itself under smoothness and sparsity priors, instead of assuming it from raw correlations." },
+      { title: "Message passing", body: "GNNs that aggregate information over neighbours, for example to resolve occlusion and viewpoint ambiguity across overlapping cameras." },
+    ],
+    practice: [
+      { org: "Zarebin", meta: "Tehran · 2022", title: "Learning the graph from data", body: "Convex graph Laplacian estimation under smoothness and sparsity constraints to infer market-dependency graphs from raw price series, plus PageRank and personalized PageRank over multi-million-edge graphs on Spark / GraphX." },
+      { org: "MAPNA", meta: "Tehran · 2021–2022", title: "Scene-graph GNNs for safety", body: "People, machinery, PPE and restricted zones as nodes, spatial and temporal relations as edges: classifying safety violations from interactions, and treating camera placement as graph optimization." },
+    ],
+    next: {
+      text: "The same toolkit, matching converses paired with constructions that achieve them, extends to graph neural networks, graph signal processing, causal inference and integrated sensing and communication.",
+      items: ["Graph neural networks and graph signal processing", "Causal inference for spatiotemporal data", "Integrated sensing and communication (ISAC)"],
+      foundations: "Coursework at Sharif: Graph Signal Processing 20/20 · Theory of Machine Learning 20/20 · Deep Learning 19.1/20",
+    },
+  },
+};
+
+const TAG_CLASS = "rounded-full border border-white/15 px-3 py-1 font-body text-xs text-white/70";
+
+// Converse-vs-achievability chart that closes as the panel scrolls through view.
+function InlineGapChart() {
+  const ref = useRef(null);
+  const readoutRef = useRef(null);
+  const progressRef = useRef(0);
+  const reduced = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "center center"] });
+  const p = useTransform(scrollYProgress, [0.2, 1], [0, 1], { clamp: true });
+  useMotionValueEvent(p, "change", (v) => { progressRef.current = v; });
+  return (
+    <div ref={ref} className="liquid-glass rounded-[1.5rem] p-4 md:p-8">
+      <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[11px] text-white/80">
+        <span className="flex items-center gap-2"><span className="inline-block h-[2px] w-4 bg-white" /> converse</span>
+        <span className="flex items-center gap-2"><span className="inline-block w-4 border-t border-dashed border-white/60" /> order-optimal</span>
+        <span className="flex items-center gap-2"><span className="inline-block h-[3px] w-4 bg-white shadow-[0_0_8px_white]" /> this work</span>
+        <span ref={readoutRef} className="ml-auto text-white/80">gap = {(reduced ? 0 : GAP_START).toFixed(3)}</span>
+      </div>
+      <div className="h-[clamp(220px,40svh,420px)]">
+        <GapChart progressRef={progressRef} readoutRef={readoutRef} />
+      </div>
+      <p className="mt-2 font-body text-[11px] text-white/50 md:text-xs">Illustrative curves; the gap closes as you scroll. See the papers for exact results.</p>
+    </div>
+  );
+}
+
+function SectionHead({ kicker, title, className = "" }) {
+  return (
+    <div className={className}>
+      <Kicker>{kicker}</Kicker>
+      <h2 className="font-heading text-4xl italic leading-[0.95] tracking-[-2px] text-white md:text-5xl">{title}</h2>
+    </div>
+  );
+}
+
+// Pages render after load, so the browser's own jump to #anchor finds nothing;
+// jump once the target exists.
+function useHashScroll() {
+  useEffect(() => {
+    if (!window.location.hash) return;
+    const id = decodeURIComponent(window.location.hash.slice(1));
+    const timer = setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ block: "start" });
+    }, 350);
+    return () => clearTimeout(timer);
+  }, []);
+}
+
+function ResearchPage({ slug }) {
+  const t = TOPICS[slug] || TOPICS.allocation;
+  const rise = useRiseInView();
+  const enter = useRise();
+  const idx = TOPIC_ORDER.indexOf(slug);
+  const papers = PUBS.filter((p) => p.topic === slug);
+  const others = TOPIC_ORDER.filter((s) => s !== slug);
+
+  useHashScroll();
+
+  return (
+    <main className="bg-black font-body text-white">
+      <Navbar />
+
+      <section className="relative overflow-hidden px-4 pb-12 pt-32 md:px-16 lg:px-20">
+        <div className="absolute inset-0 z-0 opacity-60">
+          <HypergraphField density={0.45} edgeAlpha={0.08} hyperedges={false} interactive={false} topBias={false} seed={31 + idx} label="Sparse drifting graph in the background" />
+        </div>
+        <div className="relative z-10">
+          <motion.a {...enter(0.1)} href={homeHref("research")} className="focus-ring inline-flex items-center gap-2 rounded-full py-2 font-body text-sm text-white/70 hover:text-white">
+            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M19 12H5" /><path d="m12 19-7-7 7-7" /></svg>
+            All research
+          </motion.a>
+          <motion.div {...enter(0.2)} className="mt-6">
+            <Kicker>{`// Research ${idx + 1} of ${TOPIC_ORDER.length} — ${t.kicker}`}</Kicker>
+          </motion.div>
+          <BlurText
+            as="h1"
+            text={t.title}
+            justify="flex-start"
+            delay={0.25}
+            className="max-w-5xl font-heading text-6xl italic leading-[0.88] tracking-[-3px] text-white md:text-7xl lg:text-[6.5rem]"
+          />
+          <motion.p {...enter(0.6)} className="mt-6 max-w-3xl font-heading text-2xl italic leading-tight text-white/90 md:text-3xl">{t.lead}</motion.p>
+          <motion.ul {...enter(0.75)} className="mt-6 flex flex-wrap gap-2">
+            {t.tags.map((tag) => <li key={tag} className={TAG_CLASS}>{tag}</li>)}
+          </motion.ul>
+        </div>
+      </section>
+
+      <section className="px-4 md:px-16 lg:px-20">
+        <motion.figure {...enter(0.9)} className="liquid-glass rounded-[1.5rem] p-5 md:p-8">
+          <div className="mx-auto h-[clamp(200px,34svh,340px)] max-w-4xl">{t.viz("h-full")}</div>
+          <figcaption className="mt-4 max-w-3xl font-mono text-[11px] leading-snug text-white/55">{t.vizCaption}</figcaption>
+        </motion.figure>
+      </section>
+
+      <section className="px-4 pt-24 md:px-16 lg:px-20">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[380px_1fr] lg:gap-16">
+          <motion.div {...rise(0)}><SectionHead kicker="// The question" title={t.question.heading} /></motion.div>
+          <motion.div {...rise(0.1)} className="flex max-w-[62ch] flex-col gap-4 font-body text-base font-light leading-relaxed text-white/90 md:text-lg lg:pt-10">
+            {t.question.paras.map((para) => <p key={para}>{para}</p>)}
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="px-4 pt-24 md:px-16 lg:px-20">
+        <motion.div {...rise(0)}><SectionHead kicker="// The approach" title="How I work on it" /></motion.div>
+        <div className={`mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 ${t.approach.length === 3 ? "lg:grid-cols-3" : ""}`}>
+          {t.approach.map((s, i) => (
+            <motion.div key={s.title} {...rise(0.08 * i)} className="liquid-glass rounded-[1.25rem] p-6">
+              <h3 className="font-heading text-3xl italic leading-none tracking-[-1px] text-white">{s.title}</h3>
+              <p className="mt-3 font-body text-sm font-light leading-relaxed text-white/85">{s.body}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {t.gap && (
+        <section className="px-4 pt-24 md:px-16 lg:px-20">
+          <motion.div {...rise(0)} className="mb-8"><SectionHead kicker="// Exact optimality" title="The gap closes" /></motion.div>
+          <InlineGapChart />
+        </section>
+      )}
+
+      {papers.length > 0 && (
+        <section className="px-4 pt-24 md:px-16 lg:px-20">
+          <motion.div {...rise(0)}><SectionHead kicker="// Papers" title={papers.length === 1 ? "The paper" : "The papers"} /></motion.div>
+          <div className="mt-10 flex flex-col gap-4">
+            {papers.map((p, i) => <PubRow key={p.slug} p={p} i={i} onHome={false} />)}
+          </div>
+        </section>
+      )}
+
+      {t.practice && (
+        <section className="px-4 pt-24 md:px-16 lg:px-20">
+          <motion.div {...rise(0)}><SectionHead kicker="// In practice" title="Where I’ve built it" /></motion.div>
+          <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
+            {t.practice.map((r, i) => (
+              <motion.article key={r.org} {...rise(0.08 * i)} className="liquid-glass rounded-[1.25rem] p-6">
+                <div className="font-mono text-[11px] text-white/60">{r.meta}</div>
+                <h3 className="mt-3 font-heading text-3xl italic leading-none tracking-[-1px] text-white">{r.org}</h3>
+                <div className="mt-2 font-body text-sm font-medium text-white/90">{r.title}</div>
+                <p className="mt-3 font-body text-sm font-light leading-relaxed text-white/85">{r.body}</p>
+              </motion.article>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {t.next && (
+        <section className="px-4 pt-24 md:px-16 lg:px-20">
+          <motion.div {...rise(0)} className="liquid-glass rounded-[1.5rem] p-6 md:p-10">
+            <Kicker>// Where I want to take it</Kicker>
+            <p className="max-w-3xl font-heading text-3xl italic leading-tight text-white md:text-4xl">{t.next.text}</p>
+            <ul className="mt-6 flex flex-wrap gap-2">
+              {t.next.items.map((item) => <li key={item} className={TAG_CLASS}>{item}</li>)}
+            </ul>
+            <p className="mt-6 font-mono text-[11px] text-white/55">{t.next.foundations}</p>
+          </motion.div>
+        </section>
+      )}
+
+      <section className="px-4 pb-8 pt-24 md:px-16 lg:px-20" aria-labelledby="more-research">
+        <motion.div {...rise(0)}>
+          <Kicker>// Keep exploring</Kicker>
+          <h2 id="more-research" className="sr-only">More research</h2>
+        </motion.div>
+        <div className="mt-2 grid grid-cols-1 gap-6 md:grid-cols-2">
+          {others.map((s, i) => {
+            const o = TOPICS[s];
+            return (
+              <motion.a
+                key={s}
+                href={researchHref(s)}
+                {...rise(0.08 * i)}
+                className="liquid-glass glass-hover focus-ring group flex flex-col rounded-[1.25rem] p-6 transition-transform hover:-translate-y-0.5"
+              >
+                <div className="font-mono text-[11px] text-white/55">{`Research ${TOPIC_ORDER.indexOf(s) + 1} — ${o.kicker}`}</div>
+                <h3 className="mt-3 font-heading text-3xl italic leading-none tracking-[-1px] text-white md:text-4xl">{o.title}</h3>
+                <p className="mt-3 max-w-[48ch] font-body text-sm font-light leading-snug text-white/85">{o.lead}</p>
+                <span className="mt-5 inline-flex items-center gap-1 font-body text-sm font-medium text-white">
+                  Explore this research <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                </span>
+              </motion.a>
+            );
+          })}
+        </div>
+      </section>
+
+      <ContactBand />
+    </main>
+  );
+}
+
+// Compact closing band for inner pages.
+function ContactBand() {
+  const rise = useRiseInView();
+  return (
+    <section className="px-4 pb-10 pt-16 md:px-16 lg:px-20">
+      <motion.div {...rise(0)} className="flex flex-col items-start justify-between gap-6 border-t border-white/15 pt-10 md:flex-row md:items-center">
+        <div>
+          <div className="font-heading text-4xl italic leading-none text-white md:text-5xl">Let’s talk graphs</div>
+          <p className="mt-3 font-body text-sm font-light text-white/80">Questions about this work or an idea for a collaboration? Write to me.</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <a href="mailto:j.maheri95@gmail.com" className="liquid-glass-strong focus-ring flex h-11 items-center gap-2 rounded-full px-5 font-body text-sm font-medium text-white transition-colors hover:bg-white/10">
+            j.maheri95@gmail.com <ArrowUpRight />
+          </a>
+          <SocialRow only={["Google Scholar", "LinkedIn", "ORCID", "GitHub", "CV (PDF)"]} />
+        </div>
+      </motion.div>
+      <footer className="mt-10 font-body text-xs text-white/40">© 2026 Javad Maheri</footer>
+    </section>
+  );
+}
+
+createRoot(ROOT_EL).render(PAGE === "research" ? <ResearchPage slug={TOPIC} /> : <App />);

@@ -41,6 +41,6 @@
     "uglify": "uglifyjs node_modules/jquery/dist/jquery.min.js assets/js/plugins/jquery.greedy-navigation.js assets/js/_main.js assets/js/theme.js -c -m -o assets/js/main.min.js",
     "watch:js": "onchange \"assets/js/**/*.js\" -e \"assets/js/main.min.js\" -- npm run build:js",
     "build:js": "npm run uglify",
-    "build:lab": "tailwindcss -c lab/tailwind.config.js -i lab/src/styles.css -o lab/app.css --minify && esbuild lab/src/app.jsx --bundle --minify --format=iife --target=es2019 --define:process.env.NODE_ENV='\"production\"' --outfile=lab/app.js"
+    "build:lab": "tailwindcss -c lab/tailwind.config.js -i lab/src/styles.css -o lab/app.css --minify && esbuild lab/src/app.jsx --bundle --minify --format=iife --target=es2019 --define:process.env.NODE_ENV='\"production\"' --define:__SITE_ORIGIN__='\"\"' --outfile=lab/app.js"
   }
 }

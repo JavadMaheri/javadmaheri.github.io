@@ -22,6 +22,12 @@ url                      : https://javadmaheri.github.io # TODO(user): confirm t
 baseurl                  : "" # the subpath of your site, e.g. "/blog" -- leave blank for a <username>.github.io root site
 repository               : "JavadMaheri/javadmaheri.github.io"
 
+# New design under /lab/ (see lab/README.md). lab_home is where its home page
+# lives: "/lab/" today, "/" if it replaces the classic homepage. Set
+# lab_noindex to false to let search engines index it.
+lab_home                 : "/lab/"
+lab_noindex              : true
+
 # Site Author - The following control what appear as part of the author content on the side bar.
 #               If a field is blank the icon and link will not appear, otherwise it will be shown.
 #               Additional customization can be done by editing /_includes/author-profile.html
@@ -39,10 +45,10 @@ author:
   # Academic websites
   academia         : # URL
   arxiv            : # TODO(user): your arXiv author page URL, e.g. https://arxiv.org/a/maheri_j_1
-  googlescholar    : # TODO(user): your Google Scholar profile URL, e.g. https://scholar.google.com/citations?user=XXXXXXX
+  googlescholar    : "https://scholar.google.com/citations?user=jg3ifAUAAAAJ&hl=en"
   inspire-hep      : # URL
   impactstory      : # URL
-  orcid            : # TODO(user): your ORCID URL, e.g. https://orcid.org/0000-0000-0000-0000
+  orcid            : "https://orcid.org/0009-0005-7148-713X"
   semantic         : # URL
   ssrn             : # URL
   pubmed           : # URL
@@ -70,7 +76,7 @@ author:
   keybase          : # Username
   instagram        : # Username
   lastfm           : # Username
-  linkedin         : # TODO(user): confirm which LinkedIn URL is current — javad-maheri or javad-maheri-845049169 — and paste it here (username only, e.g. "javad-maheri")
+  linkedin         : "javad-maheri-845049169"
   mastodon         : # URL
   medium           : # URL
   pinterest        : # Username
@@ -197,6 +203,7 @@ exclude:
   - lab/src
   - lab/tailwind.config.js
   - lab/fonts/README.md
+  - lab/README.md
   - vendor
 keep_files:
   - .git

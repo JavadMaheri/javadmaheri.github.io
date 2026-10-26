@@ -1,0 +1,33 @@
+{%- comment -%}
+  Shared HTML shell for the /lab/ site (the new design). Each page passes
+  title, description, page ("home" | "research") and, for research pages,
+  topic. Assets always load from /lab/; `site.lab_home` is where the home
+  page lives (see lab/README.md to make it the site's homepage).
+{%- endcomment -%}
+{%- assign lab_home = site.lab_home | default: "/lab/" -%}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {%- if site.lab_noindex != false %}
+  <meta name="robots" content="noindex,nofollow">
+  {%- endif %}
+  <meta name="theme-color" content="#000000">
+  <title>{{ include.title }}</title>
+  <meta name="description" content="{{ include.description }}">
+  <link rel="icon" href="{{ '/images/favicon.svg' | relative_url }}" type="image/svg+xml">
+  <link rel="preload" href="{{ '/lab/fonts/instrument-serif-latin-400-italic.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="{{ '/lab/app.css' | relative_url }}">
+  <style>body{background:#000;margin:0}</style>
+</head>
+<body>
+  <div id="root"
+       data-page="{{ include.page | default: 'home' }}"
+       data-topic="{{ include.topic }}"
+       data-base="{{ '/lab/' | relative_url }}"
+       data-home="{{ lab_home | relative_url }}"></div>
+  <noscript><p style="color:#fff;font-family:sans-serif;padding:2rem">This page needs JavaScript. Javad Maheri · <a href="mailto:j.maheri95@gmail.com" style="color:#fff">j.maheri95@gmail.com</a> · <a href="{{ '/files/javad-maheri-cv.pdf' | relative_url }}" style="color:#fff">CV (PDF)</a></p></noscript>
+  <script src="{{ '/lab/app.js' | relative_url }}" defer></script>
+</body>
+</html>
