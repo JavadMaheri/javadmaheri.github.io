@@ -194,6 +194,9 @@ exclude:
   - Rakefile
   - README
   - tmp
+  - lab/src
+  - lab/tailwind.config.js
+  - lab/fonts/README.md
   - vendor
 keep_files:
   - .git
