@@ -11,4 +11,4 @@ description: "Contact Javad Maheri — PhD, EURECOM / Sorbonne Université, Soph
 
 **Location:** Sophia Antipolis, France
 
-**Elsewhere:** Google Scholar, ORCID, arXiv, GitHub, and LinkedIn links are in the sidebar. <!-- TODO(user): these render automatically once you fill in the placeholder URLs in _config.yml (author block) -->
+**Elsewhere:** [Google Scholar](https://scholar.google.com/citations?user=jg3ifAUAAAAJ&hl=en) · [ORCID](https://orcid.org/0009-0005-7148-713X) · [LinkedIn](https://www.linkedin.com/in/javad-maheri-845049169) · [GitHub](https://github.com/JavadMaheri)

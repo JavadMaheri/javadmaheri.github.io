@@ -866,6 +866,23 @@ const HypergraphIcon = () => (
     <circle cx="12" cy="21" r="1.6" fill="currentColor" />
   </svg>
 );
+const BrandIcon = ({ d, className = "h-[18px] w-[18px]" }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={d} /></svg>
+);
+const MailIcon = ({ className = "h-[18px] w-[18px]" }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3.5 6.5 8.5 6.5 8.5-6.5" />
+  </svg>
+);
+const CvIcon = ({ className = "h-[18px] w-[18px]" }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5M9 13h6M9 17h4" />
+  </svg>
+);
+const SCHOLAR_PATH = "M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z";
+const LINKEDIN_PATH = "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z";
+const ORCID_PATH = "M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.025-5.325 5.025h-3.919V7.416zm1.444 1.303v7.444h2.297c3.272 0 4.022-2.484 4.022-3.722 0-2.016-1.284-3.722-4.097-3.722h-2.222z";
+const GITHUB_PATH = "M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12";
 const DNS_PATH = "M20 13H4c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h16c.55 0 1-.45 1-1v-6c0-.55-.45-1-1-1zM7 19c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM20 3H4c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h16c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1zM7 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z";
 const SHARE_PATH = "M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z";
 
@@ -886,6 +903,46 @@ const NAV = [
   { id: "experience", label: "Experience" },
   { id: "publications", label: "Publications" },
   { id: "contact", label: "Contact" },
+];
+
+const SCHOLAR_URL = "https://scholar.google.com/citations?user=jg3ifAUAAAAJ&hl=en";
+const SOCIALS = [
+  { label: "Email", href: "mailto:j.maheri95@gmail.com", icon: <MailIcon /> },
+  { label: "Google Scholar", href: SCHOLAR_URL, icon: <BrandIcon d={SCHOLAR_PATH} />, external: true },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/javad-maheri-845049169", icon: <BrandIcon d={LINKEDIN_PATH} />, external: true },
+  { label: "ORCID", href: "https://orcid.org/0009-0005-7148-713X", icon: <BrandIcon d={ORCID_PATH} />, external: true },
+  { label: "GitHub", href: "https://github.com/JavadMaheri", icon: <BrandIcon d={GITHUB_PATH} />, external: true },
+  { label: "CV (PDF)", href: CV_URL, icon: <CvIcon />, external: true },
+];
+
+function SocialRow({ size = "h-11 w-11", className = "", only }) {
+  const items = only ? SOCIALS.filter((s) => only.includes(s.label)) : SOCIALS;
+  return (
+    <ul className={`flex flex-wrap items-center justify-center gap-2 ${className}`}>
+      {items.map((s) => (
+        <li key={s.label}>
+          <a
+            href={s.href}
+            {...(s.external ? NEW_TAB : {})}
+            aria-label={s.label}
+            title={s.label}
+            className={`liquid-glass focus-ring flex ${size} items-center justify-center rounded-full text-white/85 transition-colors hover:bg-white hover:text-black`}
+          >
+            {s.icon}
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+const NEWS = [
+  { when: "Jul 2026", text: "Defended my PhD at EURECOM / Sorbonne Université.", href: "#about" },
+  { when: "Jun 2026", text: "New preprint: Fundamental Limits of Hypergraph Edge Partitioning under Independent Edge Sampling — under review at SIAM J. Discrete Mathematics.", href: "https://arxiv.org/abs/2606.13491", external: true },
+  { when: "2026", text: "Order Optimal Task Allocation in Distributed Computing via Interweaved Cliques — accepted at ISIT 2026.", href: "/publication/interweaved-cliques-2026/" },
+  { when: "Jan 2026", text: "New preprint: Universal and Asymptotically Optimal Data and Task Allocation in Distributed Computing — under revision at IEEE Transactions on Information Theory.", href: "https://arxiv.org/abs/2601.05873", external: true },
+  { when: "2025", text: "Constructing Hamiltonian Decompositions of Complete k-Uniform Hypergraphs — published at ISIT 2025.", href: "/publication/hamiltonian-decompositions-2025/" },
+  { when: "2024", text: "Drew against GM Vassilios Kotronias at the ISIT 2024 chess event." },
 ];
 
 const FACTS = [
@@ -919,6 +976,8 @@ const CARDS = [
     body: "One task-blind data assignment that is simultaneously optimal for every downstream workload — no re-planning per job.",
     viz: <AllocationViz />,
     caption: "6 servers · 15 blocks · each block on a pair of servers — the edges of K₆, placed round by round",
+    href: "/publication/universal-optimal-allocation-2026/",
+    cta: "Read the paper",
   },
   {
     icon: <HypergraphIcon />,
@@ -927,6 +986,8 @@ const CARDS = [
     body: "What partition quality is exactly achievable when edges are sampled at random — with the finite-size constant, not just the scaling exponent.",
     viz: <EdgeSamplingViz />,
     caption: "Each hyperedge appears with probability p; the cut size follows its exact law, sample by sample",
+    href: "/publication/hypergraph-edge-partitioning-2026/",
+    cta: "Read the paper",
   },
   {
     icon: <MaterialIcon d={SHARE_PATH} />,
@@ -935,6 +996,8 @@ const CARDS = [
     body: "GNNs, graph signal processing and Laplacian estimation — from market-dependency graphs to scene graphs for safety analytics.",
     viz: <GraphSignalViz />,
     caption: "A signal diffuses over the graph while edge weights adapt to what the data says",
+    href: "#experience",
+    cta: "See it in practice",
   },
 ];
 
@@ -946,6 +1009,7 @@ const PUBS = [
     venue: "SIAM Journal on Discrete Mathematics",
     status: "Under review",
     arxiv: "2606.13491",
+    bibtex: "@misc{maheri2026hypergraph,\n  title = {Fundamental Limits of Hypergraph Edge Partitioning under Independent Edge Sampling},\n  author = {Maheri, Javad and Namboodiri, K. K. Krishnan and Elia, Petros},\n  year = {2026},\n  eprint = {2606.13491},\n  archivePrefix = {arXiv},\n  note = {Under review, SIAM Journal on Discrete Mathematics}\n}",
     url: "/publication/hypergraph-edge-partitioning-2026/",
   },
   {
@@ -955,6 +1019,7 @@ const PUBS = [
     venue: "IEEE Transactions on Information Theory",
     status: "Under revision",
     arxiv: "2601.05873",
+    bibtex: "@misc{maheri2026universal,\n  title = {Universal and Asymptotically Optimal Data and Task Allocation in Distributed Computing},\n  author = {Maheri, Javad and Namboodiri, K. K. Krishnan and Elia, Petros},\n  year = {2026},\n  eprint = {2601.05873},\n  archivePrefix = {arXiv},\n  note = {Under revision, IEEE Transactions on Information Theory}\n}",
     url: "/publication/universal-optimal-allocation-2026/",
   },
   {
@@ -964,6 +1029,7 @@ const PUBS = [
     venue: "IEEE International Symposium on Information Theory (ISIT) 2026",
     status: "Conference",
     url: "/publication/interweaved-cliques-2026/",
+    bibtex: "@inproceedings{maheri2026interweaved,\n  title = {Order Optimal Task Allocation in Distributed Computing via Interweaved Cliques},\n  author = {Maheri, Javad and Namboodiri, K. K. Krishnan and Elia, Petros},\n  booktitle = {Proc. IEEE International Symposium on Information Theory (ISIT)},\n  year = {2026}\n}",
   },
   {
     year: "2025",
@@ -972,6 +1038,7 @@ const PUBS = [
     venue: "IEEE International Symposium on Information Theory (ISIT) 2025",
     status: "Conference",
     url: "/publication/hamiltonian-decompositions-2025/",
+    bibtex: "@inproceedings{maheri2025hamiltonian,\n  title = {Constructing Hamiltonian Decompositions of Complete k-Uniform Hypergraphs},\n  author = {Maheri, Javad and Elia, Petros},\n  booktitle = {Proc. IEEE International Symposium on Information Theory (ISIT)},\n  year = {2025}\n}",
   },
 ];
 
@@ -1052,6 +1119,7 @@ function Navbar() {
           Download CV <ArrowUpRight className="h-4 w-4" />
         </a>
       </div>
+      <SocialRow size="h-10 w-10" className="hidden xl:flex" only={["Email", "Google Scholar", "LinkedIn", "GitHub"]} />
       <button
         type="button"
         className="liquid-glass focus-ring flex h-12 w-12 items-center justify-center rounded-full text-white lg:hidden"
@@ -1133,7 +1201,7 @@ function Hero() {
             <span className="rounded-full bg-white px-3 py-1 font-body text-xs font-semibold text-black">New</span>
             <span className="pr-3 font-body text-xs text-white/90 sm:text-sm">PhD defended — EURECOM / Sorbonne Université, July 2026</span>
           </motion.div>
-          <motion.div {...rise(0.45)} className="mt-8 font-mono text-xs uppercase tracking-[0.2em] text-white/70 md:text-sm">
+          <motion.div {...rise(0.45)} className="mt-6 font-mono text-xs uppercase tracking-[0.2em] text-white/70 md:text-sm">
             Information theory · Distributed learning · Graphs
           </motion.div>
           <BlurText
@@ -1145,18 +1213,21 @@ function Hero() {
           <motion.p {...rise(0.9)} className="mt-6 max-w-3xl font-heading text-2xl italic leading-tight text-white md:text-3xl">
             I prove exact, non-asymptotic limits for distributed computation and learning on graph-structured data — and I build the systems that use them.
           </motion.p>
-          <motion.p {...rise(1.05)} className="mt-4 max-w-2xl font-body text-sm font-light leading-snug text-white/85 md:text-base">
-            PhD in Communication Systems · Information theorist and ML engineer · Sophia Antipolis, France
+          <motion.p {...rise(1.05)} className="mt-4 max-w-3xl font-body text-sm font-light leading-snug text-white/85 md:text-base">
+            Information theorist and ML engineer · PhD,{" "}
+            <a href="https://www.eurecom.fr/" {...NEW_TAB} className="underline decoration-white/30 underline-offset-4 hover:decoration-white">EURECOM</a>
+            {" / "}
+            <a href="https://www.sorbonne-universite.fr/" {...NEW_TAB} className="underline decoration-white/30 underline-offset-4 hover:decoration-white">Sorbonne Université</a>
+            {" "}· Sophia Antipolis, France
           </motion.p>
-          <motion.div {...rise(1.2)} className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
-            <a href="#about" className="liquid-glass-strong focus-ring flex items-center gap-2 rounded-full px-5 py-2.5 font-body text-sm font-medium text-white">
+          <motion.div {...rise(1.15)} className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-4">
+            <a href="#about" className="liquid-glass-strong focus-ring flex h-11 items-center gap-2 rounded-full px-5 font-body text-sm font-medium text-white">
               Get to know me <ArrowDown />
             </a>
-            <a href={CV_URL} {...NEW_TAB} className="focus-ring flex items-center gap-2 rounded-full py-2.5 font-body text-sm font-medium text-white">
-              Download CV <ArrowUpRight className="h-4 w-4" />
-            </a>
+            <span className="hidden h-6 w-px bg-white/20 sm:block" aria-hidden="true" />
+            <SocialRow />
           </motion.div>
-          <motion.div {...rise(1.35)} className="mt-9 flex w-full flex-wrap items-stretch justify-center gap-4">
+          <motion.div {...rise(1.35)} className="mt-8 flex w-full flex-wrap items-stretch justify-center gap-4">
             {[
               { icon: <TouchingCurves />, num: "PhD", label: "EURECOM / Sorbonne Université, defended July 2026" },
               { icon: <PaperStack />, num: "4 Papers", label: "ISIT ’25 · ISIT ’26 · IEEE T-IT · SIAM J. DM" },
@@ -1172,6 +1243,22 @@ function Hero() {
             ))}
           </motion.div>
         </div>
+        <motion.a
+          {...rise(1.7)}
+          href="#research"
+          className="focus-ring absolute left-16 top-[calc(100svh-5.5rem)] hidden max-w-[210px] font-mono text-[11px] leading-snug text-white/55 hover:text-white/90 xl:block"
+        >
+          Move your mouse over the graph: it passes messages between nodes, like a GNN. Why graphs? →
+        </motion.a>
+        <motion.a
+          {...rise(1.7)}
+          href="#about"
+          aria-label="Scroll to About"
+          className="focus-ring absolute right-16 top-[calc(100svh-4.75rem)] hidden flex-col items-center gap-1 font-mono text-[10px] uppercase tracking-[0.2em] text-white/55 hover:text-white xl:flex"
+        >
+          Scroll
+          <ScrollChevron />
+        </motion.a>
         <motion.div {...rise(1.5)} className="flex flex-col items-center gap-4 px-4 pb-8">
           <span className="liquid-glass rounded-full px-3.5 py-1 font-body text-xs font-medium text-white">Research & engineering with</span>
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 font-heading text-2xl italic tracking-tight text-white md:gap-x-14 md:text-3xl">
@@ -1179,6 +1266,53 @@ function Hero() {
           </div>
         </motion.div>
       </div>
+    </section>
+  );
+}
+
+function ScrollChevron() {
+  const reduced = useReducedMotion();
+  return (
+    <motion.svg
+      className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"
+      animate={reduced ? undefined : { y: [0, 4, 0] }}
+      transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+    >
+      <path d="m6 9 6 6 6-6" />
+    </motion.svg>
+  );
+}
+
+function News() {
+  const rise = useRiseInView();
+  return (
+    <section id="news" className="relative bg-black px-4 pt-24 md:px-16 lg:px-20" aria-labelledby="news-title">
+      <motion.div {...rise(0)} className="flex flex-col gap-8 lg:flex-row lg:gap-16">
+        <div className="lg:w-[380px] lg:shrink-0">
+          <Kicker>// News</Kicker>
+          <h2 id="news-title" className="font-heading text-5xl italic leading-[0.9] tracking-[-2px] text-white md:text-6xl">Lately</h2>
+        </div>
+        <ol className="min-w-0 flex-1 border-t border-white/15">
+          {NEWS.map((n) => {
+            const body = (
+              <>
+                <span className="w-20 shrink-0 font-mono text-xs text-white/55 tabular-nums">{n.when}</span>
+                <span className="flex-1 font-body text-sm font-light leading-snug text-white/90 md:text-base">{n.text}</span>
+                {n.href && <ArrowUpRight className="mt-0.5 h-4 w-4 shrink-0 text-white/40 transition-colors group-hover:text-white" />}
+              </>
+            );
+            return (
+              <li key={n.text} className="border-b border-white/15">
+                {n.href ? (
+                  <a href={n.href} {...(n.external ? NEW_TAB : {})} className="focus-ring group flex items-start gap-4 py-4 hover:bg-white/[0.03]">{body}</a>
+                ) : (
+                  <div className="flex items-start gap-4 py-4">{body}</div>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </motion.div>
     </section>
   );
 }
@@ -1298,7 +1432,7 @@ function Research() {
         </motion.div>
         <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3">
           {CARDS.map((c, i) => (
-            <motion.article key={c.title} {...rise(0.15 * i)} className="liquid-glass flex min-h-[460px] flex-col rounded-[1.25rem] p-6">
+            <motion.a key={c.title} href={c.href} {...rise(0.15 * i)} className="liquid-glass glass-hover focus-ring group flex min-h-[460px] flex-col rounded-[1.25rem] p-6">
               <div className="flex items-start justify-between gap-4">
                 <div className="liquid-glass flex h-11 w-11 shrink-0 items-center justify-center rounded-[0.75rem]">{c.icon}</div>
                 <div className="flex max-w-[75%] flex-wrap justify-end gap-1.5">
@@ -1314,8 +1448,11 @@ function Research() {
               <div>
                 <h3 className="font-heading text-3xl italic leading-none tracking-[-1px] text-white md:text-4xl">{c.title}</h3>
                 <p className="mt-3 max-w-[36ch] font-body text-sm font-light leading-snug text-white/90">{c.body}</p>
+                <span className="mt-4 inline-flex items-center gap-1 font-body text-sm font-medium text-white">
+                  {c.cta} <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                </span>
               </div>
-            </motion.article>
+            </motion.a>
           ))}
         </div>
       </div>
@@ -1419,46 +1556,85 @@ function Experience() {
   );
 }
 
-function Publications() {
+// Copies the BibTeX entry; if the clipboard is unavailable, shows it for manual selection.
+function BibtexButton({ bibtex, onFallback }) {
+  const [copied, setCopied] = useState(false);
+  const copy = () => {
+    const done = () => { setCopied(true); setTimeout(() => setCopied(false), 1800); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(bibtex).then(done, onFallback);
+    } else {
+      onFallback();
+    }
+  };
+  return (
+    <button type="button" onClick={copy} className="liquid-glass focus-ring rounded-full px-3 py-1 font-mono text-xs text-white" aria-live="polite">
+      {copied ? "Copied ✓" : "BibTeX"}
+    </button>
+  );
+}
+
+function PubRow({ p, i }) {
   const rise = useRiseInView();
   const reduced = useReducedMotion();
+  const [showBib, setShowBib] = useState(false);
+  return (
+    <motion.div
+      {...rise(0.08 * i)}
+      whileHover={reduced ? undefined : { y: -2 }}
+      className="liquid-glass glass-hover rounded-[1.25rem] p-5"
+    >
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-8">
+        <div className="font-heading text-4xl italic leading-none text-white md:w-24">{p.year}</div>
+        <div className="min-w-0 flex-1">
+          <a href={p.url} className="focus-ring font-body text-base font-medium leading-snug text-white hover:underline md:text-lg">{p.title}</a>
+          <div className="mt-1 font-body text-sm font-light text-white/70">
+            {p.authors.map((a, j) => (
+              <React.Fragment key={a}>
+                {j > 0 && ", "}
+                <span className={a === "Javad Maheri" ? "text-white" : ""}>{a}</span>
+              </React.Fragment>
+            ))}
+          </div>
+          <div className="mt-1 font-body text-sm italic text-white/70">{p.venue}</div>
+        </div>
+        <div className="flex shrink-0 flex-wrap gap-2 md:max-w-[300px] md:justify-end">
+          <span className="rounded-full border border-white/25 px-3 py-1 font-body text-xs text-white/80">{p.status}</span>
+          {p.arxiv && (
+            <a href={`https://arxiv.org/pdf/${p.arxiv}`} {...NEW_TAB} className="liquid-glass focus-ring flex items-center gap-1 rounded-full px-3 py-1 font-mono text-xs text-white">
+              PDF <ArrowUpRight className="h-3 w-3" />
+            </a>
+          )}
+          {p.arxiv && (
+            <a href={`https://arxiv.org/abs/${p.arxiv}`} {...NEW_TAB} className="liquid-glass focus-ring flex items-center gap-1 rounded-full px-3 py-1 font-mono text-xs text-white">
+              arXiv:{p.arxiv} <ArrowUpRight className="h-3 w-3" />
+            </a>
+          )}
+          <BibtexButton bibtex={p.bibtex} onFallback={() => setShowBib(true)} />
+        </div>
+      </div>
+      {showBib && (
+        <pre className="mt-4 overflow-x-auto rounded-[0.75rem] bg-white/5 p-4 font-mono text-[11px] leading-relaxed text-white/85 select-all">{p.bibtex}</pre>
+      )}
+    </motion.div>
+  );
+}
+
+function Publications() {
+  const rise = useRiseInView();
   return (
     <section id="publications" className="relative bg-black px-4 pb-24 pt-28 md:px-16 lg:px-20">
       <motion.div {...rise(0)}>
         <Kicker>// Publications</Kicker>
-        <h2 className="font-heading text-6xl italic leading-[0.9] tracking-[-3px] text-white md:text-7xl lg:text-[6rem]">Papers</h2>
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <h2 className="font-heading text-6xl italic leading-[0.9] tracking-[-3px] text-white md:text-7xl lg:text-[6rem]">Papers</h2>
+          <a href={SCHOLAR_URL} {...NEW_TAB} className="liquid-glass focus-ring flex items-center gap-2 rounded-full px-4 py-2 font-body text-sm text-white">
+            <BrandIcon d={SCHOLAR_PATH} className="h-4 w-4" /> Full list on Google Scholar <ArrowUpRight className="h-4 w-4" />
+          </a>
+        </div>
       </motion.div>
       <div className="mt-14 flex flex-col gap-4">
-        {PUBS.map((p, i) => (
-          <motion.div
-            key={p.title}
-            {...rise(0.08 * i)}
-            whileHover={reduced ? undefined : { y: -2 }}
-            className="liquid-glass glass-hover flex flex-col gap-4 rounded-[1.25rem] p-5 md:flex-row md:items-center md:gap-8"
-          >
-            <div className="font-heading text-4xl italic leading-none text-white md:w-24">{p.year}</div>
-            <div className="min-w-0 flex-1">
-              <a href={p.url} className="focus-ring font-body text-base font-medium leading-snug text-white hover:underline md:text-lg">{p.title}</a>
-              <div className="mt-1 font-body text-sm font-light text-white/70">
-                {p.authors.map((a, j) => (
-                  <React.Fragment key={a}>
-                    {j > 0 && ", "}
-                    <span className={a === "Javad Maheri" ? "text-white" : ""}>{a}</span>
-                  </React.Fragment>
-                ))}
-              </div>
-              <div className="mt-1 font-body text-sm italic text-white/70">{p.venue}</div>
-            </div>
-            <div className="flex shrink-0 flex-wrap gap-2">
-              <span className="liquid-glass rounded-full px-3 py-1 font-body text-xs text-white/90">{p.status}</span>
-              {p.arxiv && (
-                <a href={`https://arxiv.org/abs/${p.arxiv}`} {...NEW_TAB} className="liquid-glass focus-ring flex items-center gap-1 rounded-full px-3 py-1 font-mono text-xs text-white">
-                  arXiv:{p.arxiv} <ArrowUpRight className="h-3 w-3" />
-                </a>
-              )}
-            </div>
-          </motion.div>
-        ))}
+        {PUBS.map((p, i) => <PubRow key={p.title} p={p} i={i} />)}
       </div>
     </section>
   );
@@ -1585,9 +1761,10 @@ function Contact() {
           <a href="mailto:j.maheri95@gmail.com" className="liquid-glass-strong focus-ring flex items-center gap-2 rounded-full px-5 py-2.5 font-body text-sm font-medium text-white">
             j.maheri95@gmail.com <ArrowUpRight />
           </a>
-          <a href="https://github.com/JavadMaheri" {...NEW_TAB} className="liquid-glass focus-ring rounded-full px-4 py-2.5 font-body text-sm text-white">GitHub</a>
-          <a href={CV_URL} {...NEW_TAB} className="liquid-glass focus-ring rounded-full px-4 py-2.5 font-body text-sm text-white">CV (PDF)</a>
           <a href="/" className="liquid-glass focus-ring rounded-full px-4 py-2.5 font-body text-sm text-white">Classic site</a>
+        </motion.div>
+        <motion.div {...rise(0.7)} className="mt-6">
+          <SocialRow only={["Google Scholar", "LinkedIn", "ORCID", "GitHub", "CV (PDF)"]} />
         </motion.div>
       </div>
       <footer className="relative z-10 pb-6 text-center font-body text-xs text-white/40">© 2026 Javad Maheri</footer>
@@ -1601,6 +1778,7 @@ function App() {
       <Navbar />
       <SectionRail />
       <Hero />
+      <News />
       <About />
       <Research />
       <GapSection />
