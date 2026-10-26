@@ -838,6 +838,8 @@ const SHARE_PATH = "M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-
 /* ------------------------------------------------------------------ */
 
 const CV_URL = "/files/javad-maheri-cv.pdf";
+// External links and the PDF open in a new tab so the page stays put.
+const NEW_TAB = { target: "_blank", rel: "noopener noreferrer" };
 // Set to "/images/profile.png" once the placeholder there is replaced with a real photo.
 const PORTRAIT_URL = null;
 
@@ -984,8 +986,20 @@ const ROLES = [
 
 function Navbar() {
   const [open, setOpen] = useState(false);
+  const navRef = useRef(null);
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e) => e.key === "Escape" && setOpen(false);
+    const onDown = (e) => navRef.current && !navRef.current.contains(e.target) && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("pointerdown", onDown);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("pointerdown", onDown);
+    };
+  }, [open]);
   return (
-    <nav className="fixed left-0 right-0 top-4 z-50 flex items-center justify-between px-4 md:px-8 lg:px-16" aria-label="Primary">
+    <nav ref={navRef} className="fixed left-0 right-0 top-4 z-50 flex items-center justify-between px-4 md:px-8 lg:px-16" aria-label="Primary">
       <a href="#home" className="focus-ring flex items-center gap-3 rounded-full" aria-label="Javad Maheri — home">
         <span className="liquid-glass flex h-12 w-12 items-center justify-center rounded-full">
           <span className="font-heading text-2xl italic leading-none text-white">jm</span>
@@ -998,7 +1012,7 @@ function Navbar() {
             {l.label}
           </a>
         ))}
-        <a href={CV_URL} className="focus-ring ml-1 flex items-center gap-1 whitespace-nowrap rounded-full bg-white px-4 py-2 font-body text-sm font-medium text-black">
+        <a href={CV_URL} {...NEW_TAB} className="focus-ring ml-1 flex items-center gap-1 whitespace-nowrap rounded-full bg-white px-4 py-2 font-body text-sm font-medium text-black">
           Download CV <ArrowUpRight className="h-4 w-4" />
         </a>
       </div>
@@ -1024,7 +1038,7 @@ function Navbar() {
               {l.label}
             </a>
           ))}
-          <a href={CV_URL} className="mt-1 flex items-center justify-center gap-1 rounded-full bg-white px-4 py-3 font-body text-sm font-medium text-black">
+          <a href={CV_URL} {...NEW_TAB} className="mt-1 flex items-center justify-center gap-1 rounded-full bg-white px-4 py-3 font-body text-sm font-medium text-black">
             Download CV <ArrowUpRight className="h-4 w-4" />
           </a>
         </motion.div>
@@ -1102,7 +1116,7 @@ function Hero() {
             <a href="#about" className="liquid-glass-strong focus-ring flex items-center gap-2 rounded-full px-5 py-2.5 font-body text-sm font-medium text-white">
               Get to know me <ArrowDown />
             </a>
-            <a href={CV_URL} className="focus-ring flex items-center gap-2 rounded-full font-body text-sm font-medium text-white">
+            <a href={CV_URL} {...NEW_TAB} className="focus-ring flex items-center gap-2 rounded-full py-2.5 font-body text-sm font-medium text-white">
               Download CV <ArrowUpRight className="h-4 w-4" />
             </a>
           </motion.div>
@@ -1402,7 +1416,7 @@ function Publications() {
             <div className="flex shrink-0 flex-wrap gap-2">
               <span className="liquid-glass rounded-full px-3 py-1 font-body text-xs text-white/90">{p.status}</span>
               {p.arxiv && (
-                <a href={`https://arxiv.org/abs/${p.arxiv}`} className="liquid-glass focus-ring flex items-center gap-1 rounded-full px-3 py-1 font-mono text-xs text-white">
+                <a href={`https://arxiv.org/abs/${p.arxiv}`} {...NEW_TAB} className="liquid-glass focus-ring flex items-center gap-1 rounded-full px-3 py-1 font-mono text-xs text-white">
                   arXiv:{p.arxiv} <ArrowUpRight className="h-3 w-3" />
                 </a>
               )}
@@ -1535,8 +1549,8 @@ function Contact() {
           <a href="mailto:j.maheri95@gmail.com" className="liquid-glass-strong focus-ring flex items-center gap-2 rounded-full px-5 py-2.5 font-body text-sm font-medium text-white">
             j.maheri95@gmail.com <ArrowUpRight />
           </a>
-          <a href="https://github.com/JavadMaheri" className="liquid-glass focus-ring rounded-full px-4 py-2.5 font-body text-sm text-white">GitHub</a>
-          <a href={CV_URL} className="liquid-glass focus-ring rounded-full px-4 py-2.5 font-body text-sm text-white">CV (PDF)</a>
+          <a href="https://github.com/JavadMaheri" {...NEW_TAB} className="liquid-glass focus-ring rounded-full px-4 py-2.5 font-body text-sm text-white">GitHub</a>
+          <a href={CV_URL} {...NEW_TAB} className="liquid-glass focus-ring rounded-full px-4 py-2.5 font-body text-sm text-white">CV (PDF)</a>
           <a href="/" className="liquid-glass focus-ring rounded-full px-4 py-2.5 font-body text-sm text-white">Classic site</a>
         </motion.div>
       </div>
@@ -1545,11 +1559,84 @@ function Contact() {
   );
 }
 
+// A short tail of digits that follows a mouse pointer and fades out.
+// Drawn in difference blend mode so it stays visible over white buttons.
+const TRAIL_LIFE_MS = 900;
+const TRAIL_STEP_PX = 22;
+const TRAIL_MAX = 36;
+
+function CursorTrail() {
+  const ref = useRef(null);
+  const reduced = useReducedMotion();
+  useEffect(() => {
+    if (reduced || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    const canvas = ref.current;
+    const ctx = canvas.getContext("2d");
+    const glyphs = [];
+    let raf = 0, last = null;
+    const resize = () => {
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      canvas.width = Math.round(window.innerWidth * dpr);
+      canvas.height = Math.round(window.innerHeight * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    const tick = (now) => {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      for (let i = glyphs.length - 1; i >= 0; i--) {
+        const g = glyphs[i];
+        const k = (now - g.born) / TRAIL_LIFE_MS;
+        if (k >= 1) { glyphs.splice(i, 1); continue; }
+        ctx.font = `${g.size}px ${MONO}`;
+        ctx.fillStyle = white(0.7 * (1 - k) * (1 - k));
+        ctx.fillText(g.ch, g.x + g.drift * k * 18, g.y - 16 * k);
+      }
+      raf = glyphs.length ? requestAnimationFrame(tick) : 0;
+    };
+    const onMove = (e) => {
+      if (e.pointerType && e.pointerType !== "mouse") return;
+      const p = { x: e.clientX, y: e.clientY };
+      if (last && Math.hypot(p.x - last.x, p.y - last.y) < TRAIL_STEP_PX) return;
+      last = p;
+      glyphs.push({
+        ch: String(Math.floor(Math.random() * 10)),
+        x: p.x, y: p.y + 4,
+        drift: Math.random() - 0.5,
+        size: 11 + Math.random() * 4,
+        born: performance.now(),
+      });
+      if (glyphs.length > TRAIL_MAX) glyphs.shift();
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+    const onLeave = () => { last = null; };
+    resize();
+    window.addEventListener("resize", resize);
+    window.addEventListener("pointermove", onMove, { passive: true });
+    document.addEventListener("pointerleave", onLeave);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resize);
+      window.removeEventListener("pointermove", onMove);
+      document.removeEventListener("pointerleave", onLeave);
+    };
+  }, [reduced]);
+  return (
+    <canvas
+      ref={ref}
+      aria-hidden="true"
+      className="pointer-events-none fixed inset-0 z-[60] h-full w-full"
+      style={{ mixBlendMode: "difference" }}
+    />
+  );
+}
+
 function App() {
   return (
     <main className="bg-black font-body text-white">
       <Navbar />
       <SectionRail />
+      <CursorTrail />
       <Hero />
       <About />
       <Research />
