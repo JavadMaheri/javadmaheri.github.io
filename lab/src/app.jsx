@@ -890,7 +890,11 @@ const SHARE_PATH = "M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-
 /* Content (all sourced from the main site)                            */
 /* ------------------------------------------------------------------ */
 
-const CV_URL = "/files/javad-maheri-cv.pdf";
+// Empty on the real site; the off-site preview build sets it to the site's origin
+// so links into the rest of the site still resolve.
+const SITE_ORIGIN = typeof __SITE_ORIGIN__ === "string" ? __SITE_ORIGIN__ : "";
+const site = (href) => (href && href.startsWith("/") ? SITE_ORIGIN + href : href);
+const CV_URL = site("/files/javad-maheri-cv.pdf");
 // External links and the PDF open in a new tab so the page stays put.
 const NEW_TAB = { target: "_blank", rel: "noopener noreferrer" };
 // Set to "/images/profile.png" once the placeholder there is replaced with a real photo.
@@ -1197,10 +1201,11 @@ function Hero() {
       </div>
       <div className="relative z-10 flex flex-1 flex-col">
         <div className="flex flex-1 flex-col items-center justify-center px-4 pb-10 pt-28 text-center">
-          <motion.div {...rise(0.3)} className="liquid-glass flex items-center gap-2 rounded-full p-1">
+          <motion.a {...rise(0.3)} href="#news" className="liquid-glass focus-ring group flex items-center gap-2 rounded-full p-1 transition-colors hover:bg-white/10">
             <span className="rounded-full bg-white px-3 py-1 font-body text-xs font-semibold text-black">New</span>
-            <span className="pr-3 font-body text-xs text-white/90 sm:text-sm">PhD defended — EURECOM / Sorbonne Université, July 2026</span>
-          </motion.div>
+            <span className="font-body text-xs text-white/90 sm:text-sm">PhD defended — EURECOM / Sorbonne Université, July 2026</span>
+            <ArrowDown className="mr-2 h-3.5 w-3.5 text-white/60 transition-colors group-hover:text-white" />
+          </motion.a>
           <motion.div {...rise(0.45)} className="mt-6 font-mono text-xs uppercase tracking-[0.2em] text-white/70 md:text-sm">
             Information theory · Distributed learning · Graphs
           </motion.div>
@@ -1221,7 +1226,7 @@ function Hero() {
             {" "}· Sophia Antipolis, France
           </motion.p>
           <motion.div {...rise(1.15)} className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-4">
-            <a href="#about" className="liquid-glass-strong focus-ring flex h-11 items-center gap-2 rounded-full px-5 font-body text-sm font-medium text-white">
+            <a href="#about" className="liquid-glass-strong focus-ring flex h-11 items-center gap-2 rounded-full px-5 font-body text-sm font-medium text-white transition-colors hover:bg-white/10">
               Get to know me <ArrowDown />
             </a>
             <span className="hidden h-6 w-px bg-white/20 sm:block" aria-hidden="true" />
@@ -1229,17 +1234,20 @@ function Hero() {
           </motion.div>
           <motion.div {...rise(1.35)} className="mt-8 flex w-full flex-wrap items-stretch justify-center gap-4">
             {[
-              { icon: <TouchingCurves />, num: "PhD", label: "EURECOM / Sorbonne Université, defended July 2026" },
-              { icon: <PaperStack />, num: "4 Papers", label: "ISIT ’25 · ISIT ’26 · IEEE T-IT · SIAM J. DM" },
-              { icon: <MaterialIcon d={SHARE_PATH} />, num: "3 Roles", label: "Research at EURECOM, ML engineering at Zarebin and MAPNA" },
+              { icon: <TouchingCurves />, num: "PhD", label: "EURECOM / Sorbonne Université, defended July 2026", href: "#about" },
+              { icon: <PaperStack />, num: "4 Papers", label: "ISIT ’25 · ISIT ’26 · IEEE T-IT · SIAM J. DM", href: "#publications" },
+              { icon: <MaterialIcon d={SHARE_PATH} />, num: "3 Roles", label: "Research at EURECOM, ML engineering at Zarebin and MAPNA", href: "#experience" },
             ].map((s, i) => (
-              <div key={s.num} className={`liquid-glass ${i === 2 ? "hidden sm:flex" : "flex"} w-[calc(50%-8px)] max-w-[220px] flex-col justify-between gap-5 rounded-[1.25rem] p-4 text-left sm:w-[220px] sm:p-5`}>
-                {s.icon}
+              <a key={s.num} href={s.href} className={`liquid-glass glass-hover focus-ring group ${i === 2 ? "hidden sm:flex" : "flex"} w-[calc(50%-8px)] max-w-[220px] flex-col justify-between gap-5 rounded-[1.25rem] p-4 text-left transition-transform hover:-translate-y-0.5 sm:w-[220px] sm:p-5`}>
+                <div className="flex items-start justify-between">
+                  {s.icon}
+                  <ArrowDown className="h-4 w-4 text-white/40 transition-colors group-hover:text-white" />
+                </div>
                 <div>
                   <div className="font-heading text-3xl italic leading-none tracking-[-1px] text-white sm:text-4xl">{s.num}</div>
                   <div className="mt-2 font-body text-xs font-light text-white">{s.label}</div>
                 </div>
-              </div>
+              </a>
             ))}
           </motion.div>
         </div>
@@ -1260,7 +1268,7 @@ function Hero() {
           <ScrollChevron />
         </motion.a>
         <motion.div {...rise(1.5)} className="flex flex-col items-center gap-4 px-4 pb-8">
-          <span className="liquid-glass rounded-full px-3.5 py-1 font-body text-xs font-medium text-white">Research & engineering with</span>
+          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/55">Research & engineering with</span>
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 font-heading text-2xl italic tracking-tight text-white md:gap-x-14 md:text-3xl">
             {["EURECOM", "Sorbonne Université", "Sharif", "MAPNA", "Zarebin"].map((n) => <span key={n}>{n}</span>)}
           </div>
@@ -1304,7 +1312,7 @@ function News() {
             return (
               <li key={n.text} className="border-b border-white/15">
                 {n.href ? (
-                  <a href={n.href} {...(n.external ? NEW_TAB : {})} className="focus-ring group flex items-start gap-4 py-4 hover:bg-white/[0.03]">{body}</a>
+                  <a href={site(n.href)} {...(n.external ? NEW_TAB : {})} className="focus-ring group flex items-start gap-4 py-4 hover:bg-white/[0.03]">{body}</a>
                 ) : (
                   <div className="flex items-start gap-4 py-4">{body}</div>
                 )}
@@ -1333,8 +1341,8 @@ function Portrait() {
         </>
       )}
       <div className="absolute inset-x-4 bottom-4 flex items-center justify-between gap-2">
-        <span className="liquid-glass rounded-full px-3 py-1 font-body text-xs text-white">Javad Maheri</span>
-        <span className="liquid-glass rounded-full px-3 py-1 font-mono text-[10px] text-white/80">Sophia Antipolis</span>
+        <span className="rounded-full bg-black/50 px-3 py-1 font-body text-xs text-white">Javad Maheri</span>
+        <span className="rounded-full bg-black/50 px-3 py-1 font-mono text-[10px] text-white/80">Sophia Antipolis</span>
       </div>
     </div>
   );
@@ -1391,7 +1399,7 @@ function About() {
           </p>
           <ul className="mt-6 flex flex-wrap gap-2">
             {INTERESTS.map((t) => (
-              <li key={t} className="liquid-glass rounded-full px-3 py-1.5 font-body text-xs text-white/90">{t}</li>
+              <li key={t} className="rounded-full border border-white/15 px-3 py-1 font-body text-xs text-white/70">{t}</li>
             ))}
           </ul>
         </motion.div>
@@ -1432,12 +1440,12 @@ function Research() {
         </motion.div>
         <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3">
           {CARDS.map((c, i) => (
-            <motion.a key={c.title} href={c.href} {...rise(0.15 * i)} className="liquid-glass glass-hover focus-ring group flex min-h-[460px] flex-col rounded-[1.25rem] p-6">
+            <motion.a key={c.title} href={site(c.href)} {...rise(0.15 * i)} className="liquid-glass glass-hover focus-ring group flex min-h-[460px] flex-col rounded-[1.25rem] p-6">
               <div className="flex items-start justify-between gap-4">
-                <div className="liquid-glass flex h-11 w-11 shrink-0 items-center justify-center rounded-[0.75rem]">{c.icon}</div>
+                <div className="flex h-11 w-11 shrink-0 items-center justify-start text-white/85" aria-hidden="true">{c.icon}</div>
                 <div className="flex max-w-[75%] flex-wrap justify-end gap-1.5">
                   {c.tags.map((t) => (
-                    <span key={t} className="liquid-glass whitespace-nowrap rounded-full px-3 py-1 font-body text-[11px] text-white/90">{t}</span>
+                    <span key={t} className="whitespace-nowrap rounded-full border border-white/15 px-3 py-1 font-body text-[11px] text-white/70">{t}</span>
                   ))}
                 </div>
               </div>
@@ -1486,13 +1494,13 @@ function GapSection() {
         </div>
         <div className="liquid-glass relative mt-6 rounded-[1.5rem] p-4 md:mt-8 md:p-8">
           <div className="mb-3 flex flex-wrap items-center gap-2">
-            <span className="liquid-glass flex items-center gap-2 rounded-full px-3 py-1 font-mono text-[11px] text-white/90">
+            <span className="flex items-center gap-2 pr-3 font-mono text-[11px] text-white/80">
               <span className="inline-block h-[2px] w-4 bg-white" /> converse
             </span>
-            <span className="liquid-glass flex items-center gap-2 rounded-full px-3 py-1 font-mono text-[11px] text-white/90">
+            <span className="flex items-center gap-2 pr-3 font-mono text-[11px] text-white/80">
               <span className="inline-block w-4 border-t border-dashed border-white/60" /> order-optimal
             </span>
-            <span className="liquid-glass flex items-center gap-2 rounded-full px-3 py-1 font-mono text-[11px] text-white/90">
+            <span className="flex items-center gap-2 pr-3 font-mono text-[11px] text-white/80">
               <span className="inline-block h-[3px] w-4 bg-white shadow-[0_0_8px_white]" /> this work
             </span>
             <span ref={readoutRef} className="ml-auto font-mono text-xs text-white/80" aria-live="off">gap = {GAP_START.toFixed(3)}</span>
@@ -1501,7 +1509,7 @@ function GapSection() {
             <GapChart progressRef={progressRef} readoutRef={readoutRef} />
             <motion.div
               style={{ opacity: reduced ? 1 : zeroOpacity, scale: reduced ? 1 : zeroScale }}
-              className="liquid-glass-strong pointer-events-none absolute right-2 top-2 rounded-full px-4 py-2 font-heading text-2xl italic text-white md:right-6 md:top-4 md:text-3xl"
+              className="pointer-events-none absolute right-2 top-2 rounded-full border border-white/30 bg-black/70 px-4 py-2 font-heading text-2xl italic text-white md:right-6 md:top-4 md:text-3xl"
             >
               gap = 0
             </motion.div>
@@ -1510,7 +1518,7 @@ function GapSection() {
         </div>
         <div className="mt-6 hidden flex-wrap gap-3 md:flex">
           {["Matching converses", "Explicit constructions", "Finite-size, not asymptotic"].map((t) => (
-            <span key={t} className="liquid-glass rounded-full px-4 py-2 font-body text-sm text-white/90">{t}</span>
+            <span key={t} className="rounded-full border border-white/15 px-4 py-1.5 font-body text-sm text-white/70">{t}</span>
           ))}
         </div>
       </div>
@@ -1520,7 +1528,6 @@ function GapSection() {
 
 function Experience() {
   const rise = useRiseInView();
-  const reduced = useReducedMotion();
   return (
     <section id="experience" className="relative bg-black px-4 pb-16 pt-28 md:px-16 lg:px-20">
       <motion.div {...rise(0)}>
@@ -1535,8 +1542,7 @@ function Experience() {
           <motion.article
             key={r.org}
             {...rise(0.1 * i)}
-            whileHover={reduced ? undefined : { y: -2 }}
-            className="liquid-glass glass-hover flex flex-col rounded-[1.25rem] p-6"
+            className="liquid-glass flex flex-col rounded-[1.25rem] p-6"
           >
             <div className="font-mono text-[11px] text-white/60">{r.meta}</div>
             <h3 className="mt-3 font-heading text-3xl italic leading-none tracking-[-1px] text-white">{r.org}</h3>
@@ -1568,7 +1574,7 @@ function BibtexButton({ bibtex, onFallback }) {
     }
   };
   return (
-    <button type="button" onClick={copy} className="liquid-glass focus-ring rounded-full px-3 py-1 font-mono text-xs text-white" aria-live="polite">
+    <button type="button" onClick={copy} className="liquid-glass focus-ring rounded-full px-3 py-1 font-mono text-xs text-white transition-colors hover:bg-white/10" aria-live="polite">
       {copied ? "Copied ✓" : "BibTeX"}
     </button>
   );
@@ -1576,18 +1582,13 @@ function BibtexButton({ bibtex, onFallback }) {
 
 function PubRow({ p, i }) {
   const rise = useRiseInView();
-  const reduced = useReducedMotion();
   const [showBib, setShowBib] = useState(false);
   return (
-    <motion.div
-      {...rise(0.08 * i)}
-      whileHover={reduced ? undefined : { y: -2 }}
-      className="liquid-glass glass-hover rounded-[1.25rem] p-5"
-    >
+    <motion.div {...rise(0.08 * i)} className="liquid-glass rounded-[1.25rem] p-5">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-8">
         <div className="font-heading text-4xl italic leading-none text-white md:w-24">{p.year}</div>
         <div className="min-w-0 flex-1">
-          <a href={p.url} className="focus-ring font-body text-base font-medium leading-snug text-white hover:underline md:text-lg">{p.title}</a>
+          <a href={site(p.url)} className="focus-ring font-body text-base font-medium leading-snug text-white hover:underline md:text-lg">{p.title}</a>
           <div className="mt-1 font-body text-sm font-light text-white/70">
             {p.authors.map((a, j) => (
               <React.Fragment key={a}>
@@ -1601,12 +1602,12 @@ function PubRow({ p, i }) {
         <div className="flex shrink-0 flex-wrap gap-2 md:max-w-[300px] md:justify-end">
           <span className="rounded-full border border-white/25 px-3 py-1 font-body text-xs text-white/80">{p.status}</span>
           {p.arxiv && (
-            <a href={`https://arxiv.org/pdf/${p.arxiv}`} {...NEW_TAB} className="liquid-glass focus-ring flex items-center gap-1 rounded-full px-3 py-1 font-mono text-xs text-white">
+            <a href={`https://arxiv.org/pdf/${p.arxiv}`} {...NEW_TAB} className="liquid-glass focus-ring flex items-center gap-1 rounded-full px-3 py-1 font-mono text-xs text-white transition-colors hover:bg-white/10">
               PDF <ArrowUpRight className="h-3 w-3" />
             </a>
           )}
           {p.arxiv && (
-            <a href={`https://arxiv.org/abs/${p.arxiv}`} {...NEW_TAB} className="liquid-glass focus-ring flex items-center gap-1 rounded-full px-3 py-1 font-mono text-xs text-white">
+            <a href={`https://arxiv.org/abs/${p.arxiv}`} {...NEW_TAB} className="liquid-glass focus-ring flex items-center gap-1 rounded-full px-3 py-1 font-mono text-xs text-white transition-colors hover:bg-white/10">
               arXiv:{p.arxiv} <ArrowUpRight className="h-3 w-3" />
             </a>
           )}
@@ -1628,7 +1629,7 @@ function Publications() {
         <Kicker>// Publications</Kicker>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <h2 className="font-heading text-6xl italic leading-[0.9] tracking-[-3px] text-white md:text-7xl lg:text-[6rem]">Papers</h2>
-          <a href={SCHOLAR_URL} {...NEW_TAB} className="liquid-glass focus-ring flex items-center gap-2 rounded-full px-4 py-2 font-body text-sm text-white">
+          <a href={SCHOLAR_URL} {...NEW_TAB} className="liquid-glass focus-ring flex items-center gap-2 rounded-full px-4 py-2 font-body text-sm text-white transition-colors hover:bg-white/10">
             <BrandIcon d={SCHOLAR_PATH} className="h-4 w-4" /> Full list on Google Scholar <ArrowUpRight className="h-4 w-4" />
           </a>
         </div>
@@ -1761,7 +1762,7 @@ function Contact() {
           <a href="mailto:j.maheri95@gmail.com" className="liquid-glass-strong focus-ring flex items-center gap-2 rounded-full px-5 py-2.5 font-body text-sm font-medium text-white">
             j.maheri95@gmail.com <ArrowUpRight />
           </a>
-          <a href="/" className="liquid-glass focus-ring rounded-full px-4 py-2.5 font-body text-sm text-white">Classic site</a>
+          <a href={site("/")} className="liquid-glass focus-ring rounded-full px-4 py-2.5 font-body text-sm text-white transition-colors hover:bg-white/10">Classic homepage</a>
         </motion.div>
         <motion.div {...rise(0.7)} className="mt-6">
           <SocialRow only={["Google Scholar", "LinkedIn", "ORCID", "GitHub", "CV (PDF)"]} />
