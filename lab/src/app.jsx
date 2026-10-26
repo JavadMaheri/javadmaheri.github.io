@@ -413,7 +413,7 @@ const K6_ROUNDS = Array.from({ length: 5 }, (_, r) => [
 ]);
 const K6_BLOCKS = K6_ROUNDS.flat();
 
-function AllocationViz() {
+function AllocationViz({ className = "h-40" }) {
   const ref = useCanvasLoop((ctx, { w, h, dt, state }) => {
     const COL_MS = 220, HOLD = 1800, OUT = 600;
     const cycle = K6_BLOCKS.length * COL_MS + HOLD + OUT;
@@ -477,7 +477,7 @@ function AllocationViz() {
     ctx.fillText("converse", cx + 5, by + 16);
   });
   return (
-    <canvas ref={ref} role="img" style={{ opacity: 0 }} className="block h-40 w-full"
+    <canvas ref={ref} role="img" style={{ opacity: 0 }} className={`block w-full ${className}`}
       aria-label="Fifteen data blocks placed on pairs of six servers, round by round, while the communication load shrinks onto the converse bound" />
   );
 }
@@ -498,7 +498,7 @@ const binom = (n, k) => { let r = 1; for (let i = 1; i <= k; i++) r = (r * (n - 
 const ES_PMF = Array.from({ length: ES_M + 1 }, (_, k) => binom(ES_M, k) * ES_P ** k * (1 - ES_P) ** (ES_M - k));
 const ES_TARGET = 200;
 
-function EdgeSamplingViz() {
+function EdgeSamplingViz({ className = "h-40" }) {
   const ref = useCanvasLoop((ctx, { w, h, dt, state, isStatic }) => {
     if (!state.hist) {
       state.hist = new Array(ES_M + 1).fill(0);
@@ -591,12 +591,12 @@ function EdgeSamplingViz() {
     ctx.fillText(label, w - ctx.measureText(label).width - 2, top + 10);
   }, { warmupMs: 200 });
   return (
-    <canvas ref={ref} role="img" style={{ opacity: 0 }} className="block h-40 w-full"
+    <canvas ref={ref} role="img" style={{ opacity: 0 }} className={`block w-full ${className}`}
       aria-label="Hyperedges switch on independently with probability p; a histogram of the resulting cut size builds up and matches the exact binomial law" />
   );
 }
 
-function GraphSignalViz() {
+function GraphSignalViz({ className = "h-40" }) {
   const ref = useCanvasLoop((ctx, { w, h, dt, state }) => {
     if (!state.pos) {
       const rand = mulberry32(5);
@@ -658,7 +658,7 @@ function GraphSignalViz() {
     ctx.fillText("x ← x − αLx", 2, h - 3);
   }, { warmupMs: 1800 });
   return (
-    <canvas ref={ref} role="img" style={{ opacity: 0 }} className="block h-40 w-full"
+    <canvas ref={ref} role="img" style={{ opacity: 0 }} className={`block w-full ${className}`}
       aria-label="A signal on the nodes of a graph diffuses by Laplacian smoothing while edge weights adapt to signal similarity" />
   );
 }
@@ -895,6 +895,20 @@ const SHARE_PATH = "M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-
 const SITE_ORIGIN = typeof __SITE_ORIGIN__ === "string" ? __SITE_ORIGIN__ : "";
 const site = (href) => (href && href.startsWith("/") ? SITE_ORIGIN + href : href);
 const CV_URL = site("/files/javad-maheri-cv.pdf");
+
+// Which page this is, and where the others live, comes from data attributes on
+// #root set by each HTML shell (see _includes/lab-shell.html):
+//   data-page  "home" | "research"     data-topic  research slug
+//   data-base  URL of the lab root     data-home   URL of the home page
+//   data-index file appended to page URLs on hosts without directory indexes
+const ROOT_EL = document.getElementById("root");
+const PAGE = ROOT_EL.dataset.page || "home";
+const TOPIC = ROOT_EL.dataset.topic || "";
+const BASE = ROOT_EL.dataset.base ?? "";
+const HOME = ROOT_EL.dataset.home ?? "./";
+const INDEX = ROOT_EL.dataset.index || "";
+const homeHref = (id) => (PAGE === "home" ? `#${id}` : `${HOME}#${id}`);
+const researchHref = (slug, anchor) => `${BASE}research/${slug}/${INDEX}${anchor ? `#${anchor}` : ""}`;
 // External links and the PDF open in a new tab so the page stays put.
 const NEW_TAB = { target: "_blank", rel: "noopener noreferrer" };
 // Set to "/images/profile.png" once the placeholder there is replaced with a real photo.
@@ -941,11 +955,11 @@ function SocialRow({ size = "h-11 w-11", className = "", only }) {
 }
 
 const NEWS = [
-  { when: "Jul 2026", text: "Defended my PhD at EURECOM / Sorbonne Université.", href: "#about" },
-  { when: "Jun 2026", text: "New preprint: Fundamental Limits of Hypergraph Edge Partitioning under Independent Edge Sampling — under review at SIAM J. Discrete Mathematics.", href: "https://arxiv.org/abs/2606.13491", external: true },
-  { when: "2026", text: "Order Optimal Task Allocation in Distributed Computing via Interweaved Cliques — accepted at ISIT 2026.", href: "/publication/interweaved-cliques-2026/" },
-  { when: "Jan 2026", text: "New preprint: Universal and Asymptotically Optimal Data and Task Allocation in Distributed Computing — under revision at IEEE Transactions on Information Theory.", href: "https://arxiv.org/abs/2601.05873", external: true },
-  { when: "2025", text: "Constructing Hamiltonian Decompositions of Complete k-Uniform Hypergraphs — published at ISIT 2025.", href: "/publication/hamiltonian-decompositions-2025/" },
+  { when: "Jul 2026", text: "Defended my PhD at EURECOM / Sorbonne Université.", href: homeHref("about") },
+  { when: "Jun 2026", text: "New preprint: Fundamental Limits of Hypergraph Edge Partitioning under Independent Edge Sampling — under review at SIAM J. Discrete Mathematics.", href: researchHref("hypergraph-partitioning", "paper-hypergraph-edge-partitioning") },
+  { when: "2026", text: "Order Optimal Task Allocation in Distributed Computing via Interweaved Cliques — accepted at ISIT 2026.", href: researchHref("allocation", "paper-interweaved-cliques") },
+  { when: "Jan 2026", text: "New preprint: Universal and Asymptotically Optimal Data and Task Allocation in Distributed Computing — under revision at IEEE Transactions on Information Theory.", href: researchHref("allocation", "paper-universal-allocation") },
+  { when: "2025", text: "Constructing Hamiltonian Decompositions of Complete k-Uniform Hypergraphs — published at ISIT 2025.", href: researchHref("hypergraph-partitioning", "paper-hamiltonian-decompositions") },
   { when: "2024", text: "Drew against GM Vassilios Kotronias at the ISIT 2024 chess event." },
 ];
 
@@ -980,8 +994,7 @@ const CARDS = [
     body: "One task-blind data assignment that is simultaneously optimal for every downstream workload — no re-planning per job.",
     viz: <AllocationViz />,
     caption: "6 servers · 15 blocks · each block on a pair of servers — the edges of K₆, placed round by round",
-    href: "/publication/universal-optimal-allocation-2026/",
-    cta: "Read the paper",
+    slug: "allocation",
   },
   {
     icon: <HypergraphIcon />,
@@ -990,8 +1003,7 @@ const CARDS = [
     body: "What partition quality is exactly achievable when edges are sampled at random — with the finite-size constant, not just the scaling exponent.",
     viz: <EdgeSamplingViz />,
     caption: "Each hyperedge appears with probability p; the cut size follows its exact law, sample by sample",
-    href: "/publication/hypergraph-edge-partitioning-2026/",
-    cta: "Read the paper",
+    slug: "hypergraph-partitioning",
   },
   {
     icon: <MaterialIcon d={SHARE_PATH} />,
@@ -1000,8 +1012,7 @@ const CARDS = [
     body: "GNNs, graph signal processing and Laplacian estimation — from market-dependency graphs to scene graphs for safety analytics.",
     viz: <GraphSignalViz />,
     caption: "A signal diffuses over the graph while edge weights adapt to what the data says",
-    href: "#experience",
-    cta: "See it in practice",
+    slug: "graph-learning",
   },
 ];
 
@@ -1014,7 +1025,8 @@ const PUBS = [
     status: "Under review",
     arxiv: "2606.13491",
     bibtex: "@misc{maheri2026hypergraph,\n  title = {Fundamental Limits of Hypergraph Edge Partitioning under Independent Edge Sampling},\n  author = {Maheri, Javad and Namboodiri, K. K. Krishnan and Elia, Petros},\n  year = {2026},\n  eprint = {2606.13491},\n  archivePrefix = {arXiv},\n  note = {Under review, SIAM Journal on Discrete Mathematics}\n}",
-    url: "/publication/hypergraph-edge-partitioning-2026/",
+    topic: "hypergraph-partitioning",
+    slug: "hypergraph-edge-partitioning",
   },
   {
     year: "2026",
@@ -1024,7 +1036,8 @@ const PUBS = [
     status: "Under revision",
     arxiv: "2601.05873",
     bibtex: "@misc{maheri2026universal,\n  title = {Universal and Asymptotically Optimal Data and Task Allocation in Distributed Computing},\n  author = {Maheri, Javad and Namboodiri, K. K. Krishnan and Elia, Petros},\n  year = {2026},\n  eprint = {2601.05873},\n  archivePrefix = {arXiv},\n  note = {Under revision, IEEE Transactions on Information Theory}\n}",
-    url: "/publication/universal-optimal-allocation-2026/",
+    topic: "allocation",
+    slug: "universal-allocation",
   },
   {
     year: "2026",
@@ -1032,7 +1045,8 @@ const PUBS = [
     authors: ["Javad Maheri", "K. K. Krishnan Namboodiri", "Petros Elia"],
     venue: "IEEE International Symposium on Information Theory (ISIT) 2026",
     status: "Conference",
-    url: "/publication/interweaved-cliques-2026/",
+    topic: "allocation",
+    slug: "interweaved-cliques",
     bibtex: "@inproceedings{maheri2026interweaved,\n  title = {Order Optimal Task Allocation in Distributed Computing via Interweaved Cliques},\n  author = {Maheri, Javad and Namboodiri, K. K. Krishnan and Elia, Petros},\n  booktitle = {Proc. IEEE International Symposium on Information Theory (ISIT)},\n  year = {2026}\n}",
   },
   {
@@ -1041,7 +1055,8 @@ const PUBS = [
     authors: ["Javad Maheri", "Petros Elia"],
     venue: "IEEE International Symposium on Information Theory (ISIT) 2025",
     status: "Conference",
-    url: "/publication/hamiltonian-decompositions-2025/",
+    topic: "hypergraph-partitioning",
+    slug: "hamiltonian-decompositions",
     bibtex: "@inproceedings{maheri2025hamiltonian,\n  title = {Constructing Hamiltonian Decompositions of Complete k-Uniform Hypergraphs},\n  author = {Maheri, Javad and Elia, Petros},\n  booktitle = {Proc. IEEE International Symposium on Information Theory (ISIT)},\n  year = {2025}\n}",
   },
 ];
@@ -1107,7 +1122,7 @@ function Navbar() {
   }, [open]);
   return (
     <nav ref={navRef} className="fixed left-0 right-0 top-4 z-50 flex items-center justify-between px-4 md:px-8 lg:px-16" aria-label="Primary">
-      <a href="#home" className="focus-ring flex items-center gap-3 rounded-full" aria-label="Javad Maheri — home">
+      <a href={homeHref("home")} className="focus-ring flex items-center gap-3 rounded-full" aria-label="Javad Maheri — home">
         <span className="liquid-glass flex h-12 w-12 items-center justify-center rounded-full">
           <span className="font-heading text-2xl italic leading-none text-white">jm</span>
         </span>
@@ -1115,7 +1130,7 @@ function Navbar() {
       </a>
       <div className="liquid-glass absolute left-1/2 hidden -translate-x-1/2 items-center rounded-full px-1.5 py-1.5 lg:flex">
         {NAV.map((l) => (
-          <a key={l.id} href={`#${l.id}`} className="focus-ring rounded-full px-3 py-2 font-body text-sm font-medium text-white/90 hover:text-white">
+          <a key={l.id} href={homeHref(l.id)} className="focus-ring rounded-full px-3 py-2 font-body text-sm font-medium text-white/90 hover:text-white">
             {l.label}
           </a>
         ))}
@@ -1142,7 +1157,7 @@ function Navbar() {
           className="liquid-glass-strong absolute left-4 right-4 top-16 flex flex-col gap-1 rounded-[1.5rem] p-3 lg:hidden"
         >
           {NAV.map((l) => (
-            <a key={l.id} href={`#${l.id}`} onClick={() => setOpen(false)} className="rounded-[0.75rem] px-4 py-3 font-body text-base text-white/90">
+            <a key={l.id} href={homeHref(l.id)} onClick={() => setOpen(false)} className="rounded-[0.75rem] px-4 py-3 font-body text-base text-white/90">
               {l.label}
             </a>
           ))}
@@ -1440,7 +1455,7 @@ function Research() {
         </motion.div>
         <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3">
           {CARDS.map((c, i) => (
-            <motion.a key={c.title} href={site(c.href)} {...rise(0.15 * i)} className="liquid-glass glass-hover focus-ring group flex min-h-[460px] flex-col rounded-[1.25rem] p-6">
+            <motion.a key={c.title} href={researchHref(c.slug)} {...rise(0.15 * i)} className="liquid-glass glass-hover focus-ring group flex min-h-[460px] flex-col rounded-[1.25rem] p-6">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-start text-white/85" aria-hidden="true">{c.icon}</div>
                 <div className="flex max-w-[75%] flex-wrap justify-end gap-1.5">
@@ -1457,7 +1472,7 @@ function Research() {
                 <h3 className="font-heading text-3xl italic leading-none tracking-[-1px] text-white md:text-4xl">{c.title}</h3>
                 <p className="mt-3 max-w-[36ch] font-body text-sm font-light leading-snug text-white/90">{c.body}</p>
                 <span className="mt-4 inline-flex items-center gap-1 font-body text-sm font-medium text-white">
-                  {c.cta} <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                  Explore this research <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </span>
               </div>
             </motion.a>
@@ -1580,15 +1595,25 @@ function BibtexButton({ bibtex, onFallback }) {
   );
 }
 
-function PubRow({ p, i }) {
+function PubRow({ p, i, onHome = true }) {
   const rise = useRiseInView();
   const [showBib, setShowBib] = useState(false);
   return (
-    <motion.div {...rise(0.08 * i)} className="liquid-glass rounded-[1.25rem] p-5">
+    <motion.div {...rise(0.08 * i)} id={`paper-${p.slug}`} className="liquid-glass scroll-mt-28 rounded-[1.25rem] p-5">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-8">
         <div className="font-heading text-4xl italic leading-none text-white md:w-24">{p.year}</div>
         <div className="min-w-0 flex-1">
-          <a href={site(p.url)} className="focus-ring font-body text-base font-medium leading-snug text-white hover:underline md:text-lg">{p.title}</a>
+          {onHome || p.arxiv ? (
+            <a
+              href={onHome ? researchHref(p.topic, `paper-${p.slug}`) : `https://arxiv.org/abs/${p.arxiv}`}
+              {...(onHome ? {} : NEW_TAB)}
+              className="focus-ring font-body text-base font-medium leading-snug text-white hover:underline md:text-lg"
+            >
+              {p.title}
+            </a>
+          ) : (
+            <span className="font-body text-base font-medium leading-snug text-white md:text-lg">{p.title}</span>
+          )}
           <div className="mt-1 font-body text-sm font-light text-white/70">
             {p.authors.map((a, j) => (
               <React.Fragment key={a}>
@@ -1762,7 +1787,6 @@ function Contact() {
           <a href="mailto:j.maheri95@gmail.com" className="liquid-glass-strong focus-ring flex items-center gap-2 rounded-full px-5 py-2.5 font-body text-sm font-medium text-white">
             j.maheri95@gmail.com <ArrowUpRight />
           </a>
-          <a href={site("/")} className="liquid-glass focus-ring rounded-full px-4 py-2.5 font-body text-sm text-white transition-colors hover:bg-white/10">Classic homepage</a>
         </motion.div>
         <motion.div {...rise(0.7)} className="mt-6">
           <SocialRow only={["Google Scholar", "LinkedIn", "ORCID", "GitHub", "CV (PDF)"]} />
@@ -1774,6 +1798,7 @@ function Contact() {
 }
 
 function App() {
+  useHashScroll();
   return (
     <main className="bg-black font-body text-white">
       <Navbar />
@@ -1790,4 +1815,301 @@ function App() {
   );
 }
 
-createRoot(document.getElementById("root")).render(<App />);
+/* ------------------------------------------------------------------ */
+/* Research pages                                                      */
+/* ------------------------------------------------------------------ */
+
+const TOPIC_ORDER = ["allocation", "hypergraph-partitioning", "graph-learning"];
+
+const TOPICS = {
+  allocation: {
+    kicker: "Distributed computing",
+    title: "Universally Optimal Allocation",
+    lead: "One task-blind data assignment that is optimal for every downstream workload at once.",
+    tags: ["Distributed Computing", "Task-Blind", "Interweaved Cliques", "Matching Converse"],
+    viz: (cls) => <AllocationViz className={cls} />,
+    vizCaption: "Illustration: 6 servers and 15 data blocks, each stored on a pair of servers (the edges of K₆), placed round by round. The bar shows communication load falling to the converse.",
+    question: {
+      heading: "How should data be placed when you don’t know the job?",
+      paras: [
+        "In distributed computing, data and tasks are spread across many machines, and the machines exchange intermediate results to finish a job. That exchange is often the bottleneck.",
+        "Data placement is usually tuned to one workload and re-planned for the next. I ask for more: a single task-blind allocation that is optimal for every downstream computation at once, with optimality proven exactly rather than up to constants.",
+      ],
+    },
+    approach: [
+      { title: "A combinatorial lens", body: "Task and data allocation can be cast as a hypergraph coloring and covering-design problem, which turns a systems question into a question about structured set systems." },
+      { title: "Interweaved cliques", body: "Structured overlays of clique decompositions across compute nodes give allocation schemes that are optimal across every downstream task, rather than tuned to one workload at a time." },
+      { title: "Designs where cliques run out", body: "Where such constructions do not exist directly, Steiner-type systems and their near-resolvable relatives supply the scaffolding, in the same lineage of ideas as coded caching’s placement–delivery tradeoff." },
+      { title: "Matching converses", body: "Information-theoretic lower bounds that the constructions meet, cutting inter-node communication to its provable minimum on MapReduce-style workloads." },
+    ],
+    gap: true,
+  },
+  "hypergraph-partitioning": {
+    kicker: "Combinatorics & probability",
+    title: "Hypergraph Edge Partitioning",
+    lead: "What partition quality is exactly achievable when a hypergraph’s edges appear at random?",
+    tags: ["Hypergraphs", "Edge Sampling", "Finite-Size Exact", "Combinatorics"],
+    viz: (cls) => <EdgeSamplingViz className={cls} />,
+    vizCaption: "Illustration: each hyperedge is kept independently with probability p. The histogram of the resulting cut size builds up sample by sample and matches its exact binomial law.",
+    question: {
+      heading: "Exact answers for random hypergraphs",
+      paras: [
+        "Take a hypergraph and a random model that keeps each of its edges independently. How well can the sampled edges be partitioned, and what is the exact finite-size constant rather than only the scaling exponent?",
+        "Working at that precision rules out the usual heuristics. The claim is a matching converse, so the combinatorics has to be exact.",
+      ],
+    },
+    approach: [
+      { title: "Independent edge sampling", body: "A hypergraph plus a random model over its edges: each edge is kept or dropped independently, so partition quality becomes a random quantity with an exact law." },
+      { title: "Exact combinatorics", body: "Enumerative and constructive arguments instead of concentration-of-measure heuristics, because the goal is a bound that is tight at finite size, not only asymptotically." },
+      { title: "Structure in complete hypergraphs", body: "Related work constructs Hamiltonian decompositions of complete k-uniform hypergraphs: explicit structure inside the most symmetric hypergraphs." },
+    ],
+  },
+  "graph-learning": {
+    kicker: "Machine learning",
+    title: "Learning on Graphs",
+    lead: "Graph neural networks, graph signal processing, and learning the graph itself from data.",
+    tags: ["GNNs", "Graph Signal Processing", "Laplacian Learning", "Spatiotemporal"],
+    viz: (cls) => <GraphSignalViz className={cls} />,
+    vizCaption: "Illustration: a signal on the nodes diffuses through the graph Laplacian, while edge weights adapt to how similar their endpoints are.",
+    question: {
+      heading: "When the data is a graph",
+      paras: [
+        "Markets, cameras on an industrial site and wireless networks all produce data that lives on a graph. Learning well from it means using that structure, and often learning the structure itself.",
+        "This is where my industry work started, and where I want to take the exact-limits toolkit next.",
+      ],
+    },
+    approach: [
+      { title: "Graph signal processing", body: "Signals on nodes, filtered and smoothed through the graph Laplacian. The animation above is one diffusion step after another." },
+      { title: "Learning the structure", body: "Estimating the graph itself under smoothness and sparsity priors, instead of assuming it from raw correlations." },
+      { title: "Message passing", body: "GNNs that aggregate information over neighbours, for example to resolve occlusion and viewpoint ambiguity across overlapping cameras." },
+    ],
+    practice: [
+      { org: "Zarebin", meta: "Tehran · 2022", title: "Learning the graph from data", body: "Convex graph Laplacian estimation under smoothness and sparsity constraints to infer market-dependency graphs from raw price series, plus PageRank and personalized PageRank over multi-million-edge graphs on Spark / GraphX." },
+      { org: "MAPNA", meta: "Tehran · 2021–2022", title: "Scene-graph GNNs for safety", body: "People, machinery, PPE and restricted zones as nodes, spatial and temporal relations as edges: classifying safety violations from interactions, and treating camera placement as graph optimization." },
+    ],
+    next: {
+      text: "The same toolkit, matching converses paired with constructions that achieve them, extends to graph neural networks, graph signal processing, causal inference and integrated sensing and communication.",
+      items: ["Graph neural networks and graph signal processing", "Causal inference for spatiotemporal data", "Integrated sensing and communication (ISAC)"],
+      foundations: "Coursework at Sharif: Graph Signal Processing 20/20 · Theory of Machine Learning 20/20 · Deep Learning 19.1/20",
+    },
+  },
+};
+
+const TAG_CLASS = "rounded-full border border-white/15 px-3 py-1 font-body text-xs text-white/70";
+
+// Converse-vs-achievability chart that closes as the panel scrolls through view.
+function InlineGapChart() {
+  const ref = useRef(null);
+  const readoutRef = useRef(null);
+  const progressRef = useRef(0);
+  const reduced = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "center center"] });
+  const p = useTransform(scrollYProgress, [0.2, 1], [0, 1], { clamp: true });
+  useMotionValueEvent(p, "change", (v) => { progressRef.current = v; });
+  return (
+    <div ref={ref} className="liquid-glass rounded-[1.5rem] p-4 md:p-8">
+      <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[11px] text-white/80">
+        <span className="flex items-center gap-2"><span className="inline-block h-[2px] w-4 bg-white" /> converse</span>
+        <span className="flex items-center gap-2"><span className="inline-block w-4 border-t border-dashed border-white/60" /> order-optimal</span>
+        <span className="flex items-center gap-2"><span className="inline-block h-[3px] w-4 bg-white shadow-[0_0_8px_white]" /> this work</span>
+        <span ref={readoutRef} className="ml-auto text-white/80">gap = {(reduced ? 0 : GAP_START).toFixed(3)}</span>
+      </div>
+      <div className="h-[clamp(220px,40svh,420px)]">
+        <GapChart progressRef={progressRef} readoutRef={readoutRef} />
+      </div>
+      <p className="mt-2 font-body text-[11px] text-white/50 md:text-xs">Illustrative curves; the gap closes as you scroll. See the papers for exact results.</p>
+    </div>
+  );
+}
+
+function SectionHead({ kicker, title, className = "" }) {
+  return (
+    <div className={className}>
+      <Kicker>{kicker}</Kicker>
+      <h2 className="font-heading text-4xl italic leading-[0.95] tracking-[-2px] text-white md:text-5xl">{title}</h2>
+    </div>
+  );
+}
+
+// Pages render after load, so the browser's own jump to #anchor finds nothing;
+// jump once the target exists.
+function useHashScroll() {
+  useEffect(() => {
+    if (!window.location.hash) return;
+    const id = decodeURIComponent(window.location.hash.slice(1));
+    const timer = setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ block: "start" });
+    }, 350);
+    return () => clearTimeout(timer);
+  }, []);
+}
+
+function ResearchPage({ slug }) {
+  const t = TOPICS[slug] || TOPICS.allocation;
+  const rise = useRiseInView();
+  const enter = useRise();
+  const idx = TOPIC_ORDER.indexOf(slug);
+  const papers = PUBS.filter((p) => p.topic === slug);
+  const others = TOPIC_ORDER.filter((s) => s !== slug);
+
+  useHashScroll();
+
+  return (
+    <main className="bg-black font-body text-white">
+      <Navbar />
+
+      <section className="relative overflow-hidden px-4 pb-12 pt-32 md:px-16 lg:px-20">
+        <div className="absolute inset-0 z-0 opacity-60">
+          <HypergraphField density={0.45} edgeAlpha={0.08} hyperedges={false} interactive={false} topBias={false} seed={31 + idx} label="Sparse drifting graph in the background" />
+        </div>
+        <div className="relative z-10">
+          <motion.a {...enter(0.1)} href={homeHref("research")} className="focus-ring inline-flex items-center gap-2 rounded-full py-2 font-body text-sm text-white/70 hover:text-white">
+            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M19 12H5" /><path d="m12 19-7-7 7-7" /></svg>
+            All research
+          </motion.a>
+          <motion.div {...enter(0.2)} className="mt-6">
+            <Kicker>{`// Research ${idx + 1} of ${TOPIC_ORDER.length} — ${t.kicker}`}</Kicker>
+          </motion.div>
+          <BlurText
+            as="h1"
+            text={t.title}
+            justify="flex-start"
+            delay={0.25}
+            className="max-w-5xl font-heading text-6xl italic leading-[0.88] tracking-[-3px] text-white md:text-7xl lg:text-[6.5rem]"
+          />
+          <motion.p {...enter(0.6)} className="mt-6 max-w-3xl font-heading text-2xl italic leading-tight text-white/90 md:text-3xl">{t.lead}</motion.p>
+          <motion.ul {...enter(0.75)} className="mt-6 flex flex-wrap gap-2">
+            {t.tags.map((tag) => <li key={tag} className={TAG_CLASS}>{tag}</li>)}
+          </motion.ul>
+        </div>
+      </section>
+
+      <section className="px-4 md:px-16 lg:px-20">
+        <motion.figure {...enter(0.9)} className="liquid-glass rounded-[1.5rem] p-5 md:p-8">
+          <div className="mx-auto h-[clamp(200px,34svh,340px)] max-w-4xl">{t.viz("h-full")}</div>
+          <figcaption className="mt-4 max-w-3xl font-mono text-[11px] leading-snug text-white/55">{t.vizCaption}</figcaption>
+        </motion.figure>
+      </section>
+
+      <section className="px-4 pt-24 md:px-16 lg:px-20">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[380px_1fr] lg:gap-16">
+          <motion.div {...rise(0)}><SectionHead kicker="// The question" title={t.question.heading} /></motion.div>
+          <motion.div {...rise(0.1)} className="flex max-w-[62ch] flex-col gap-4 font-body text-base font-light leading-relaxed text-white/90 md:text-lg lg:pt-10">
+            {t.question.paras.map((para) => <p key={para}>{para}</p>)}
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="px-4 pt-24 md:px-16 lg:px-20">
+        <motion.div {...rise(0)}><SectionHead kicker="// The approach" title="How I work on it" /></motion.div>
+        <div className={`mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 ${t.approach.length === 3 ? "lg:grid-cols-3" : ""}`}>
+          {t.approach.map((s, i) => (
+            <motion.div key={s.title} {...rise(0.08 * i)} className="liquid-glass rounded-[1.25rem] p-6">
+              <h3 className="font-heading text-3xl italic leading-none tracking-[-1px] text-white">{s.title}</h3>
+              <p className="mt-3 font-body text-sm font-light leading-relaxed text-white/85">{s.body}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {t.gap && (
+        <section className="px-4 pt-24 md:px-16 lg:px-20">
+          <motion.div {...rise(0)} className="mb-8"><SectionHead kicker="// Exact optimality" title="The gap closes" /></motion.div>
+          <InlineGapChart />
+        </section>
+      )}
+
+      {papers.length > 0 && (
+        <section className="px-4 pt-24 md:px-16 lg:px-20">
+          <motion.div {...rise(0)}><SectionHead kicker="// Papers" title={papers.length === 1 ? "The paper" : "The papers"} /></motion.div>
+          <div className="mt-10 flex flex-col gap-4">
+            {papers.map((p, i) => <PubRow key={p.slug} p={p} i={i} onHome={false} />)}
+          </div>
+        </section>
+      )}
+
+      {t.practice && (
+        <section className="px-4 pt-24 md:px-16 lg:px-20">
+          <motion.div {...rise(0)}><SectionHead kicker="// In practice" title="Where I’ve built it" /></motion.div>
+          <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
+            {t.practice.map((r, i) => (
+              <motion.article key={r.org} {...rise(0.08 * i)} className="liquid-glass rounded-[1.25rem] p-6">
+                <div className="font-mono text-[11px] text-white/60">{r.meta}</div>
+                <h3 className="mt-3 font-heading text-3xl italic leading-none tracking-[-1px] text-white">{r.org}</h3>
+                <div className="mt-2 font-body text-sm font-medium text-white/90">{r.title}</div>
+                <p className="mt-3 font-body text-sm font-light leading-relaxed text-white/85">{r.body}</p>
+              </motion.article>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {t.next && (
+        <section className="px-4 pt-24 md:px-16 lg:px-20">
+          <motion.div {...rise(0)} className="liquid-glass rounded-[1.5rem] p-6 md:p-10">
+            <Kicker>// Where I want to take it</Kicker>
+            <p className="max-w-3xl font-heading text-3xl italic leading-tight text-white md:text-4xl">{t.next.text}</p>
+            <ul className="mt-6 flex flex-wrap gap-2">
+              {t.next.items.map((item) => <li key={item} className={TAG_CLASS}>{item}</li>)}
+            </ul>
+            <p className="mt-6 font-mono text-[11px] text-white/55">{t.next.foundations}</p>
+          </motion.div>
+        </section>
+      )}
+
+      <section className="px-4 pb-8 pt-24 md:px-16 lg:px-20" aria-labelledby="more-research">
+        <motion.div {...rise(0)}>
+          <Kicker>// Keep exploring</Kicker>
+          <h2 id="more-research" className="sr-only">More research</h2>
+        </motion.div>
+        <div className="mt-2 grid grid-cols-1 gap-6 md:grid-cols-2">
+          {others.map((s, i) => {
+            const o = TOPICS[s];
+            return (
+              <motion.a
+                key={s}
+                href={researchHref(s)}
+                {...rise(0.08 * i)}
+                className="liquid-glass glass-hover focus-ring group flex flex-col rounded-[1.25rem] p-6 transition-transform hover:-translate-y-0.5"
+              >
+                <div className="font-mono text-[11px] text-white/55">{`Research ${TOPIC_ORDER.indexOf(s) + 1} — ${o.kicker}`}</div>
+                <h3 className="mt-3 font-heading text-3xl italic leading-none tracking-[-1px] text-white md:text-4xl">{o.title}</h3>
+                <p className="mt-3 max-w-[48ch] font-body text-sm font-light leading-snug text-white/85">{o.lead}</p>
+                <span className="mt-5 inline-flex items-center gap-1 font-body text-sm font-medium text-white">
+                  Explore this research <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                </span>
+              </motion.a>
+            );
+          })}
+        </div>
+      </section>
+
+      <ContactBand />
+    </main>
+  );
+}
+
+// Compact closing band for inner pages.
+function ContactBand() {
+  const rise = useRiseInView();
+  return (
+    <section className="px-4 pb-10 pt-16 md:px-16 lg:px-20">
+      <motion.div {...rise(0)} className="flex flex-col items-start justify-between gap-6 border-t border-white/15 pt-10 md:flex-row md:items-center">
+        <div>
+          <div className="font-heading text-4xl italic leading-none text-white md:text-5xl">Let’s talk graphs</div>
+          <p className="mt-3 font-body text-sm font-light text-white/80">Questions about this work or an idea for a collaboration? Write to me.</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <a href="mailto:j.maheri95@gmail.com" className="liquid-glass-strong focus-ring flex h-11 items-center gap-2 rounded-full px-5 font-body text-sm font-medium text-white transition-colors hover:bg-white/10">
+            j.maheri95@gmail.com <ArrowUpRight />
+          </a>
+          <SocialRow only={["Google Scholar", "LinkedIn", "ORCID", "GitHub", "CV (PDF)"]} />
+        </div>
+      </motion.div>
+      <footer className="mt-10 font-body text-xs text-white/40">© 2026 Javad Maheri</footer>
+    </section>
+  );
+}
+
+createRoot(ROOT_EL).render(PAGE === "research" ? <ResearchPage slug={TOPIC} /> : <App />);

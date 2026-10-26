@@ -3,28 +3,5 @@ layout: null
 sitemap: false
 permalink: /lab/
 ---
-<!doctype html>
-<!--
-  Experimental landing page (unlisted, noindex). Not linked from the site
-  navigation. Source lives in lab/src/; rebuild app.js and app.css with
-  `npm run build:lab` after editing it.
--->
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex,nofollow">
-  <meta name="theme-color" content="#000000">
-  <title>Javad Maheri — Exact Limits</title>
-  <meta name="description" content="Javad Maheri — exact, non-asymptotic limits for distributed computing and learning on graph-structured data.">
-  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
-  <link rel="preload" href="fonts/instrument-serif-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="app.css">
-  <style>body{background:#000;margin:0}</style>
-</head>
-<body>
-  <div id="root"></div>
-  <noscript><p style="color:#fff;font-family:sans-serif;padding:2rem">This page needs JavaScript. The <a href="/" style="color:#fff">classic site</a> works without it.</p></noscript>
-  <script src="app.js" defer></script>
-</body>
-</html>
+{%- comment -%} Home page of the new design. Source: lab/src/, rebuild with `npm run build:lab`. {%- endcomment -%}
+{% include lab-shell.html page="home" title="Javad Maheri — Exact Limits" description="Javad Maheri — exact, non-asymptotic limits for distributed computing and learning on graph-structured data." %}
