@@ -838,12 +838,39 @@ const SHARE_PATH = "M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-
 /* ------------------------------------------------------------------ */
 
 const CV_URL = "/files/javad-maheri-cv.pdf";
+// Set to "/images/profile.png" once the placeholder there is replaced with a real photo.
+const PORTRAIT_URL = null;
+
 const NAV = [
   { id: "home", label: "Home" },
+  { id: "about", label: "About" },
   { id: "research", label: "Research" },
-  { id: "gap", label: "The Gap" },
+  { id: "experience", label: "Experience" },
   { id: "publications", label: "Publications" },
   { id: "contact", label: "Contact" },
+];
+
+const FACTS = [
+  { k: "Based in", v: "Sophia Antipolis, France" },
+  { k: "PhD", v: "Communication Systems — EURECOM / Sorbonne Université, 2026" },
+  { k: "B.Sc.", v: "Electrical Engineering & Mathematics — Sharif University of Technology, high honors" },
+  { k: "Toolbox", v: "Python, PyTorch, NumPy, Spark / GraphX, MATLAB, C/C++" },
+  { k: "Languages", v: "English (fluent) · French (B1) · Persian (native)" },
+];
+
+const INTERESTS = [
+  "Fundamental limits of distributed computing and learning",
+  "Combinatorial designs and coded caching",
+  "Hypergraph partitioning",
+  "Graph neural networks and graph signal processing",
+  "Causal inference for spatiotemporal data",
+  "Integrated sensing and communication (ISAC)",
+];
+
+const HIGHLIGHTS = [
+  { big: "7th", small: "of 180,000+ candidates in Iran’s national university entrance exam (2017)" },
+  { big: "Funded", small: "PhD position, Huawei France Chair for Future Wireless Networks (2023–2026)" },
+  { big: "½–½", small: "Drew against GM Vassilios Kotronias at the ISIT 2024 chess event" },
 ];
 
 const CARDS = [
@@ -918,6 +945,39 @@ const JOURNEY = [
   { when: "July 2026", where: "PhD defended", what: "Universally Optimal Combinatorial Schemes for Distributed Computing and Learning", now: true },
 ];
 
+const ROLES = [
+  {
+    role: "PhD Researcher",
+    org: "EURECOM / Sorbonne Université",
+    meta: "Huawei France Chair · Biot, France · Apr 2023 – Jul 2026",
+    points: [
+      "Built the first universally optimal allocation schemes: one task-blind assignment that is optimal for every downstream workload at once.",
+      "Derived matching information-theoretic lower bounds with explicit combinatorial constructions, cutting inter-node communication to its provable minimum on MapReduce-style workloads.",
+      "Designed and ran the full experimental program in Python (PyTorch, NumPy).",
+    ],
+  },
+  {
+    role: "Data Scientist / ML Engineer",
+    org: "Zarebin",
+    meta: "Tehran · Mar 2022 – Dec 2022",
+    points: [
+      "Ran PageRank and personalized PageRank over multi-million-edge graphs on Apache Spark / GraphX with Pregel-style message passing.",
+      "Learned market-dependency graphs from raw price series with convex graph Laplacian estimation under smoothness and sparsity constraints.",
+      "Benchmarked learned graphs against correlation baselines and delivered the pipeline to the client’s analytics team.",
+    ],
+  },
+  {
+    role: "ML Engineer — GNNs for safety video analytics",
+    org: "MAPNA",
+    meta: "Industrial power generation facility · Tehran · Apr 2021 – Jan 2022",
+    points: [
+      "Built a scene-graph GNN over people, machinery, PPE and restricted zones to classify safety violations from interactions, not single frames.",
+      "Cut false alarms substantially versus the per-frame detector by letting message passing resolve occlusion across overlapping cameras.",
+      "Framed camera placement as graph optimization over field-of-view overlaps to improve hazard-zone coverage without new hardware.",
+    ],
+  },
+];
+
 /* ------------------------------------------------------------------ */
 /* Sections                                                            */
 /* ------------------------------------------------------------------ */
@@ -926,10 +986,13 @@ function Navbar() {
   const [open, setOpen] = useState(false);
   return (
     <nav className="fixed left-0 right-0 top-4 z-50 flex items-center justify-between px-4 md:px-8 lg:px-16" aria-label="Primary">
-      <a href="#home" className="liquid-glass focus-ring flex h-12 w-12 items-center justify-center rounded-full" aria-label="Javad Maheri — home">
-        <span className="font-heading text-2xl italic leading-none text-white">jm</span>
+      <a href="#home" className="focus-ring flex items-center gap-3 rounded-full" aria-label="Javad Maheri — home">
+        <span className="liquid-glass flex h-12 w-12 items-center justify-center rounded-full">
+          <span className="font-heading text-2xl italic leading-none text-white">jm</span>
+        </span>
+        <span className="font-heading text-xl italic text-white lg:hidden xl:inline">Javad Maheri</span>
       </a>
-      <div className="liquid-glass hidden items-center rounded-full px-1.5 py-1.5 md:flex">
+      <div className="liquid-glass absolute left-1/2 hidden -translate-x-1/2 items-center rounded-full px-1.5 py-1.5 lg:flex">
         {NAV.map((l) => (
           <a key={l.id} href={`#${l.id}`} className="focus-ring rounded-full px-3 py-2 font-body text-sm font-medium text-white/90 hover:text-white">
             {l.label}
@@ -941,7 +1004,7 @@ function Navbar() {
       </div>
       <button
         type="button"
-        className="liquid-glass focus-ring flex h-12 w-12 items-center justify-center rounded-full text-white md:hidden"
+        className="liquid-glass focus-ring flex h-12 w-12 items-center justify-center rounded-full text-white lg:hidden"
         aria-expanded={open}
         aria-label={open ? "Close menu" : "Open menu"}
         onClick={() => setOpen((o) => !o)}
@@ -950,12 +1013,11 @@ function Navbar() {
           {open ? <path d="M6 6l12 12M18 6 6 18" /> : <path d="M4 8h16M4 16h16" />}
         </svg>
       </button>
-      <div className="hidden h-12 w-12 md:block" aria-hidden="true" />
       {open && (
         <motion.div
           initial={{ opacity: 0, y: -8, filter: "blur(8px)" }}
           animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          className="liquid-glass-strong absolute left-4 right-4 top-16 flex flex-col gap-1 rounded-[1.5rem] p-3 md:hidden"
+          className="liquid-glass-strong absolute left-4 right-4 top-16 flex flex-col gap-1 rounded-[1.5rem] p-3 lg:hidden"
         >
           {NAV.map((l) => (
             <a key={l.id} href={`#${l.id}`} onClick={() => setOpen(false)} className="rounded-[0.75rem] px-4 py-3 font-body text-base text-white/90">
@@ -1017,32 +1079,40 @@ function Hero() {
       </div>
       <div className="relative z-10 flex flex-1 flex-col">
         <div className="flex flex-1 flex-col items-center justify-center px-4 pb-10 pt-28 text-center">
-          <motion.div {...rise(0.4)} className="liquid-glass flex items-center gap-2 rounded-full p-1">
+          <motion.div {...rise(0.3)} className="liquid-glass flex items-center gap-2 rounded-full p-1">
             <span className="rounded-full bg-white px-3 py-1 font-body text-xs font-semibold text-black">New</span>
             <span className="pr-3 font-body text-xs text-white/90 sm:text-sm">PhD defended — EURECOM / Sorbonne Université, July 2026</span>
           </motion.div>
+          <motion.div {...rise(0.45)} className="mt-8 font-mono text-xs uppercase tracking-[0.2em] text-white/70 md:text-sm">
+            Information theory · Distributed learning · Graphs
+          </motion.div>
           <BlurText
             as="h1"
-            text="Exact Limits for Learning on Graphs"
-            className="mt-6 max-w-3xl font-heading text-6xl italic leading-[0.8] tracking-[-4px] text-white md:text-7xl lg:text-[5.5rem]"
+            text="Javad Maheri"
+            delay={0.5}
+            className="mt-3 font-heading text-7xl italic leading-[0.85] tracking-[-4px] text-white sm:text-8xl lg:text-[8.5rem]"
           />
-          <motion.p {...rise(0.8)} className="mt-6 max-w-2xl font-body text-sm font-light leading-tight text-white md:text-base">
+          <motion.p {...rise(0.9)} className="mt-6 max-w-3xl font-heading text-2xl italic leading-tight text-white md:text-3xl">
             I prove exact, non-asymptotic limits for distributed computation and learning on graph-structured data — and I build the systems that use them.
           </motion.p>
-          <motion.div {...rise(1.1)} className="mt-6 flex items-center gap-6">
-            <a href="#research" className="liquid-glass-strong focus-ring flex items-center gap-2 rounded-full px-5 py-2.5 font-body text-sm font-medium text-white">
-              Explore the Research <ArrowUpRight />
+          <motion.p {...rise(1.05)} className="mt-4 max-w-2xl font-body text-sm font-light leading-snug text-white/85 md:text-base">
+            PhD in Communication Systems · Information theorist and ML engineer · Sophia Antipolis, France
+          </motion.p>
+          <motion.div {...rise(1.2)} className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+            <a href="#about" className="liquid-glass-strong focus-ring flex items-center gap-2 rounded-full px-5 py-2.5 font-body text-sm font-medium text-white">
+              Get to know me <ArrowDown />
             </a>
-            <a href="#publications" className="focus-ring flex items-center gap-2 rounded-full font-body text-sm font-medium text-white">
-              Read the Papers <ArrowDown />
+            <a href={CV_URL} className="focus-ring flex items-center gap-2 rounded-full font-body text-sm font-medium text-white">
+              Download CV <ArrowUpRight className="h-4 w-4" />
             </a>
           </motion.div>
-          <motion.div {...rise(1.3)} className="mt-8 flex w-full flex-wrap items-stretch justify-center gap-4">
+          <motion.div {...rise(1.35)} className="mt-9 flex w-full flex-wrap items-stretch justify-center gap-4">
             {[
-              { icon: <TouchingCurves />, num: "0 Gap", label: "Converse meets achievability — exact, not order-optimal" },
+              { icon: <TouchingCurves />, num: "PhD", label: "EURECOM / Sorbonne Université, defended July 2026" },
               { icon: <PaperStack />, num: "4 Papers", label: "ISIT ’25 · ISIT ’26 · IEEE T-IT · SIAM J. DM" },
-            ].map((s) => (
-              <div key={s.num} className="liquid-glass flex w-[calc(50%-8px)] max-w-[220px] flex-col justify-between gap-5 rounded-[1.25rem] p-4 text-left sm:w-[220px] sm:p-5">
+              { icon: <MaterialIcon d={SHARE_PATH} />, num: "3 Roles", label: "Research at EURECOM, ML engineering at Zarebin and MAPNA" },
+            ].map((s, i) => (
+              <div key={s.num} className={`liquid-glass ${i === 2 ? "hidden sm:flex" : "flex"} w-[calc(50%-8px)] max-w-[220px] flex-col justify-between gap-5 rounded-[1.25rem] p-4 text-left sm:w-[220px] sm:p-5`}>
                 {s.icon}
                 <div>
                   <div className="font-heading text-3xl italic leading-none tracking-[-1px] text-white sm:text-4xl">{s.num}</div>
@@ -1052,11 +1122,103 @@ function Hero() {
             ))}
           </motion.div>
         </div>
-        <motion.div {...rise(1.4)} className="flex flex-col items-center gap-4 px-4 pb-8">
+        <motion.div {...rise(1.5)} className="flex flex-col items-center gap-4 px-4 pb-8">
           <span className="liquid-glass rounded-full px-3.5 py-1 font-body text-xs font-medium text-white">Research & engineering with</span>
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 font-heading text-2xl italic tracking-tight text-white md:gap-x-14 md:text-3xl">
             {["EURECOM", "Sorbonne Université", "Sharif", "MAPNA", "Zarebin"].map((n) => <span key={n}>{n}</span>)}
           </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+function Portrait() {
+  return (
+    <div className="liquid-glass relative aspect-[4/5] w-full max-w-[380px] overflow-hidden rounded-[1.5rem]">
+      {PORTRAIT_URL ? (
+        <img src={PORTRAIT_URL} alt="Portrait of Javad Maheri" className="h-full w-full object-cover grayscale" />
+      ) : (
+        <>
+          <div className="absolute inset-0">
+            <HypergraphField density={0.35} edgeAlpha={0.22} interactive={false} topBias={false} seed={9} label="Small animated hypergraph behind the monogram" />
+          </div>
+          <div className="relative flex h-full flex-col items-center justify-center">
+            <span className="font-heading text-[7rem] italic leading-none text-white">jm</span>
+          </div>
+        </>
+      )}
+      <div className="absolute inset-x-4 bottom-4 flex items-center justify-between gap-2">
+        <span className="liquid-glass rounded-full px-3 py-1 font-body text-xs text-white">Javad Maheri</span>
+        <span className="liquid-glass rounded-full px-3 py-1 font-mono text-[10px] text-white/80">Sophia Antipolis</span>
+      </div>
+    </div>
+  );
+}
+
+function About() {
+  const rise = useRiseInView();
+  return (
+    <section id="about" className="relative bg-black px-4 pb-24 pt-28 md:px-16 lg:px-20">
+      <div className="grid grid-cols-1 gap-12 lg:grid-cols-[380px_1fr] lg:gap-16">
+        <motion.div {...rise(0)} className="flex justify-center lg:block">
+          <Portrait />
+        </motion.div>
+        <div className="min-w-0">
+          <motion.div {...rise(0.05)}>
+            <Kicker>// About — who I am</Kicker>
+            <h2 className="font-heading text-6xl italic leading-[0.9] tracking-[-3px] text-white md:text-7xl">Hi, I’m Javad.</h2>
+          </motion.div>
+          <motion.div {...rise(0.15)} className="mt-8 flex max-w-[62ch] flex-col gap-4 font-body text-base font-light leading-relaxed text-white/90 md:text-lg">
+            <p>
+              I’m a researcher in information theory and machine learning. I defended my PhD in Communication Systems at
+              EURECOM / Sorbonne Université in July 2026, supervised by Prof. Petros Elia.
+            </p>
+            <p>
+              My work asks a precise question: what is the best a distributed system can do, exactly? I prove information-theoretic
+              lower bounds and build explicit combinatorial schemes that meet them, so the gap closes at every finite size rather than
+              only in the limit.
+            </p>
+            <p>
+              Before the PhD I studied Electrical Engineering and Mathematics at Sharif University of Technology, and built graph-based
+              ML systems in industry: PageRank on Spark, learned market graphs, and GNNs for industrial safety video.
+            </p>
+          </motion.div>
+          <motion.dl {...rise(0.25)} className="mt-10 grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
+            {FACTS.map((f) => (
+              <div key={f.k} className="min-w-0 border-t border-white/15 pt-3">
+                <dt className="font-mono text-[11px] uppercase tracking-[0.15em] text-white/55">{f.k}</dt>
+                <dd className="mt-1 font-body text-sm text-white">{f.v}</dd>
+              </div>
+            ))}
+          </motion.dl>
+        </div>
+      </div>
+
+      <div className="mt-20 grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <motion.div {...rise(0)} className="liquid-glass rounded-[1.5rem] p-6 md:p-8">
+          <Kicker>// What I want to work on</Kicker>
+          <p className="font-heading text-3xl italic leading-tight text-white md:text-4xl">
+            Taking exact limits from distributed computing to the rest of graph-structured learning.
+          </p>
+          <p className="mt-4 max-w-[60ch] font-body text-sm font-light leading-relaxed text-white/85 md:text-base">
+            The same toolkit — matching converses paired with constructions that achieve them — extends to graph neural networks,
+            graph signal processing, causal inference and ISAC. Different graphs, the same underlying question.
+          </p>
+          <ul className="mt-6 flex flex-wrap gap-2">
+            {INTERESTS.map((t) => (
+              <li key={t} className="liquid-glass rounded-full px-3 py-1.5 font-body text-xs text-white/90">{t}</li>
+            ))}
+          </ul>
+        </motion.div>
+        <motion.div {...rise(0.1)} className="flex flex-col gap-4">
+          <Kicker>// A few highlights</Kicker>
+          {HIGHLIGHTS.map((h) => (
+            <div key={h.big} className="liquid-glass flex items-center gap-5 rounded-[1.25rem] p-5">
+              <span className="w-28 shrink-0 font-heading text-4xl italic leading-none text-white md:w-40 md:text-5xl">{h.big}</span>
+              <span className="font-body text-sm font-light leading-snug text-white/90">{h.small}</span>
+            </div>
+          ))}
         </motion.div>
       </div>
     </section>
@@ -1076,7 +1238,7 @@ function Research() {
       </div>
       <div className="relative z-10 flex min-h-screen flex-col px-4 pb-16 pt-28 md:px-16 lg:px-20">
         <motion.div {...rise(0)}>
-          <Kicker>// Research</Kicker>
+          <Kicker>// Research — what I study</Kicker>
           <h2 className="font-heading text-6xl italic leading-[0.9] tracking-[-3px] text-white md:text-7xl lg:text-[6rem]">
             Same question,<br />different graphs
           </h2>
@@ -1169,6 +1331,44 @@ function GapSection() {
   );
 }
 
+function Experience() {
+  const rise = useRiseInView();
+  const reduced = useReducedMotion();
+  return (
+    <section id="experience" className="relative bg-black px-4 pb-16 pt-28 md:px-16 lg:px-20">
+      <motion.div {...rise(0)}>
+        <Kicker>// Experience — what I’ve done</Kicker>
+        <h2 className="font-heading text-6xl italic leading-[0.9] tracking-[-3px] text-white md:text-7xl lg:text-[6rem]">
+          Theory, then<br />systems
+        </h2>
+      </motion.div>
+      <Journey />
+      <div className="mt-14 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {ROLES.map((r, i) => (
+          <motion.article
+            key={r.org}
+            {...rise(0.1 * i)}
+            whileHover={reduced ? undefined : { y: -2 }}
+            className="liquid-glass glass-hover flex flex-col rounded-[1.25rem] p-6"
+          >
+            <div className="font-mono text-[11px] text-white/60">{r.meta}</div>
+            <h3 className="mt-3 font-heading text-3xl italic leading-none tracking-[-1px] text-white">{r.org}</h3>
+            <div className="mt-2 font-body text-sm font-medium text-white/90">{r.role}</div>
+            <ul className="mt-5 flex flex-col gap-3">
+              {r.points.map((p) => (
+                <li key={p} className="flex gap-3 font-body text-sm font-light leading-snug text-white/85">
+                  <span className="mt-[0.45em] block h-1.5 w-1.5 shrink-0 rounded-full bg-white/70" aria-hidden="true" />
+                  <span>{p}</span>
+                </li>
+              ))}
+            </ul>
+          </motion.article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function Publications() {
   const rise = useRiseInView();
   const reduced = useReducedMotion();
@@ -1176,11 +1376,8 @@ function Publications() {
     <section id="publications" className="relative bg-black px-4 pb-24 pt-28 md:px-16 lg:px-20">
       <motion.div {...rise(0)}>
         <Kicker>// Publications</Kicker>
-        <h2 className="font-heading text-6xl italic leading-[0.9] tracking-[-3px] text-white md:text-7xl lg:text-[6rem]">
-          Papers<br />&amp; path
-        </h2>
+        <h2 className="font-heading text-6xl italic leading-[0.9] tracking-[-3px] text-white md:text-7xl lg:text-[6rem]">Papers</h2>
       </motion.div>
-
       <div className="mt-14 flex flex-col gap-4">
         {PUBS.map((p, i) => (
           <motion.div
@@ -1190,7 +1387,7 @@ function Publications() {
             className="liquid-glass glass-hover flex flex-col gap-4 rounded-[1.25rem] p-5 md:flex-row md:items-center md:gap-8"
           >
             <div className="font-heading text-4xl italic leading-none text-white md:w-24">{p.year}</div>
-            <div className="flex-1">
+            <div className="min-w-0 flex-1">
               <a href={p.url} className="focus-ring font-body text-base font-medium leading-snug text-white hover:underline md:text-lg">{p.title}</a>
               <div className="mt-1 font-body text-sm font-light text-white/70">
                 {p.authors.map((a, j) => (
@@ -1213,8 +1410,6 @@ function Publications() {
           </motion.div>
         ))}
       </div>
-
-      <Journey />
     </section>
   );
 }
@@ -1231,8 +1426,7 @@ function Journey() {
   }, "");
   const view = { once: true, amount: 0.4 };
   return (
-    <div className="mt-24">
-      <Kicker>// Path</Kicker>
+    <div className="mt-12">
       {/* Desktop: horizontal graph */}
       <div className="relative hidden md:block">
         <div className="relative h-20">
@@ -1333,9 +1527,10 @@ function Contact() {
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 py-24 text-center">
         <Kicker>// Contact</Kicker>
         <BlurText as="h2" text="Let’s talk graphs" className="font-heading text-6xl italic leading-[0.85] tracking-[-3px] text-white md:text-7xl lg:text-[6rem]" />
-        <motion.p {...rise(0.4)} className="mt-6 font-body text-sm font-light text-white/90 md:text-base">
-          Sophia Antipolis, France · EURECOM / Sorbonne Université
+        <motion.p {...rise(0.4)} className="mt-6 max-w-xl font-body text-sm font-light text-white/90 md:text-base">
+          Questions about my work or an idea for a collaboration? Write to me.
         </motion.p>
+        <motion.p {...rise(0.5)} className="mt-2 font-mono text-xs text-white/60">Javad Maheri · Sophia Antipolis, France · EURECOM / Sorbonne Université</motion.p>
         <motion.div {...rise(0.6)} className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <a href="mailto:j.maheri95@gmail.com" className="liquid-glass-strong focus-ring flex items-center gap-2 rounded-full px-5 py-2.5 font-body text-sm font-medium text-white">
             j.maheri95@gmail.com <ArrowUpRight />
@@ -1356,8 +1551,10 @@ function App() {
       <Navbar />
       <SectionRail />
       <Hero />
+      <About />
       <Research />
       <GapSection />
+      <Experience />
       <Publications />
       <Contact />
     </main>
