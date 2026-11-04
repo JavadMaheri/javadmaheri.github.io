@@ -948,13 +948,22 @@ const NAV = [
   { id: "contact", label: "Contact" },
 ];
 
+// arXiv author search (an author-ID page can replace this once claimed on arXiv).
+const ARXIV_LISTING = "https://arxiv.org/search/?searchtype=author&query=Maheri%2C+Javad";
 const SCHOLAR_URL = "https://scholar.google.com/citations?user=jg3ifAUAAAAJ&hl=en";
+const EurecomIcon = ({ className = "h-[18px] w-[18px]" }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M3 9.5 12 4l9 5.5" /><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8" /><path d="M3 20h18" />
+  </svg>
+);
+
 const SOCIALS = [
   { label: "Email", href: "mailto:j.maheri95@gmail.com", icon: <MailIcon /> },
   { label: "Google Scholar", href: SCHOLAR_URL, icon: <BrandIcon d={SCHOLAR_PATH} />, external: true },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/javad-maheri-845049169", icon: <BrandIcon d={LINKEDIN_PATH} />, external: true },
   { label: "ORCID", href: "https://orcid.org/0009-0005-7148-713X", icon: <BrandIcon d={ORCID_PATH} />, external: true },
   { label: "GitHub", href: "https://github.com/JavadMaheri", icon: <BrandIcon d={GITHUB_PATH} />, external: true },
+  { label: "EURECOM profile", href: "https://www.eurecom.edu/en/people/maheri-javad/publications", icon: <EurecomIcon />, external: true },
   { label: "CV (PDF)", href: CV_URL, icon: <CvIcon />, external: true },
 ];
 
@@ -1099,9 +1108,11 @@ const PUBS = [
     authors: ["Javad Maheri", "Petros Elia"],
     venue: "IEEE International Symposium on Information Theory (ISIT) 2025",
     status: "Conference",
+    arxiv: "2504.18434",
+    links: [{ label: "ISIT version", href: "https://www.eurecom.fr/publication/8199/download/comsys-publi-8199.pdf" }],
     topic: "hypergraph-partitioning",
     slug: "hamiltonian-decompositions",
-    bibtex: "@inproceedings{maheri2025hamiltonian,\n  title = {Constructing Hamiltonian Decompositions of Complete k-Uniform Hypergraphs},\n  author = {Maheri, Javad and Elia, Petros},\n  booktitle = {Proc. IEEE International Symposium on Information Theory (ISIT)},\n  year = {2025}\n}",
+    bibtex: "@inproceedings{maheri2025hamiltonian,\n  title = {Constructing Hamiltonian Decompositions of Complete k-Uniform Hypergraphs},\n  author = {Maheri, Javad and Elia, Petros},\n  booktitle = {Proc. IEEE International Symposium on Information Theory (ISIT)},\n  address = {Ann Arbor, MI, USA},\n  year = {2025},\n  eprint = {2504.18434},\n  archivePrefix = {arXiv}\n}",
   },
 ];
 
@@ -1798,6 +1809,11 @@ function PubRow({ p, i, onHome = true }) {
               arXiv:{p.arxiv} <ArrowUpRight className="h-3 w-3" />
             </a>
           )}
+          {(p.links || []).map((l) => (
+            <a key={l.href} href={l.href} {...NEW_TAB} className="liquid-glass focus-ring flex items-center gap-1 rounded-full px-3 py-1 font-mono text-xs text-white transition-colors hover:bg-white/10">
+              {l.label} <ArrowUpRight className="h-3 w-3" />
+            </a>
+          ))}
           <BibtexButton bibtex={p.bibtex} onFallback={() => setShowBib(true)} />
         </div>
       </div>
@@ -1816,9 +1832,14 @@ function Publications() {
         <Kicker>// Publications</Kicker>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <h2 className="font-heading text-4xl font-medium leading-[1.05] tracking-tight text-white md:text-5xl lg:text-6xl">Papers</h2>
-          <a href={SCHOLAR_URL} {...NEW_TAB} className="liquid-glass focus-ring flex items-center gap-2 rounded-full px-4 py-2 font-body text-sm text-white transition-colors hover:bg-white/10">
-            <BrandIcon d={SCHOLAR_PATH} className="h-4 w-4" /> Full list on Google Scholar <ArrowUpRight className="h-4 w-4" />
-          </a>
+          <div className="flex flex-wrap gap-3">
+            <a href={SCHOLAR_URL} {...NEW_TAB} className="liquid-glass focus-ring flex items-center gap-2 rounded-full px-4 py-2 font-body text-sm text-white transition-colors hover:bg-white/10">
+              <BrandIcon d={SCHOLAR_PATH} className="h-4 w-4" /> Full list on Google Scholar <ArrowUpRight className="h-4 w-4" />
+            </a>
+            <a href={ARXIV_LISTING} {...NEW_TAB} className="liquid-glass focus-ring flex items-center gap-2 rounded-full px-4 py-2 font-body text-sm text-white transition-colors hover:bg-white/10">
+              Preprints on arXiv <ArrowUpRight className="h-4 w-4" />
+            </a>
+          </div>
         </div>
       </motion.div>
       <div className="mt-14 flex flex-col gap-4">
@@ -1954,7 +1975,7 @@ function Contact() {
           </a>
         </motion.div>
         <motion.div {...rise(0.7)} className="mt-6">
-          <SocialRow only={["Google Scholar", "LinkedIn", "ORCID", "GitHub", "CV (PDF)"]} />
+          <SocialRow only={["Google Scholar", "LinkedIn", "ORCID", "GitHub", "EURECOM profile", "CV (PDF)"]} />
         </motion.div>
       </div>
       <footer className="relative z-10 pb-6 text-center font-body text-xs text-white/60">© 2026 Javad Maheri</footer>
@@ -2276,7 +2297,7 @@ function ContactBand() {
           <a href="mailto:j.maheri95@gmail.com" className="liquid-glass-strong focus-ring flex h-11 items-center gap-2 rounded-full px-5 font-body text-sm font-medium text-white transition-colors hover:bg-white/10">
             j.maheri95@gmail.com <ArrowUpRight />
           </a>
-          <SocialRow only={["Google Scholar", "LinkedIn", "ORCID", "GitHub", "CV (PDF)"]} />
+          <SocialRow only={["Google Scholar", "LinkedIn", "ORCID", "GitHub", "EURECOM profile", "CV (PDF)"]} />
         </div>
       </motion.div>
       <footer className="mt-10 font-body text-xs text-white/60">© 2026 Javad Maheri</footer>

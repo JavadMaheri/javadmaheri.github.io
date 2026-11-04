@@ -11,16 +11,15 @@ authors: "**Javad Maheri**, Petros Elia"
 excerpt: "Abstract: TODO(user) — paste the real abstract here. Inline LaTeX like $\\mathcal{O}(n^2)$ is supported once MathJax loads."
 date: 2025-01-01
 year: 2025
-arxiv:
+arxiv: "2504.18434"
 doi:
-paperurl:
+paperurl: "https://www.eurecom.fr/publication/8199/download/comsys-publi-8199.pdf"
 codeurl:
 ---
 
 <!--
-  Sourced from the author's CV (both listed versions agree on title, venue,
-  authors, and year for this entry). No arXiv ID or DOI was available in
-  the source CVs -- TODO(user): add if one exists.
+  Sourced from the author's CV. arXiv ID and the ISIT-version PDF (EURECOM
+  repository) found via search, November 2026. No DOI yet.
   `date` above uses Jan 1 of the known year as a sort-order placeholder;
   only the year is shown to visitors.
 -->
