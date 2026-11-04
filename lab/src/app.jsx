@@ -14,11 +14,38 @@ import {
 /* ------------------------------------------------------------------ */
 
 const FADE_MS = 500;
-// Canvas palette; keep in sync with the colors in lab/tailwind.config.js.
-const INK = "#1c2226";
-const CHALK = "#edebe4";
-const white = (a) => `rgba(237,235,228,${a})`;
-const accent = (a) => `rgba(240,203,90,${a})`;
+// Canvas palette, read from the theme's CSS variables (lab/src/styles.css)
+// and refreshed by setTheme() / a system theme change.
+const PALETTE = { ink: "28,34,38", chalk: "237,235,228", accent: "240,203,90" };
+const THEME_EVENT = "lab-themechange";
+function readPalette() {
+  const cs = getComputedStyle(document.documentElement);
+  for (const [key, name] of [["ink", "--ink"], ["chalk", "--chalk"], ["accent", "--accent"]]) {
+    const v = cs.getPropertyValue(name).trim();
+    if (v) PALETTE[key] = v.split(/\s+/).join(",");
+  }
+}
+readPalette();
+const white = (a) => `rgba(${PALETTE.chalk},${a})`;
+const accent = (a) => `rgba(${PALETTE.accent},${a})`;
+const ink = () => `rgb(${PALETTE.ink})`;
+
+const THEME_KEY = "lab-theme";
+function currentTheme() {
+  const set = document.documentElement.getAttribute("data-theme");
+  if (set === "light" || set === "dark") return set;
+  return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+}
+function setTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  try { localStorage.setItem(THEME_KEY, theme); } catch (e) { /* private mode: choice lasts this visit */ }
+  readPalette();
+  window.dispatchEvent(new Event(THEME_EVENT));
+}
+window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", () => {
+  readPalette();
+  window.dispatchEvent(new Event(THEME_EVENT));
+});
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 const easeInOut = (k) => (k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2);
 
@@ -109,8 +136,11 @@ function useCanvasLoop(draw, { warmupMs = 2500 } = {}) {
     io.observe(canvas);
     const onVis = () => (document.hidden ? stop() : start());
     document.addEventListener("visibilitychange", onVis);
+    const onTheme = () => { if (reduced) renderStatic(); else if (!raf && w) frame(0); };
+    window.addEventListener(THEME_EVENT, onTheme);
 
     return () => {
+      window.removeEventListener(THEME_EVENT, onTheme);
       stop();
       cancelAnimationFrame(canvas._fadeRaf);
       ro.disconnect();
@@ -188,7 +218,7 @@ function smoothLine(ctx, pts) {
   }
 }
 
-const MONO = "'JetBrains Mono', ui-monospace, monospace";
+const MONO = "'IBM Plex Mono', ui-monospace, monospace";
 
 /* ------------------------------------------------------------------ */
 /* HypergraphField — the cinematic background                          */
@@ -553,7 +583,7 @@ function EdgeSamplingViz({ className = "h-40" }) {
     ES_NODES.forEach((_, i) => {
       const p = pt(i);
       ctx.beginPath(); ctx.arc(p.x, p.y, 3, 0, 6.283);
-      if (ES_PART_B.has(i)) { ctx.strokeStyle = white(0.9); ctx.lineWidth = 1.2; ctx.fillStyle = INK; ctx.fill(); ctx.stroke(); }
+      if (ES_PART_B.has(i)) { ctx.strokeStyle = white(0.9); ctx.lineWidth = 1.2; ctx.fillStyle = ink(); ctx.fill(); ctx.stroke(); }
       else { ctx.fillStyle = white(0.95); ctx.fill(); }
     });
     ctx.font = `9px ${MONO}`;
@@ -757,7 +787,7 @@ function GapChart({ progressRef, readoutRef }) {
     for (let r = 1; r <= Math.floor(rEnd); r++) {
       ctx.beginPath();
       ctx.arc(X(r), Y(thisWork(r)), 4, 0, 6.283);
-      ctx.fillStyle = merged ? accent(1) : INK;
+      ctx.fillStyle = merged ? accent(1) : ink();
       ctx.fill();
       ctx.lineWidth = 1.5;
       ctx.strokeStyle = accent(1);
@@ -972,7 +1002,6 @@ const INTERESTS = [
 
 const HIGHLIGHTS = [
   { big: "7th", small: "of 180,000+ candidates in Iran’s national university entrance exam (2017)" },
-  { big: "Funded", small: "PhD position, Huawei France Chair for Future Wireless Networks (2023–2026)" },
   { big: "½–½", small: "Drew against GM Vassilios Kotronias at the ISIT 2024 chess event" },
 ];
 
@@ -1096,6 +1125,35 @@ const ROLES = [
 /* Sections                                                            */
 /* ------------------------------------------------------------------ */
 
+function ThemeToggle({ className = "" }) {
+  const [theme, setThemeState] = useState(currentTheme);
+  useEffect(() => {
+    const sync = () => setThemeState(currentTheme());
+    window.addEventListener(THEME_EVENT, sync);
+    return () => window.removeEventListener(THEME_EVENT, sync);
+  }, []);
+  const next = theme === "dark" ? "light" : "dark";
+  return (
+    <button
+      type="button"
+      onClick={() => setTheme(next)}
+      aria-label={`Switch to ${next} theme`}
+      title={`Switch to ${next} theme`}
+      className={`liquid-glass focus-ring flex h-10 w-10 items-center justify-center rounded-full text-white/85 transition-colors hover:bg-accent hover:text-black ${className}`}
+    >
+      {theme === "dark" ? (
+        <svg className="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+        </svg>
+      ) : (
+        <svg className="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z" />
+        </svg>
+      )}
+    </button>
+  );
+}
+
 function Navbar() {
   const [open, setOpen] = useState(false);
   const navRef = useRef(null);
@@ -1116,7 +1174,7 @@ function Navbar() {
         <span className="liquid-glass flex h-12 w-12 items-center justify-center rounded-full">
           <span className="font-heading text-2xl italic leading-none text-white">jm</span>
         </span>
-        <span className="font-heading text-xl italic text-white lg:hidden xl:inline">Javad Maheri</span>
+        <span className="font-heading text-xl font-medium text-white lg:hidden xl:inline">Javad Maheri</span>
       </a>
       <div className="liquid-glass absolute left-1/2 hidden -translate-x-1/2 items-center rounded-full px-1.5 py-1.5 lg:flex">
         {NAV.map((l) => (
@@ -1128,7 +1186,9 @@ function Navbar() {
           Download CV <ArrowUpRight className="h-4 w-4" />
         </a>
       </div>
-      <SocialRow size="h-10 w-10" className="hidden xl:flex" only={["Email", "Google Scholar", "LinkedIn", "GitHub"]} />
+      <div className="flex items-center gap-2">
+        <SocialRow size="h-10 w-10" className="hidden xl:flex" only={["Email", "Google Scholar", "LinkedIn", "GitHub"]} />
+        <ThemeToggle className="h-12 w-12 lg:h-10 lg:w-10" />
       <button
         type="button"
         className="liquid-glass focus-ring flex h-12 w-12 items-center justify-center rounded-full text-white lg:hidden"
@@ -1140,6 +1200,7 @@ function Navbar() {
           {open ? <path d="M6 6l12 12M18 6 6 18" /> : <path d="M4 8h16M4 16h16" />}
         </svg>
       </button>
+      </div>
       {open && (
         <motion.div
           initial={{ opacity: 0, y: -8, filter: "blur(8px)" }}
@@ -1209,7 +1270,7 @@ function Hero() {
           <motion.a {...rise(0.3)} href="#news" className="liquid-glass focus-ring group flex items-center gap-2 rounded-full p-1 transition-colors hover:bg-white/10">
             <span className="rounded-full bg-accent px-3 py-1 font-body text-xs font-semibold text-black">New</span>
             <span className="font-body text-xs text-white/90 sm:text-sm">PhD defended at Sorbonne Université · EURECOM, July 2026</span>
-            <ArrowDown className="mr-2 h-3.5 w-3.5 text-white/60 transition-colors group-hover:text-white" />
+            <ArrowDown className="mr-2 h-3.5 w-3.5 text-white/70 transition-colors group-hover:text-white" />
           </motion.a>
           <motion.div {...rise(0.45)} className="mt-6 font-mono text-xs uppercase tracking-[0.2em] text-white/70 md:text-sm">
             Information theory · Distributed learning · Graphs
@@ -1218,12 +1279,12 @@ function Hero() {
             as="h1"
             text="Javad Maheri"
             delay={0.5}
-            className="mt-3 font-heading text-7xl italic leading-[0.85] tracking-[-4px] text-white sm:text-8xl lg:text-[8.5rem]"
+            className="mt-3 font-heading text-5xl font-medium leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl"
           />
-          <motion.p {...rise(0.9)} className="mt-6 max-w-3xl font-heading text-2xl italic leading-tight text-white md:text-3xl">
+          <motion.p {...rise(0.9)} className="mt-5 max-w-2xl font-heading text-xl italic leading-snug text-white/90 md:text-2xl">
             I prove exact, non-asymptotic limits for distributed computation and learning on graph-structured data — and I build the systems that use them.
           </motion.p>
-          <motion.p {...rise(1.05)} className="mt-4 max-w-3xl font-body text-sm font-light leading-snug text-white/85 md:text-base">
+          <motion.p {...rise(1.05)} className="mt-4 max-w-3xl font-body text-sm leading-snug text-white/85 md:text-base">
             Information theorist and ML engineer · PhD,{" "}
             <a href="https://www.sorbonne-universite.fr/" {...NEW_TAB} className="underline decoration-white/30 underline-offset-4 hover:text-accent hover:decoration-accent">Sorbonne Université</a>
             {" · "}
@@ -1241,7 +1302,7 @@ function Hero() {
         <motion.a
           {...rise(1.7)}
           href="#research"
-          className="focus-ring absolute left-16 top-[calc(100svh-5.5rem)] hidden max-w-[210px] font-mono text-[11px] leading-snug text-white/55 hover:text-white/90 xl:block"
+          className="focus-ring absolute left-16 top-[calc(100svh-5.5rem)] hidden max-w-[210px] font-mono text-[11px] leading-snug text-white/70 hover:text-white/90 xl:block"
         >
           Move your mouse over the graph: it passes messages between nodes, like a GNN. Why graphs? →
         </motion.a>
@@ -1249,21 +1310,21 @@ function Hero() {
           {...rise(1.7)}
           href="#about"
           aria-label="Scroll to About"
-          className="focus-ring absolute right-16 top-[calc(100svh-4.75rem)] hidden flex-col items-center gap-1 font-mono text-[10px] uppercase tracking-[0.2em] text-white/55 hover:text-white xl:flex"
+          className="focus-ring absolute right-16 top-[calc(100svh-4.75rem)] hidden flex-col items-center gap-1 font-mono text-[10px] uppercase tracking-[0.2em] text-white/70 hover:text-white xl:flex"
         >
           Scroll
           <ScrollChevron />
         </motion.a>
         <motion.div {...rise(1.5)} className="flex flex-col items-center gap-4 px-4 pb-8">
-          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/55">Education</span>
+          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/70">Education</span>
           <div className="flex flex-wrap items-start justify-center gap-x-12 gap-y-4 md:gap-x-20">
             {[
               { name: "Sorbonne Université", sub: "EURECOM · PhD" },
               { name: "Sharif University of Technology", sub: "B.Sc." },
             ].map((u) => (
               <div key={u.name} className="flex flex-col items-center gap-1">
-                <span className="font-heading text-2xl italic leading-none tracking-tight text-white md:text-3xl">{u.name}</span>
-                <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-white/55">{u.sub}</span>
+                <span className="font-heading text-xl leading-none tracking-tight text-white md:text-2xl">{u.name}</span>
+                <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-white/70">{u.sub}</span>
               </div>
             ))}
           </div>
@@ -1293,15 +1354,15 @@ function News() {
       <motion.div {...rise(0)} className="flex flex-col gap-8 lg:flex-row lg:gap-16">
         <div className="lg:w-[380px] lg:shrink-0">
           <Kicker>// News</Kicker>
-          <h2 id="news-title" className="font-heading text-5xl italic leading-[0.9] tracking-[-2px] text-white md:text-6xl">Lately</h2>
+          <h2 id="news-title" className="font-heading text-4xl font-medium leading-tight tracking-tight text-white md:text-5xl">Lately</h2>
         </div>
         <ol className="min-w-0 flex-1 border-t border-white/15">
           {NEWS.map((n) => {
             const body = (
               <>
-                <span className="w-20 shrink-0 font-mono text-xs text-white/55 tabular-nums">{n.when}</span>
-                <span className="flex-1 font-body text-sm font-light leading-snug text-white/90 md:text-base">{n.text}</span>
-                {n.href && <ArrowUpRight className="mt-0.5 h-4 w-4 shrink-0 text-white/40 transition-colors group-hover:text-accent" />}
+                <span className="w-20 shrink-0 font-mono text-xs text-white/70 tabular-nums">{n.when}</span>
+                <span className="flex-1 font-body text-sm leading-snug text-white/90 md:text-base">{n.text}</span>
+                {n.href && <ArrowUpRight className="mt-0.5 h-4 w-4 shrink-0 text-white/60 transition-colors group-hover:text-accent" />}
               </>
             );
             return (
@@ -1354,9 +1415,9 @@ function About() {
         <div className="min-w-0">
           <motion.div {...rise(0.05)}>
             <Kicker>// About — who I am</Kicker>
-            <h2 className="font-heading text-6xl italic leading-[0.9] tracking-[-3px] text-white md:text-7xl">Hi, I’m Javad.</h2>
+            <h2 className="font-heading text-4xl font-medium leading-tight tracking-tight text-white md:text-5xl lg:text-6xl">Hi, I’m Javad.</h2>
           </motion.div>
-          <motion.div {...rise(0.15)} className="mt-8 flex max-w-[62ch] flex-col gap-4 font-body text-base font-light leading-relaxed text-white/90 md:text-lg">
+          <motion.div {...rise(0.15)} className="mt-8 flex max-w-[62ch] flex-col gap-4 font-body text-base leading-relaxed text-white/90 md:text-lg">
             <p>
               I’m a researcher in information theory and machine learning. I defended my PhD in Communication Systems at
               Sorbonne Université, at EURECOM, in July 2026, supervised by Prof. Petros Elia.
@@ -1374,7 +1435,7 @@ function About() {
           <motion.dl {...rise(0.25)} className="mt-10 grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
             {FACTS.map((f) => (
               <div key={f.k} className="min-w-0 border-t border-white/15 pt-3">
-                <dt className="font-mono text-[11px] uppercase tracking-[0.15em] text-white/55">{f.k}</dt>
+                <dt className="font-mono text-[11px] uppercase tracking-[0.15em] text-white/70">{f.k}</dt>
                 <dd className="mt-1 font-body text-sm text-white">{f.v}</dd>
               </div>
             ))}
@@ -1385,10 +1446,10 @@ function About() {
       <div className="mt-20 grid grid-cols-1 gap-6 lg:grid-cols-2">
         <motion.div {...rise(0)} className="liquid-glass rounded-[1.5rem] p-6 md:p-8">
           <Kicker>// What I want to work on</Kicker>
-          <p className="font-heading text-3xl italic leading-tight text-white md:text-4xl">
+          <p className="font-heading text-2xl italic leading-snug text-white md:text-3xl">
             Taking exact limits from distributed computing to the rest of graph-structured learning.
           </p>
-          <p className="mt-4 max-w-[60ch] font-body text-sm font-light leading-relaxed text-white/85 md:text-base">
+          <p className="mt-4 max-w-[60ch] font-body text-sm leading-relaxed text-white/85 md:text-base">
             The same toolkit — matching converses paired with constructions that achieve them — extends to graph neural networks,
             graph signal processing, causal inference and ISAC. Different graphs, the same underlying question.
           </p>
@@ -1402,8 +1463,8 @@ function About() {
           <Kicker>// A few highlights</Kicker>
           {HIGHLIGHTS.map((h) => (
             <div key={h.big} className="liquid-glass flex items-center gap-5 rounded-[1.25rem] p-5">
-              <span className="w-28 shrink-0 font-heading text-4xl italic leading-none text-white md:w-40 md:text-5xl">{h.big}</span>
-              <span className="font-body text-sm font-light leading-snug text-white/90">{h.small}</span>
+              <span className="w-24 shrink-0 font-heading text-3xl font-medium leading-none text-white md:w-28 md:text-4xl">{h.big}</span>
+              <span className="font-body text-sm leading-snug text-white/90">{h.small}</span>
             </div>
           ))}
         </motion.div>
@@ -1432,10 +1493,10 @@ function Research() {
       <div className="relative z-10 flex min-h-screen flex-col px-4 pb-16 pt-28 md:px-16 lg:px-20">
         <motion.div {...rise(0)}>
           <Kicker>// Research — what I study</Kicker>
-          <h2 className="font-heading text-6xl italic leading-[0.9] tracking-[-3px] text-white md:text-7xl lg:text-[6rem]">
+          <h2 className="font-heading text-4xl font-medium leading-[1.05] tracking-tight text-white md:text-5xl lg:text-6xl">
             Same question,<br />different graphs
           </h2>
-          <p className="mt-6 max-w-xl font-body text-sm font-light leading-snug text-white/90 md:text-base">
+          <p className="mt-6 max-w-xl font-body text-sm leading-snug text-white/90 md:text-base">
             Matching information-theoretic converses, paired with explicit combinatorial constructions that achieve them — applied wherever the data lives on a graph.
           </p>
         </motion.div>
@@ -1452,11 +1513,11 @@ function Research() {
               </div>
               <div className="flex flex-1 flex-col justify-center py-6">
                 {c.viz}
-                <p className="mt-3 font-mono text-[10px] leading-snug text-white/50">{c.caption}</p>
+                <p className="mt-3 font-mono text-[10px] leading-snug text-white/70">{c.caption}</p>
               </div>
               <div>
-                <h3 className="font-heading text-3xl italic leading-none tracking-[-1px] text-white md:text-4xl">{c.title}</h3>
-                <p className="mt-3 max-w-[36ch] font-body text-sm font-light leading-snug text-white/90">{c.body}</p>
+                <h3 className="font-heading text-2xl font-medium leading-tight tracking-tight text-white md:text-3xl">{c.title}</h3>
+                <p className="mt-3 max-w-[36ch] font-body text-sm leading-snug text-white/90">{c.body}</p>
                 <span className="mt-4 inline-flex items-center gap-1 font-body text-sm font-medium text-accent">
                   Explore this research <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </span>
@@ -1487,9 +1548,9 @@ function GapSection() {
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-6">
           <motion.div {...rise(0)}>
             <Kicker>// Exact optimality</Kicker>
-            <h2 className="font-heading text-5xl italic leading-[0.9] tracking-[-3px] text-white md:text-7xl lg:text-[6rem]">The gap closes</h2>
+            <h2 className="font-heading text-4xl font-medium leading-[1.05] tracking-tight text-white md:text-5xl lg:text-6xl">The gap closes</h2>
           </motion.div>
-          <motion.p {...rise(0.15)} className="max-w-md font-body text-sm font-light leading-snug text-white/90 md:text-base">
+          <motion.p {...rise(0.15)} className="max-w-md font-body text-sm leading-snug text-white/90 md:text-base">
             Most schemes are order-optimal: the gap to the lower bound shrinks with scale. My constructions meet the converse exactly, at every finite size.
           </motion.p>
         </div>
@@ -1510,12 +1571,12 @@ function GapSection() {
             <GapChart progressRef={progressRef} readoutRef={readoutRef} />
             <motion.div
               style={{ opacity: reduced ? 1 : zeroOpacity, scale: reduced ? 1 : zeroScale }}
-              className="pointer-events-none absolute right-2 top-2 rounded-full border border-white/30 bg-black/70 px-4 py-2 font-heading text-2xl italic text-white md:right-6 md:top-4 md:text-3xl"
+              className="pointer-events-none absolute right-2 top-2 rounded-full border border-white/30 bg-black/70 px-4 py-2 font-heading text-xl italic text-white md:right-6 md:top-4 md:text-2xl"
             >
               gap = 0
             </motion.div>
           </div>
-          <p className="mt-2 font-body text-[11px] text-white/50 md:text-xs">Illustrative curves; see the papers for exact results.</p>
+          <p className="mt-2 font-body text-[11px] text-white/70 md:text-xs">Illustrative curves; see the papers for exact results.</p>
         </div>
         <div className="mt-6 hidden flex-wrap gap-3 md:flex">
           {["Matching converses", "Explicit constructions", "Finite-size, not asymptotic"].map((t) => (
@@ -1533,7 +1594,7 @@ function Experience() {
     <section id="experience" className="relative bg-black px-4 pb-16 pt-28 md:px-16 lg:px-20">
       <motion.div {...rise(0)}>
         <Kicker>// Experience — what I’ve done</Kicker>
-        <h2 className="font-heading text-6xl italic leading-[0.9] tracking-[-3px] text-white md:text-7xl lg:text-[6rem]">
+        <h2 className="font-heading text-4xl font-medium leading-[1.05] tracking-tight text-white md:text-5xl lg:text-6xl">
           Theory, then<br />systems
         </h2>
       </motion.div>
@@ -1545,12 +1606,12 @@ function Experience() {
             {...rise(0.1 * i)}
             className="liquid-glass flex flex-col rounded-[1.25rem] p-6"
           >
-            <div className="font-mono text-[11px] text-white/60">{r.meta}</div>
-            <h3 className="mt-3 font-heading text-3xl italic leading-none tracking-[-1px] text-white">{r.org}</h3>
+            <div className="font-mono text-[11px] text-white/70">{r.meta}</div>
+            <h3 className="mt-3 font-heading text-2xl font-medium leading-tight tracking-tight text-white">{r.org}</h3>
             <div className="mt-2 font-body text-sm font-medium text-white/90">{r.role}</div>
             <ul className="mt-5 flex flex-col gap-3">
               {r.points.map((p) => (
-                <li key={p} className="flex gap-3 font-body text-sm font-light leading-snug text-white/85">
+                <li key={p} className="flex gap-3 font-body text-sm leading-snug text-white/85">
                   <span className="mt-[0.45em] block h-1.5 w-1.5 shrink-0 rounded-full bg-white/70" aria-hidden="true" />
                   <span>{p}</span>
                 </li>
@@ -1587,7 +1648,7 @@ function PubRow({ p, i, onHome = true }) {
   return (
     <motion.div {...rise(0.08 * i)} id={`paper-${p.slug}`} className="liquid-glass scroll-mt-28 rounded-[1.25rem] p-5">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-8">
-        <div className="font-heading text-4xl italic leading-none text-white md:w-24">{p.year}</div>
+        <div className="font-heading text-3xl font-medium leading-none text-white md:w-24">{p.year}</div>
         <div className="min-w-0 flex-1">
           {onHome || p.arxiv ? (
             <a
@@ -1600,7 +1661,7 @@ function PubRow({ p, i, onHome = true }) {
           ) : (
             <span className="font-body text-base font-medium leading-snug text-white md:text-lg">{p.title}</span>
           )}
-          <div className="mt-1 font-body text-sm font-light text-white/70">
+          <div className="mt-1 font-body text-sm text-white/70">
             {p.authors.map((a, j) => (
               <React.Fragment key={a}>
                 {j > 0 && ", "}
@@ -1639,7 +1700,7 @@ function Publications() {
       <motion.div {...rise(0)}>
         <Kicker>// Publications</Kicker>
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className="font-heading text-6xl italic leading-[0.9] tracking-[-3px] text-white md:text-7xl lg:text-[6rem]">Papers</h2>
+          <h2 className="font-heading text-4xl font-medium leading-[1.05] tracking-tight text-white md:text-5xl lg:text-6xl">Papers</h2>
           <a href={SCHOLAR_URL} {...NEW_TAB} className="liquid-glass focus-ring flex items-center gap-2 rounded-full px-4 py-2 font-body text-sm text-white transition-colors hover:bg-white/10">
             <BrandIcon d={SCHOLAR_PATH} className="h-4 w-4" /> Full list on Google Scholar <ArrowUpRight className="h-4 w-4" />
           </a>
@@ -1748,9 +1809,9 @@ function Journey() {
 function JourneyBody({ j }) {
   return (
     <>
-      <div className="font-mono text-[11px] text-white/60">{j.when}</div>
-      <div className="mt-2 font-heading text-2xl italic leading-none text-white">{j.where}</div>
-      <div className="mt-2 font-body text-xs font-light leading-snug text-white/85">{j.what}</div>
+      <div className="font-mono text-[11px] text-white/70">{j.when}</div>
+      <div className="mt-2 font-heading text-xl font-medium leading-tight text-white">{j.where}</div>
+      <div className="mt-2 font-body text-xs leading-snug text-white/85">{j.what}</div>
     </>
   );
 }
@@ -1764,11 +1825,11 @@ function Contact() {
       </div>
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 py-24 text-center">
         <Kicker>// Contact</Kicker>
-        <BlurText as="h2" text="Let’s talk graphs" className="font-heading text-6xl italic leading-[0.85] tracking-[-3px] text-white md:text-7xl lg:text-[6rem]" />
-        <motion.p {...rise(0.4)} className="mt-6 max-w-xl font-body text-sm font-light text-white/90 md:text-base">
+        <BlurText as="h2" text="Let’s talk graphs" className="font-heading text-4xl font-medium leading-[1.05] tracking-tight text-white md:text-5xl lg:text-6xl" />
+        <motion.p {...rise(0.4)} className="mt-6 max-w-xl font-body text-sm text-white/90 md:text-base">
           Questions about my work or an idea for a collaboration? Write to me.
         </motion.p>
-        <motion.p {...rise(0.5)} className="mt-2 font-mono text-xs text-white/60">Javad Maheri · Sophia Antipolis, France · Sorbonne Université · EURECOM</motion.p>
+        <motion.p {...rise(0.5)} className="mt-2 font-mono text-xs text-white/70">Javad Maheri · Sophia Antipolis, France · Sorbonne Université · EURECOM</motion.p>
         <motion.div {...rise(0.6)} className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <a href="mailto:j.maheri95@gmail.com" className="liquid-glass-strong focus-ring flex items-center gap-2 rounded-full px-5 py-2.5 font-body text-sm font-medium text-white">
             j.maheri95@gmail.com <ArrowUpRight />
@@ -1778,7 +1839,7 @@ function Contact() {
           <SocialRow only={["Google Scholar", "LinkedIn", "ORCID", "GitHub", "CV (PDF)"]} />
         </motion.div>
       </div>
-      <footer className="relative z-10 pb-6 text-center font-body text-xs text-white/40">© 2026 Javad Maheri</footer>
+      <footer className="relative z-10 pb-6 text-center font-body text-xs text-white/60">© 2026 Javad Maheri</footer>
     </section>
   );
 }
@@ -1903,7 +1964,7 @@ function InlineGapChart() {
       <div className="h-[clamp(220px,40svh,420px)]">
         <GapChart progressRef={progressRef} readoutRef={readoutRef} />
       </div>
-      <p className="mt-2 font-body text-[11px] text-white/50 md:text-xs">Illustrative curves; the gap closes as you scroll. See the papers for exact results.</p>
+      <p className="mt-2 font-body text-[11px] text-white/70 md:text-xs">Illustrative curves; the gap closes as you scroll. See the papers for exact results.</p>
     </div>
   );
 }
@@ -1912,7 +1973,7 @@ function SectionHead({ kicker, title, className = "" }) {
   return (
     <div className={className}>
       <Kicker>{kicker}</Kicker>
-      <h2 className="font-heading text-4xl italic leading-[0.95] tracking-[-2px] text-white md:text-5xl">{title}</h2>
+      <h2 className="font-heading text-3xl font-medium leading-tight tracking-tight text-white md:text-4xl">{title}</h2>
     </div>
   );
 }
@@ -1962,9 +2023,9 @@ function ResearchPage({ slug }) {
             text={t.title}
             justify="flex-start"
             delay={0.25}
-            className="max-w-5xl font-heading text-6xl italic leading-[0.88] tracking-[-3px] text-white md:text-7xl lg:text-[6.5rem]"
+            className="max-w-4xl font-heading text-4xl font-medium leading-[1.05] tracking-tight text-white md:text-5xl lg:text-6xl"
           />
-          <motion.p {...enter(0.6)} className="mt-6 max-w-3xl font-heading text-2xl italic leading-tight text-white/90 md:text-3xl">{t.lead}</motion.p>
+          <motion.p {...enter(0.6)} className="mt-5 max-w-3xl font-heading text-xl italic leading-snug text-white/90 md:text-2xl">{t.lead}</motion.p>
           <motion.ul {...enter(0.75)} className="mt-6 flex flex-wrap gap-2">
             {t.tags.map((tag) => <li key={tag} className={TAG_CLASS}>{tag}</li>)}
           </motion.ul>
@@ -1974,14 +2035,14 @@ function ResearchPage({ slug }) {
       <section className="px-4 md:px-16 lg:px-20">
         <motion.figure {...enter(0.9)} className="liquid-glass rounded-[1.5rem] p-5 md:p-8">
           <div className="mx-auto h-[clamp(200px,34svh,340px)] max-w-4xl">{t.viz("h-full")}</div>
-          <figcaption className="mt-4 max-w-3xl font-mono text-[11px] leading-snug text-white/55">{t.vizCaption}</figcaption>
+          <figcaption className="mt-4 max-w-3xl font-mono text-[11px] leading-snug text-white/70">{t.vizCaption}</figcaption>
         </motion.figure>
       </section>
 
       <section className="px-4 pt-24 md:px-16 lg:px-20">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[380px_1fr] lg:gap-16">
           <motion.div {...rise(0)}><SectionHead kicker="// The question" title={t.question.heading} /></motion.div>
-          <motion.div {...rise(0.1)} className="flex max-w-[62ch] flex-col gap-4 font-body text-base font-light leading-relaxed text-white/90 md:text-lg lg:pt-10">
+          <motion.div {...rise(0.1)} className="flex max-w-[62ch] flex-col gap-4 font-body text-base leading-relaxed text-white/90 md:text-lg lg:pt-10">
             {t.question.paras.map((para) => <p key={para}>{para}</p>)}
           </motion.div>
         </div>
@@ -1992,8 +2053,8 @@ function ResearchPage({ slug }) {
         <div className={`mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 ${t.approach.length === 3 ? "lg:grid-cols-3" : ""}`}>
           {t.approach.map((s, i) => (
             <motion.div key={s.title} {...rise(0.08 * i)} className="liquid-glass rounded-[1.25rem] p-6">
-              <h3 className="font-heading text-3xl italic leading-none tracking-[-1px] text-white">{s.title}</h3>
-              <p className="mt-3 font-body text-sm font-light leading-relaxed text-white/85">{s.body}</p>
+              <h3 className="font-heading text-2xl font-medium leading-tight tracking-tight text-white">{s.title}</h3>
+              <p className="mt-3 font-body text-sm leading-relaxed text-white/85">{s.body}</p>
             </motion.div>
           ))}
         </div>
@@ -2021,10 +2082,10 @@ function ResearchPage({ slug }) {
           <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
             {t.practice.map((r, i) => (
               <motion.article key={r.org} {...rise(0.08 * i)} className="liquid-glass rounded-[1.25rem] p-6">
-                <div className="font-mono text-[11px] text-white/60">{r.meta}</div>
-                <h3 className="mt-3 font-heading text-3xl italic leading-none tracking-[-1px] text-white">{r.org}</h3>
+                <div className="font-mono text-[11px] text-white/70">{r.meta}</div>
+                <h3 className="mt-3 font-heading text-2xl font-medium leading-tight tracking-tight text-white">{r.org}</h3>
                 <div className="mt-2 font-body text-sm font-medium text-white/90">{r.title}</div>
-                <p className="mt-3 font-body text-sm font-light leading-relaxed text-white/85">{r.body}</p>
+                <p className="mt-3 font-body text-sm leading-relaxed text-white/85">{r.body}</p>
               </motion.article>
             ))}
           </div>
@@ -2035,11 +2096,11 @@ function ResearchPage({ slug }) {
         <section className="px-4 pt-24 md:px-16 lg:px-20">
           <motion.div {...rise(0)} className="liquid-glass rounded-[1.5rem] p-6 md:p-10">
             <Kicker>// Where I want to take it</Kicker>
-            <p className="max-w-3xl font-heading text-3xl italic leading-tight text-white md:text-4xl">{t.next.text}</p>
+            <p className="max-w-3xl font-heading text-2xl italic leading-snug text-white md:text-3xl">{t.next.text}</p>
             <ul className="mt-6 flex flex-wrap gap-2">
               {t.next.items.map((item) => <li key={item} className={TAG_CLASS}>{item}</li>)}
             </ul>
-            <p className="mt-6 font-mono text-[11px] text-white/55">{t.next.foundations}</p>
+            <p className="mt-6 font-mono text-[11px] text-white/70">{t.next.foundations}</p>
           </motion.div>
         </section>
       )}
@@ -2059,9 +2120,9 @@ function ResearchPage({ slug }) {
                 {...rise(0.08 * i)}
                 className="liquid-glass glass-hover focus-ring group flex flex-col rounded-[1.25rem] p-6 transition-transform hover:-translate-y-0.5"
               >
-                <div className="font-mono text-[11px] text-white/55">{`Research ${TOPIC_ORDER.indexOf(s) + 1} — ${o.kicker}`}</div>
-                <h3 className="mt-3 font-heading text-3xl italic leading-none tracking-[-1px] text-white md:text-4xl">{o.title}</h3>
-                <p className="mt-3 max-w-[48ch] font-body text-sm font-light leading-snug text-white/85">{o.lead}</p>
+                <div className="font-mono text-[11px] text-white/70">{`Research ${TOPIC_ORDER.indexOf(s) + 1} — ${o.kicker}`}</div>
+                <h3 className="mt-3 font-heading text-2xl font-medium leading-tight tracking-tight text-white md:text-3xl">{o.title}</h3>
+                <p className="mt-3 max-w-[48ch] font-body text-sm leading-snug text-white/85">{o.lead}</p>
                 <span className="mt-5 inline-flex items-center gap-1 font-body text-sm font-medium text-accent">
                   Explore this research <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </span>
@@ -2083,8 +2144,8 @@ function ContactBand() {
     <section className="px-4 pb-10 pt-16 md:px-16 lg:px-20">
       <motion.div {...rise(0)} className="flex flex-col items-start justify-between gap-6 border-t border-white/15 pt-10 md:flex-row md:items-center">
         <div>
-          <div className="font-heading text-4xl italic leading-none text-white md:text-5xl">Let’s talk graphs</div>
-          <p className="mt-3 font-body text-sm font-light text-white/80">Questions about this work or an idea for a collaboration? Write to me.</p>
+          <div className="font-heading text-3xl font-medium leading-none text-white md:text-4xl">Let’s talk graphs</div>
+          <p className="mt-3 font-body text-sm text-white/80">Questions about this work or an idea for a collaboration? Write to me.</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <a href="mailto:j.maheri95@gmail.com" className="liquid-glass-strong focus-ring flex h-11 items-center gap-2 rounded-full px-5 font-body text-sm font-medium text-white transition-colors hover:bg-white/10">
@@ -2093,7 +2154,7 @@ function ContactBand() {
           <SocialRow only={["Google Scholar", "LinkedIn", "ORCID", "GitHub", "CV (PDF)"]} />
         </div>
       </motion.div>
-      <footer className="mt-10 font-body text-xs text-white/40">© 2026 Javad Maheri</footer>
+      <footer className="mt-10 font-body text-xs text-white/60">© 2026 Javad Maheri</footer>
     </section>
   );
 }

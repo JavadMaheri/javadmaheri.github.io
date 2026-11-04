@@ -13,13 +13,19 @@
   {%- if site.lab_noindex != false %}
   <meta name="robots" content="noindex,nofollow">
   {%- endif %}
-  <meta name="theme-color" content="#1c2226">
+  <meta name="theme-color" content="#1c2226" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f7f5ef" media="(prefers-color-scheme: light)">
+  <script>
+    // Apply a saved light/dark choice before first paint (no flash).
+    try { var t = localStorage.getItem("lab-theme"); if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t); } catch (e) {}
+  </script>
   <title>{{ include.title }}</title>
   <meta name="description" content="{{ include.description }}">
   <link rel="icon" href="{{ '/images/favicon.svg' | relative_url }}" type="image/svg+xml">
-  <link rel="preload" href="{{ '/lab/fonts/instrument-serif-latin-400-italic.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{{ '/lab/fonts/newsreader-latin-400-normal.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{{ '/lab/fonts/ibm-plex-sans-latin-400-normal.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="{{ '/lab/app.css' | relative_url }}">
-  <style>body{background:#1c2226;margin:0}</style>
+  <style>body{background:#1c2226;margin:0}@media (prefers-color-scheme: light){html:not([data-theme="dark"]) body{background:#f7f5ef}}html[data-theme="light"] body{background:#f7f5ef}</style>
 </head>
 <body>
   <div id="root"
