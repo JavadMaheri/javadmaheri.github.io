@@ -1,7 +1,9 @@
 ---
 title: "Fundamental Limits of Hypergraph Edge Partitioning under Independent Edge Sampling"
 collection: publications
-permalink: /publication/hypergraph-edge-partitioning-2026/
+permalink: /lab/publication/hypergraph-edge-partitioning-2026/
+redirect_from:
+  - /publication/hypergraph-edge-partitioning-2026/
 category: preprint
 status: "Submitted"
 venue: "IEEE Transactions on Information Theory"

@@ -1,7 +1,9 @@
 ---
 title: "Constructing Hamiltonian Decompositions of Complete k-Uniform Hypergraphs"
 collection: publications
-permalink: /publication/hamiltonian-decompositions-2025/
+permalink: /lab/publication/hamiltonian-decompositions-2025/
+redirect_from:
+  - /publication/hamiltonian-decompositions-2025/
 category: conference
 status: "Conference"
 venue: "IEEE International Symposium on Information Theory (ISIT) 2025"

@@ -38,7 +38,7 @@ Push to `main` — a GitHub Actions workflow (`.github/workflows/deploy.yml`) bu
 | Resume text (non-shared parts)         | `_pages/resume.md`                                                     |
 | CV PDF                                 | Replace `files/javad-maheri-cv.pdf` (keep the filename, or update the link in `_pages/resume.md`) |
 | Unlisted research profile              | `_pages/research.md`                                                   |
-| Profile photo                          | `images/profile.jpg` (classic sidebar) and `lab/images/portrait*.webp` (new site) |
+| Profile photo                          | `images/profile.jpg` (classic sidebar) and `site/images/portrait*.webp` (main site) |
 
 ## Outstanding TODOs
 

@@ -1,5 +1,7 @@
 ---
-permalink: /contact/
+permalink: /lab/contact/
+redirect_from:
+  - /contact/
 title: "Contact"
 author_profile: true
 description: "Contact Javad Maheri — PhD, EURECOM / Sorbonne Université, Sophia Antipolis, France."

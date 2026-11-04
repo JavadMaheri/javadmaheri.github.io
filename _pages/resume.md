@@ -1,8 +1,9 @@
 ---
-permalink: /resume/
+permalink: /lab/resume/
 title: "Resume"
 author_profile: true
 redirect_from:
+  - /resume/
   - /cv/
   - /cv
 description: "Resume / CV of Javad Maheri — PhD, EURECOM / Sorbonne Université. Download the PDF or read the summary below."
@@ -61,7 +62,7 @@ Selected Publications
 - {{ p.authors | markdownify | remove: "<p>" | remove: "</p>" }}. "[{{ p.title }}]({{ p.url | relative_url }})." *{{ p.venue }}*, {{ p.date | date: "%Y" }}. {{ p.status }}.{% if p.arxiv %} [arXiv:{{ p.arxiv }}](https://arxiv.org/abs/{{ p.arxiv }}){% endif %}
 {% endfor %}
 
-Full list with abstracts on the [Publications](/publications/) page.
+Full list with abstracts on the [Publications](/lab/publications/) page.
 
 Awards and Honors
 ======

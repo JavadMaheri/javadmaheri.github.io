@@ -5,16 +5,16 @@
 
 main:
   - title: "Home"
-    url: /
+    url: /lab/
 
   - title: "Work Experience"
-    url: /work-experience/
+    url: /lab/work-experience/
 
   - title: "Publications"
-    url: /publications/
+    url: /lab/publications/
 
   - title: "Contact"
-    url: /contact/
+    url: /lab/contact/
 
   - title: "Resume"
-    url: /resume/
+    url: /lab/resume/

@@ -1,7 +1,9 @@
 ---
 title: "Universal and Asymptotically Optimal Data and Task Allocation in Distributed Computing"
 collection: publications
-permalink: /publication/universal-optimal-allocation-2026/
+permalink: /lab/publication/universal-optimal-allocation-2026/
+redirect_from:
+  - /publication/universal-optimal-allocation-2026/
 category: journal
 status: "Accepted"
 venue: "IEEE Transactions on Information Theory"

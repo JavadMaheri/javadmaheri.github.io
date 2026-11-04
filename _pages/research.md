@@ -1,5 +1,7 @@
 ---
-permalink: /research/
+permalink: /lab/research/
+redirect_from:
+  - /research/
 title: "Research Profile — Javad Maheri"
 author_profile: true
 noindex: true

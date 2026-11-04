@@ -22,11 +22,6 @@ url                      : https://javadmaheri.github.io # TODO(user): confirm t
 baseurl                  : "" # the subpath of your site, e.g. "/blog" -- leave blank for a <username>.github.io root site
 repository               : "JavadMaheri/javadmaheri.github.io"
 
-# New design under /lab/ (see lab/README.md). lab_home is where its home page
-# lives: "/lab/" today, "/" if it replaces the classic homepage. Set
-# lab_noindex to false to let search engines index it.
-lab_home                 : "/lab/"
-lab_noindex              : true
 
 # Site Author - The following control what appear as part of the author content on the side bar.
 #               If a field is blank the icon and link will not appear, otherwise it will be shown.
@@ -200,10 +195,10 @@ exclude:
   - Rakefile
   - README
   - tmp
-  - lab/src
-  - lab/tailwind.config.js
-  - lab/fonts/README.md
-  - lab/README.md
+  - site/src
+  - site/tailwind.config.js
+  - site/fonts/README.md
+  - site/README.md
   - vendor
 keep_files:
   - .git
@@ -248,11 +243,21 @@ defaults:
     values:
       layout: single
       author_profile: true
+  # The classic theme lives under /lab/ as a secondary, text-only version of
+  # the site: keep it out of search results so it doesn't compete with the
+  # main site at /.
+  - scope:
+      path: "_pages"
+    values:
+      noindex: true
+      sitemap: false
   # _publications
   - scope:
       path: ""
       type: publications
     values:
+      noindex: true
+      sitemap: false
       layout: single
       author_profile: false
       share: false

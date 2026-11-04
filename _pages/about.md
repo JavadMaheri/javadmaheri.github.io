@@ -1,5 +1,5 @@
 ---
-permalink: /
+permalink: /lab/
 title: "Javad Maheri — PhD, EURECOM / Sorbonne Université"
 author_profile: true
 description: "Javad Maheri, PhD (EURECOM / Sorbonne Université): exact, non-asymptotic limits for distributed computing and learning on graph-structured data, and the systems that use them."
@@ -31,4 +31,4 @@ Selected publications
   {% endif %}
 {% endfor %}
 
-Full list, with links and status, on the [Publications](/publications/) page.
+Full list, with links and status, on the [Publications](/lab/publications/) page.

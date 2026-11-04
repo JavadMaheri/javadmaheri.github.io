@@ -1,4 +1,4 @@
-// Source for /lab/ — built into lab/app.js by `npm run build:lab`.
+// Source for the main site — built into site/app.js by `npm run build:site`.
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
@@ -14,10 +14,10 @@ import {
 /* ------------------------------------------------------------------ */
 
 const FADE_MS = 500;
-// Canvas palette, read from the theme's CSS variables (lab/src/styles.css)
+// Canvas palette, read from the theme's CSS variables (site/src/styles.css)
 // and refreshed by setTheme() / a system theme change.
 const PALETTE = { ink: "28,34,38", chalk: "237,235,228", accent: "240,203,90" };
-const THEME_EVENT = "lab-themechange";
+const THEME_EVENT = "themechange";
 function readPalette() {
   const cs = getComputedStyle(document.documentElement);
   for (const [key, name] of [["ink", "--ink"], ["chalk", "--chalk"], ["accent", "--accent"]]) {
@@ -30,7 +30,7 @@ const white = (a) => `rgba(${PALETTE.chalk},${a})`;
 const accent = (a) => `rgba(${PALETTE.accent},${a})`;
 const ink = () => `rgb(${PALETTE.ink})`;
 
-const THEME_KEY = "lab-theme";
+const THEME_KEY = "theme";
 function currentTheme() {
   const set = document.documentElement.getAttribute("data-theme");
   if (set === "light" || set === "dark") return set;
@@ -917,9 +917,10 @@ const site = (href) => (href && href.startsWith("/") ? SITE_ORIGIN + href : href
 const CV_URL = site("/files/javad-maheri-cv.pdf");
 
 // Which page this is, and where the others live, comes from data attributes on
-// #root set by each HTML shell (see _includes/lab-shell.html):
+// #root set by each HTML shell (see _includes/site-shell.html):
 //   data-page  "home" | "research"     data-topic  research slug
-//   data-base  URL of the lab root     data-home   URL of the home page
+//   data-base  URL that page paths start from   data-home   URL of the home page
+//   data-assets URL of the bundle, fonts and images (site/)
 //   data-index file appended to page URLs on hosts without directory indexes
 const ROOT_EL = document.getElementById("root");
 const PAGE = ROOT_EL.dataset.page || "home";
@@ -927,14 +928,15 @@ const TOPIC = ROOT_EL.dataset.topic || "";
 const BASE = ROOT_EL.dataset.base ?? "";
 const HOME = ROOT_EL.dataset.home ?? "./";
 const INDEX = ROOT_EL.dataset.index || "";
+const ASSETS = ROOT_EL.dataset.assets ?? BASE;
 const homeHref = (id) => (PAGE === "home" ? `#${id}` : `${HOME}#${id}`);
 const researchHref = (slug, anchor) => `${BASE}research/${slug}/${INDEX}${anchor ? `#${anchor}` : ""}`;
 // External links and the PDF open in a new tab so the page stays put.
 const NEW_TAB = { target: "_blank", rel: "noopener noreferrer" };
-// Portrait files live with the lab site (lab/images/), 4:5 crops at two widths.
+// Portrait files live with the site bundle (site/images/), 4:5 crops at two widths.
 const PORTRAIT = {
-  src: `${BASE}images/portrait.webp`,
-  srcSet: `${BASE}images/portrait-380.webp 380w, ${BASE}images/portrait.webp 640w`,
+  src: `${ASSETS}images/portrait.webp`,
+  srcSet: `${ASSETS}images/portrait-380.webp 380w, ${ASSETS}images/portrait.webp 640w`,
 };
 
 const NAV = [

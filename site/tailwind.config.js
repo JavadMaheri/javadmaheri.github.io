@@ -1,10 +1,10 @@
-/** Tailwind config for the /lab/ site only (built by `npm run build:lab`). */
+/** Tailwind config for the main site in site/ (built by `npm run build:site`). */
 module.exports = {
-  content: ["./lab/src/**/*.jsx"],
+  content: ["./site/src/**/*.jsx"],
   theme: {
     extend: {
       // Theme-aware colors: the values are CSS variables defined per theme in
-      // lab/src/styles.css. `black` is the page ground, `white` the ink.
+      // site/src/styles.css. `black` is the page ground, `white` the ink.
       colors: {
         black: "rgb(var(--ink) / <alpha-value>)",
         white: "rgb(var(--chalk) / <alpha-value>)",
