@@ -1,0 +1,39 @@
+{% comment %}
+  Shared publication renderer used by both /publications/ (collapsed
+  abstract) and /research/ (expanded abstract), so both pages read from
+  the same _publications collection instead of duplicating data.
+  Usage: {% include pub-entry.html post=post expanded=true %}
+{% endcomment %}
+{% assign p = include.post %}
+<div class="pub-entry" itemscope itemtype="http://schema.org/ScholarlyArticle">
+  <h3 class="pub-entry__title" itemprop="headline">
+    <a href="{{ p.url | relative_url }}">{{ p.title }}</a>
+  </h3>
+
+  <p class="pub-entry__meta">
+    {% if p.status %}<span class="pub-status">{{ p.status }}</span> &middot; {% endif %}
+    <em itemprop="isPartOf">{{ p.venue }}</em>{% if p.date %}, {{ p.date | date: "%Y" }}{% endif %}
+  </p>
+
+  {% if p.authors %}
+    <p class="pub-entry__authors" itemprop="author">{{ p.authors | markdownify | remove: "<p>" | remove: "</p>" }}</p>
+  {% endif %}
+
+  <p class="pub-entry__links">
+    {% if p.arxiv %}<a href="https://arxiv.org/abs/{{ p.arxiv }}">arXiv:{{ p.arxiv }}</a>{% endif %}
+    {% if p.doi %}<a href="https://doi.org/{{ p.doi }}">DOI</a>{% endif %}
+    {% if p.paperurl %}<a href="{{ p.paperurl }}">PDF</a>{% endif %}
+    {% if p.codeurl %}<a href="{{ p.codeurl }}">Code</a>{% endif %}
+  </p>
+
+  {% if p.excerpt %}
+    {% if include.expanded %}
+      <div class="pub-abstract">{{ p.excerpt | markdownify }}</div>
+    {% else %}
+      <details class="pub-abstract-toggle">
+        <summary>Abstract</summary>
+        <div class="pub-abstract">{{ p.excerpt | markdownify }}</div>
+      </details>
+    {% endif %}
+  {% endif %}
+</div>

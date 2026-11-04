@@ -1,0 +1,46 @@
+{
+  "name": "academic-pages",
+  "version": "0.8.1.1",
+  "description": "Academic Pages Mistakes Jekyll theme npm build scripts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/academicpages/academicpages.github.io"
+  },
+  "keywords": [
+    "jekyll",
+    "theme",
+    "minimal"
+  ],
+  "contributors": [
+    "Michael Rose",
+    "Robert Zupko"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/academicpages/academicpages.github.io/issues"
+  },
+  "homepage": "https://github.com/academicpages/academicpages.github.io",
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "dependencies": {
+    "jquery": "^3.7.1",
+    "plotly.js-dist-min": "^3.6.0"
+  },
+  "devDependencies": {
+    "jslint": "^0.12.1",
+    "onchange": "^7.1.0",
+    "uglify-js": "^3.19.3",
+    "esbuild": "0.24.2",
+    "tailwindcss": "3.4.17",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "framer-motion": "11.11.17"
+  },
+  "scripts": {
+    "uglify": "uglifyjs node_modules/jquery/dist/jquery.min.js assets/js/plugins/jquery.greedy-navigation.js assets/js/_main.js assets/js/theme.js -c -m -o assets/js/main.min.js",
+    "watch:js": "onchange \"assets/js/**/*.js\" -e \"assets/js/main.min.js\" -- npm run build:js",
+    "build:js": "npm run uglify",
+    "build:site": "tailwindcss -c site/tailwind.config.js -i site/src/styles.css -o site/app.css --minify && esbuild site/src/app.jsx --bundle --minify --format=iife --target=es2019 --define:process.env.NODE_ENV='\"production\"' --define:__SITE_ORIGIN__='\"\"' --outfile=site/app.js"
+  }
+}
