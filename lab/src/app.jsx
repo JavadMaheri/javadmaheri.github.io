@@ -931,8 +931,11 @@ const homeHref = (id) => (PAGE === "home" ? `#${id}` : `${HOME}#${id}`);
 const researchHref = (slug, anchor) => `${BASE}research/${slug}/${INDEX}${anchor ? `#${anchor}` : ""}`;
 // External links and the PDF open in a new tab so the page stays put.
 const NEW_TAB = { target: "_blank", rel: "noopener noreferrer" };
-// Set to "/images/profile.png" once the placeholder there is replaced with a real photo.
-const PORTRAIT_URL = null;
+// Portrait files live with the lab site (lab/images/), 4:5 crops at two widths.
+const PORTRAIT = {
+  src: `${BASE}images/portrait.webp`,
+  srcSet: `${BASE}images/portrait-380.webp 380w, ${BASE}images/portrait.webp 640w`,
+};
 
 const NAV = [
   { id: "home", label: "Home" },
@@ -1291,11 +1294,7 @@ function Hero() {
             I prove exact, non-asymptotic limits for distributed computation and learning on graph-structured data — and I build the systems that use them.
           </motion.p>
           <motion.p {...rise(1.05)} className="mt-4 max-w-2xl font-body text-sm leading-relaxed text-white/85 md:text-base">
-            Information theorist and ML engineer · PhD,{" "}
-            <a href="https://www.sorbonne-universite.fr/" {...NEW_TAB} className="underline decoration-white/30 underline-offset-4 hover:text-accent hover:decoration-accent">Sorbonne Université</a>
-            {" · "}
-            <a href="https://www.eurecom.fr/" {...NEW_TAB} className="underline decoration-white/30 underline-offset-4 hover:text-accent hover:decoration-accent">EURECOM</a>
-            {" "}· Sophia Antipolis, France
+            Information theorist and ML engineer · PhD, Sorbonne Université · EURECOM · Sophia Antipolis, France
           </motion.p>
           <motion.div {...rise(1.15)} className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-4">
             <a href="#about" className="liquid-glass-strong focus-ring flex h-11 items-center gap-2 rounded-full px-5 font-body text-sm font-medium text-white transition-colors hover:bg-white/10">
@@ -1390,24 +1389,23 @@ function News() {
 
 function Portrait() {
   return (
-    <div className="liquid-glass relative aspect-[4/5] w-full max-w-[380px] overflow-hidden rounded-[1.5rem]">
-      {PORTRAIT_URL ? (
-        <img src={PORTRAIT_URL} alt="Portrait of Javad Maheri" className="h-full w-full object-cover grayscale" />
-      ) : (
-        <>
-          <div className="absolute inset-0">
-            <HypergraphField density={0.35} edgeAlpha={0.22} interactive={false} linkCursor={false} topBias={false} seed={9} label="Small animated hypergraph behind the monogram" />
-          </div>
-          <div className="relative flex h-full flex-col items-center justify-center">
-            <span className="font-heading text-[7rem] italic leading-none text-white">jm</span>
-          </div>
-        </>
-      )}
-      <div className="absolute inset-x-4 bottom-4 flex items-center justify-between gap-2">
-        <span className="rounded-full bg-black/50 px-3 py-1 font-body text-xs text-white">Javad Maheri</span>
-        <span className="rounded-full bg-black/50 px-3 py-1 font-mono text-[10px] text-white/80">Sophia Antipolis</span>
-      </div>
-    </div>
+    <figure className="relative aspect-[4/5] w-full max-w-[380px] overflow-hidden rounded-[1.5rem] bg-white/5 ring-1 ring-white/15">
+      <img
+        src={PORTRAIT.src}
+        srcSet={PORTRAIT.srcSet}
+        sizes="(min-width: 1024px) 380px, (min-width: 420px) 380px, 100vw"
+        width="640"
+        height="800"
+        loading="lazy"
+        decoding="async"
+        alt="Javad Maheri by the sea at sunset, wearing glasses and a striped T-shirt"
+        className="h-full w-full object-cover"
+      />
+      <figcaption className="absolute inset-x-4 bottom-4 flex items-center justify-between gap-2">
+        <span className="rounded-full bg-black/70 px-3 py-1 font-body text-xs text-white backdrop-blur">Javad Maheri</span>
+        <span className="rounded-full bg-black/70 px-3 py-1 font-mono text-[10px] text-white/85 backdrop-blur">Sophia Antipolis</span>
+      </figcaption>
+    </figure>
   );
 }
 

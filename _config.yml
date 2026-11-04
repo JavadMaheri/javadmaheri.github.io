@@ -33,7 +33,7 @@ lab_noindex              : true
 #               Additional customization can be done by editing /_includes/author-profile.html
 author:
   # Biographic information
-  avatar           : "profile.png" # TODO(user): replace images/profile.png with your real photo (same filename), or change this path
+  avatar           : "profile.jpg"
   name             : "Javad Maheri"
   pronouns         : # example: "she/her"
   bio              : "PhD, EURECOM / Sorbonne Université. Exact limits for distributed computing and learning on graph-structured data — and the systems that use them."

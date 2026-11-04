@@ -38,7 +38,7 @@ Push to `main` — a GitHub Actions workflow (`.github/workflows/deploy.yml`) bu
 | Resume text (non-shared parts)         | `_pages/resume.md`                                                     |
 | CV PDF                                 | Replace `files/javad-maheri-cv.pdf` (keep the filename, or update the link in `_pages/resume.md`) |
 | Unlisted research profile              | `_pages/research.md`                                                   |
-| Profile photo                          | Replace `images/profile.png` (same filename), or change `author.avatar` in `_config.yml` |
+| Profile photo                          | `images/profile.jpg` (classic sidebar) and `lab/images/portrait*.webp` (new site) |
 
 ## Outstanding TODOs
 
@@ -48,7 +48,6 @@ Search the repo for `TODO(user)` — every placeholder, unresolved conflict betw
 - `_includes/work-experience-body.md` — the "Zarebin" employer conflicts with what one of your two source CVs says; resolve and it propagates to both Work Experience and Resume automatically.
 - `_publications/2026-01-01-universal-optimal-allocation.md` — publication status conflicts across sources; confirm the true current status.
 - `_pages/research.md` — thesis jury, "Current directions", and "Talks and service" are all placeholders awaiting your input.
-- `images/profile.png` — currently the template's placeholder image.
 
 ## Switching to a custom domain later
 
