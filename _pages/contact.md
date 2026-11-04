@@ -13,4 +13,4 @@ description: "Contact Javad Maheri — PhD, EURECOM / Sorbonne Université, Soph
 
 **Location:** Sophia Antipolis, France
 
-**Elsewhere:** [Google Scholar](https://scholar.google.com/citations?user=jg3ifAUAAAAJ&hl=en) · [ORCID](https://orcid.org/0009-0005-7148-713X) · [LinkedIn](https://www.linkedin.com/in/javad-maheri-845049169) · [GitHub](https://github.com/JavadMaheri) · [EURECOM profile](https://www.eurecom.edu/en/people/maheri-javad/publications) · [arXiv](https://arxiv.org/search/?searchtype=author&query=Maheri%2C+Javad)
+**Elsewhere:** [Google Scholar](https://scholar.google.com/citations?user=jg3ifAUAAAAJ&hl=en) · [ORCID](https://orcid.org/0009-0005-7148-713X) · [LinkedIn](https://www.linkedin.com/in/javad-maheri-845049169) · [GitHub](https://github.com/JavadMaheri) · [EURECOM profile](https://www.eurecom.fr/en/people/maheri-javad) · [arXiv](https://arxiv.org/search/?searchtype=author&query=Maheri%2C+Javad)
