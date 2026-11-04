@@ -69,8 +69,8 @@ Awards and Honors
 - Ranked 7th among 180,000+ candidates, Iranian National University Entrance Examination (B.Sc. level)
 - High honors graduate, B.Sc. in Electrical Engineering & Mathematics, Sharif University of Technology (2021)
 - Fully funded doctoral position, Huawei France Chair for Future Wireless Networks / France 2030 PEPR Networks of the Future (2023–2026)
-- ISIT 2024 Chess Event: drew against GM Vassilios Kotronias; featured on EURECOM news and the ISIT 2024 website
+- ISIT 2024 Chess Event: drew against GM Vassilios Kotronias; featured on [EURECOM news](https://www.eurecom.fr/en/news/beautiful-mind-eurecom) and the [ISIT 2024 website](https://2024.ieee-isit.org/chessisit-2024)
 
 Languages
 ======
-English · French (B1, actively improving) · Persian (native)
+English · French · Persian (native)

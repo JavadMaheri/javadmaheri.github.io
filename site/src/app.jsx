@@ -963,7 +963,7 @@ const SOCIALS = [
   { label: "LinkedIn", href: "https://www.linkedin.com/in/javad-maheri-845049169", icon: <BrandIcon d={LINKEDIN_PATH} />, external: true },
   { label: "ORCID", href: "https://orcid.org/0009-0005-7148-713X", icon: <BrandIcon d={ORCID_PATH} />, external: true },
   { label: "GitHub", href: "https://github.com/JavadMaheri", icon: <BrandIcon d={GITHUB_PATH} />, external: true },
-  { label: "EURECOM profile", href: "https://www.eurecom.edu/en/people/maheri-javad/publications", icon: <EurecomIcon />, external: true },
+  { label: "EURECOM profile", href: "https://www.eurecom.fr/en/people/maheri-javad", icon: <EurecomIcon />, external: true },
   { label: "CV (PDF)", href: CV_URL, icon: <CvIcon />, external: true },
 ];
 
@@ -988,6 +988,12 @@ function SocialRow({ size = "h-11 w-11", className = "", only }) {
   );
 }
 
+// Coverage of the ISIT 2024 chess game, as linked in the CV.
+const CHESS_LINKS = [
+  { label: "EURECOM news", href: "https://www.eurecom.fr/en/news/beautiful-mind-eurecom" },
+  { label: "ISIT 2024", href: "https://2024.ieee-isit.org/chessisit-2024" },
+];
+
 const NEWS = [
   { when: "Now", text: "Working on communication vs. load balancing in mixture-of-experts models, where the router draws the requested computations at every step.", href: homeHref("about") },
   { when: "Sep 2026", text: "PhD awarded by Sorbonne Université · EURECOM.", href: homeHref("about") },
@@ -996,7 +1002,7 @@ const NEWS = [
   { when: "2026", text: "Order-Optimal Task Allocation in Distributed Computing via Interweaved Cliques — accepted at ISIT 2026.", href: researchHref("allocation", "paper-interweaved-cliques") },
   { when: "2026", text: "Universal and Asymptotically Optimal Data and Task Allocation in Distributed Computing — accepted at IEEE Transactions on Information Theory.", href: researchHref("allocation", "paper-universal-allocation") },
   { when: "2025", text: "Constructing Hamiltonian Decompositions of Complete k-Uniform Hypergraphs — published at ISIT 2025.", href: researchHref("hypergraph-partitioning", "paper-hamiltonian-decompositions") },
-  { when: "2024", text: "Drew against GM Vassilios Kotronias at the ISIT 2024 chess event." },
+  { when: "2024", text: "Drew against GM Vassilios Kotronias at the ISIT 2024 chess event.", links: CHESS_LINKS },
 ];
 
 const FACTS = [
@@ -1007,7 +1013,7 @@ const FACTS = [
   { k: "Theory", v: "Information theory, learning theory, minimax lower bounds (Fano, Le Cam), high-dimensional probability, concentration, conformal prediction, convex and online optimization, combinatorial designs" },
   { k: "Toolbox", v: "Python, PyTorch, TensorFlow, NumPy / SciPy, Spark / GraphX, MATLAB, LaTeX, C/C++, Git, Linux" },
   { k: "Based in", v: "Sophia Antipolis, France" },
-  { k: "Languages", v: "English · French (B1, actively improving) · Persian (native)" },
+  { k: "Languages", v: "English · French · Persian (native)" },
 ];
 
 // Relevant coursework at Sharif University of Technology, grades out of 20 (from the CV).
@@ -1036,7 +1042,7 @@ const INTERESTS = [
 
 const HIGHLIGHTS = [
   { big: "7th", small: "of 180,000+ candidates in Iran’s national university entrance examination" },
-  { big: "½–½", small: "Drew against GM Vassilios Kotronias at the ISIT 2024 chess event" },
+  { big: "½–½", small: "Drew against GM Vassilios Kotronias at the ISIT 2024 chess event", links: CHESS_LINKS },
 ];
 
 const CARDS = [
@@ -1337,9 +1343,15 @@ function Hero() {
           <motion.p {...rise(0.9)} className="mt-5 max-w-2xl font-heading text-xl italic leading-snug text-white/90 md:text-2xl">
             I prove exact, non-asymptotic limits for distributed computation and learning on graph-structured data — and I build the systems that use them.
           </motion.p>
-          <motion.p {...rise(1.05)} className="mt-4 max-w-2xl font-body text-sm leading-relaxed text-white/85 md:text-base">
-            Information theorist and ML engineer · PhD, Sorbonne Université · EURECOM · Sophia Antipolis, France
-          </motion.p>
+          <motion.div {...rise(1.05)} className="mt-4 max-w-2xl font-body text-sm leading-relaxed text-white/85 md:text-base">
+            <p>
+              Specializing in distributed systems, applications of graph theory, probabilistic methods in combinatorics,
+              high-dimensional analysis and machine learning.
+            </p>
+            <p className="mt-1 text-white/70">
+              Information theorist and ML engineer · PhD, Sorbonne Université · EURECOM · Sophia Antipolis, France
+            </p>
+          </motion.div>
           <motion.div {...rise(1.15)} className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-4">
             <a href="#about" className="liquid-glass-strong focus-ring flex h-11 items-center gap-2 rounded-full px-5 font-body text-sm font-medium text-white transition-colors hover:bg-white/10">
               Get to know me <ArrowDown />
@@ -1397,6 +1409,18 @@ function ScrollChevron() {
   );
 }
 
+function InlineLinks({ links, className = "" }) {
+  return (
+    <span className={`flex flex-wrap gap-x-4 gap-y-1 ${className}`}>
+      {links.map((l) => (
+        <a key={l.href} href={l.href} {...NEW_TAB} className="focus-ring inline-flex items-center gap-1 rounded font-body text-xs font-medium text-accent underline-offset-4 hover:underline">
+          {l.label} <ArrowUpRight className="h-3 w-3" />
+        </a>
+      ))}
+    </span>
+  );
+}
+
 function News() {
   const rise = useRiseInView();
   return (
@@ -1411,7 +1435,10 @@ function News() {
             const body = (
               <>
                 <span className="w-20 shrink-0 font-mono text-xs text-white/70 tabular-nums">{n.when}</span>
-                <span className="flex-1 font-body text-sm leading-snug text-white/90 md:text-base">{n.text}</span>
+                <span className="flex-1 font-body text-sm leading-snug text-white/90 md:text-base">
+                  {n.text}
+                  {!n.href && n.links && <InlineLinks links={n.links} className="mt-2" />}
+                </span>
                 {n.href && <ArrowUpRight className="mt-0.5 h-4 w-4 shrink-0 text-white/60 transition-colors group-hover:text-accent" />}
               </>
             );
@@ -1563,7 +1590,10 @@ function About() {
           {HIGHLIGHTS.map((h) => (
             <div key={h.big} className="liquid-glass flex items-center gap-5 rounded-[1.25rem] p-5">
               <span className="w-24 shrink-0 font-heading text-3xl font-medium leading-none text-white md:w-28 md:text-4xl">{h.big}</span>
-              <span className="font-body text-sm leading-snug text-white/90">{h.small}</span>
+              <span className="font-body text-sm leading-snug text-white/90">
+                {h.small}
+                {h.links && <InlineLinks links={h.links} className="mt-2" />}
+              </span>
             </div>
           ))}
         </motion.div>
