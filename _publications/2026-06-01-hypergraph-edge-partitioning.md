@@ -3,8 +3,8 @@ title: "Fundamental Limits of Hypergraph Edge Partitioning under Independent Edg
 collection: publications
 permalink: /publication/hypergraph-edge-partitioning-2026/
 category: preprint
-status: "Under review"
-venue: "SIAM Journal on Discrete Mathematics"
+status: "Submitted"
+venue: "IEEE Transactions on Information Theory"
 authors: "**Javad Maheri**, K. K. Krishnan Namboodiri, Petros Elia"
 excerpt: "Abstract: TODO(user) — paste the real abstract here. Inline LaTeX like $\\mathcal{O}(n^2)$ is supported once MathJax loads."
 date: 2026-06-01

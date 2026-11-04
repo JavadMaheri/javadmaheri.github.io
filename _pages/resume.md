@@ -23,20 +23,35 @@ description: "Resume / CV of Javad Maheri — PhD, EURECOM / Sorbonne Universit�
 
 Education
 ======
-- **Ph.D. in Communication Systems** — Sorbonne Université / EURECOM, Biot, France. Defended July 2026; awarded September 2026. *Thesis: Universally Optimal Combinatorial Schemes for Distributed Computing and Learning.* Supervisor: Prof. Petros Elia.
-- **B.Sc. in Electrical Engineering & Mathematics** (double major, high honors) — Sharif University of Technology, Tehran. 2017–2022. Selected grades: Theory of Machine Learning 20/20, Graph Signal Processing 20/20, Biomedical Signal Processing 19.5/20, Information Theory 19.4/20, Deep Learning 19.1/20.
+- **Ph.D. in Communication Systems** — Sorbonne Université / EURECOM, Biot, France. 2023–2026; defended July 2026, awarded September 2026. *Thesis: Universally Optimal Combinatorial Schemes for Distributed Computing and Learning.* Advisor: Prof. Petros Elia. Jury: Prof. Dirk Slock (EURECOM), Prof. Michèle Wigger (CentraleSupélec), Prof. Giuseppe Caire (TU Berlin), Prof. Sheng Yang (CentraleSupélec).
+- **Graduate coursework, M.Sc. program in Electrical Engineering (Communication Systems)** — Sharif University of Technology, Tehran. 2021–2022. Graduate GPA 19.04/20 (cohort average 16.37).
+- **B.Sc. in Electrical Engineering & Mathematics** (minor in Math, high honors) — Sharif University of Technology, Tehran. 2016–2021.
+
+Relevant Coursework
+======
+*Sharif University of Technology, grades out of 20.*
+
+- **Information & communication:** Information Theory and Coding 19.4 · Special Topics in Communications 20.0 · Adaptive Filters 18.9
+- **Probability & statistics:** Stochastic Processes 20.0 · Engineering Probability & Statistics 19.5
+- **Learning:** Theory of Machine Learning 20.0 · Deep Learning 19.1 · Tensor Decompositions 19.4 · Compressed Sensing 17.9
+- **Optimization:** Convex Optimization II 19.2 · Convex Optimization I 18.5 · Numerical Optimization Methods 18.7
+- **Analysis & discrete math:** Real Analysis I 20.0 · Real Analysis II 20.0 · Engineering Mathematics 19.9 · Graph Theory 17.0
 
 Work Experience
 ======
 
 {% include work-experience-body.md %}
 
+Teaching
+======
+- **Teaching Assistant** — EURECOM & Sharif University of Technology (2019–2023): Digital Communications · Probability & Statistics · Digital Signal Processing · undergraduate tutorials in Engineering Mathematics and Graph Signal Processing. Problem classes, problem sets and solutions, office hours, and grading.
+
 Skills
 ======
-- **Languages:** Python (advanced), MATLAB, C/C++, LaTeX, SQL
-- **ML / DL:** PyTorch, TensorFlow, NumPy, SciPy, scikit-learn; graph neural networks, transformers and attention, CNNs, transfer learning
-- **Distributed & Data:** Apache Spark / GraphX, multi-GPU training, communication-efficient training, MapReduce-style workloads, cluster experiment pipelines
-- **Research areas:** Fundamental limits of distributed computing and learning, combinatorial design and coded caching, hypergraph partitioning, information theory, high-dimensional probability, spectral graph theory, graph signal processing, convex optimization
+- **Theory:** Information theory (converse bounds, information measures), network and distributed computing, learning theory, minimax lower bounds (Fano, Le Cam), high-dimensional probability, concentration inequalities, conformal prediction and risk control, convex and online optimization, graph and hypergraph theory, combinatorial designs
+- **ML systems:** Mixture-of-experts routing and expert parallelism, Transformers, diffusion models, RLHF / DPO
+- **Programming:** Python (advanced), MATLAB, LaTeX (advanced), C/C++ (intermediate)
+- **Frameworks:** PyTorch, TensorFlow, NumPy / SciPy, Apache Spark / GraphX, Git, Linux
 
 Selected Publications
 ======
@@ -50,11 +65,11 @@ Full list with abstracts on the [Publications](/publications/) page.
 
 Awards and Honors
 ======
-- Ranked 7th nationally among 180,000+ candidates, Iranian National University Entrance Examination (2017)
-- High honors graduate, B.Sc. in Electrical Engineering & Mathematics, Sharif University of Technology (2022)
+- Ranked 7th among 180,000+ candidates, Iranian National University Entrance Examination (B.Sc. level)
+- High honors graduate, B.Sc. in Electrical Engineering & Mathematics, Sharif University of Technology (2021)
 - Fully funded doctoral position, Huawei France Chair for Future Wireless Networks / France 2030 PEPR Networks of the Future (2023–2026)
 - ISIT 2024 Chess Event: drew against GM Vassilios Kotronias; featured on EURECOM news and the ISIT 2024 website
 
 Languages
 ======
-English (fluent) · French (B1) · Persian (native)
+English · French (B1, actively improving) · Persian (native)

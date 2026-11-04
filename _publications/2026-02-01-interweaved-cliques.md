@@ -1,5 +1,5 @@
 ---
-title: "Order Optimal Task Allocation in Distributed Computing via Interweaved Cliques"
+title: "Order-Optimal Task Allocation in Distributed Computing via Interweaved Cliques"
 collection: publications
 permalink: /publication/interweaved-cliques-2026/
 category: conference

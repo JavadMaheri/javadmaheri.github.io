@@ -14,11 +14,12 @@ I'm based in Sophia Antipolis, France.
 Research interests
 ======
 1. Fundamental limits of distributed computing and learning
-2. Combinatorial designs and coded caching
-3. Hypergraph partitioning
-4. Graph neural networks and graph signal processing
-5. Causal inference for spatiotemporal data
-6. Integrated sensing and communication (ISAC)
+2. Communication and load balancing in large-model training (mixture-of-experts)
+3. Combinatorial designs and coded caching
+4. Hypergraph partitioning
+5. Graph neural networks and graph signal processing
+6. Causal inference for spatiotemporal data
+7. Integrated sensing and communication (ISAC)
 
 Selected publications
 ======

@@ -28,7 +28,7 @@ Sorbonne Université / EURECOM — defended July 2026, awarded September 2026
 
 Supervisor: Prof. Petros Elia
 
-Jury: *TODO(user) — jury list not yet provided; paste names, affiliations, and roles and I'll fill this in.*
+Jury: Prof. Dirk Slock (EURECOM), Prof. Michèle Wigger (CentraleSupélec), Prof. Giuseppe Caire (TU Berlin), Prof. Sheng Yang (CentraleSupélec)
 
 Publications
 ======
@@ -46,11 +46,9 @@ Publications
 
 Current directions
 ======
-<!-- TODO(user): tell me what to put here -- which in-progress work is ready
-     to be mentioned publicly, and how you want it described. Nothing is
-     listed below until you confirm. -->
-
-*TODO — awaiting your go-ahead on what to list here.*
+- **Communication vs. load balancing in mixture-of-experts models:** expert placement as a distributed computing problem with routing-driven random demands; converse bounds and placements learned from observed routing data.
+- **Beyond independent sampling:** extending the limits above to correlated demands, with counting and min-entropy converse arguments.
+- **Certified resource budgets:** distribution-free, finite-sample guarantees for system budgets calibrated from data.
 
 Talks and service
 ======

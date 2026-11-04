@@ -978,21 +978,40 @@ function SocialRow({ size = "h-11 w-11", className = "", only }) {
 }
 
 const NEWS = [
+  { when: "Now", text: "Working on communication vs. load balancing in mixture-of-experts models, where the router draws the requested computations at every step.", href: homeHref("about") },
   { when: "Sep 2026", text: "PhD awarded by Sorbonne Université · EURECOM.", href: homeHref("about") },
   { when: "Jul 2026", text: "Defended my PhD thesis, Universally Optimal Combinatorial Schemes for Distributed Computing and Learning.", href: homeHref("about") },
-  { when: "Jun 2026", text: "New preprint: Fundamental Limits of Hypergraph Edge Partitioning under Independent Edge Sampling — under review at SIAM J. Discrete Mathematics.", href: researchHref("hypergraph-partitioning", "paper-hypergraph-edge-partitioning") },
-  { when: "2026", text: "Order Optimal Task Allocation in Distributed Computing via Interweaved Cliques — accepted at ISIT 2026.", href: researchHref("allocation", "paper-interweaved-cliques") },
-  { when: "Jan 2026", text: "New preprint: Universal and Asymptotically Optimal Data and Task Allocation in Distributed Computing — under revision at IEEE Transactions on Information Theory.", href: researchHref("allocation", "paper-universal-allocation") },
+  { when: "Jun 2026", text: "New preprint: Fundamental Limits of Hypergraph Edge Partitioning under Independent Edge Sampling — submitted to IEEE Transactions on Information Theory.", href: researchHref("hypergraph-partitioning", "paper-hypergraph-edge-partitioning") },
+  { when: "2026", text: "Order-Optimal Task Allocation in Distributed Computing via Interweaved Cliques — accepted at ISIT 2026.", href: researchHref("allocation", "paper-interweaved-cliques") },
+  { when: "2026", text: "Universal and Asymptotically Optimal Data and Task Allocation in Distributed Computing — accepted at IEEE Transactions on Information Theory.", href: researchHref("allocation", "paper-universal-allocation") },
   { when: "2025", text: "Constructing Hamiltonian Decompositions of Complete k-Uniform Hypergraphs — published at ISIT 2025.", href: researchHref("hypergraph-partitioning", "paper-hamiltonian-decompositions") },
   { when: "2024", text: "Drew against GM Vassilios Kotronias at the ISIT 2024 chess event." },
 ];
 
 const FACTS = [
+  { k: "PhD", v: "Communication Systems — Sorbonne Université · EURECOM, 2023–2026. Defended July 2026, awarded September 2026" },
+  { k: "Thesis jury", v: "Prof. Dirk Slock (EURECOM) · Prof. Michèle Wigger (CentraleSupélec) · Prof. Giuseppe Caire (TU Berlin) · Prof. Sheng Yang (CentraleSupélec)" },
+  { k: "Graduate study", v: "M.Sc. program in Electrical Engineering (Communication Systems) — Sharif University of Technology, 2021–2022 · GPA 19.04 / 20" },
+  { k: "B.Sc.", v: "Electrical Engineering & Mathematics (minor in Math) — Sharif University of Technology, 2016–2021, high honors" },
+  { k: "Theory", v: "Information theory, learning theory, minimax lower bounds (Fano, Le Cam), high-dimensional probability, concentration, conformal prediction, convex and online optimization, combinatorial designs" },
+  { k: "Toolbox", v: "Python, PyTorch, TensorFlow, NumPy / SciPy, Spark / GraphX, MATLAB, LaTeX, C/C++, Git, Linux" },
   { k: "Based in", v: "Sophia Antipolis, France" },
-  { k: "PhD", v: "Communication Systems — Sorbonne Université · EURECOM. Defended July 2026, awarded September 2026" },
-  { k: "B.Sc.", v: "Electrical Engineering & Mathematics — Sharif University of Technology, high honors" },
-  { k: "Toolbox", v: "Python, PyTorch, NumPy, Spark / GraphX, MATLAB, C/C++" },
-  { k: "Languages", v: "English (fluent) · French (B1) · Persian (native)" },
+  { k: "Languages", v: "English · French (B1, actively improving) · Persian (native)" },
+];
+
+// Relevant coursework at Sharif University of Technology, grades out of 20 (from the CV).
+const COURSEWORK = [
+  { area: "Information & communication", courses: [["Information Theory and Coding", "19.4"], ["Special Topics in Communications", "20.0"], ["Adaptive Filters", "18.9"]] },
+  { area: "Probability & statistics", courses: [["Stochastic Processes", "20.0"], ["Engineering Probability & Statistics", "19.5"]] },
+  { area: "Learning", courses: [["Theory of Machine Learning", "20.0"], ["Deep Learning", "19.1"], ["Tensor Decompositions", "19.4"], ["Compressed Sensing", "17.9"]] },
+  { area: "Optimization", courses: [["Convex Optimization II", "19.2"], ["Convex Optimization I", "18.5"], ["Numerical Optimization Methods", "18.7"]] },
+  { area: "Analysis & discrete math", courses: [["Real Analysis I", "20.0"], ["Real Analysis II", "20.0"], ["Engineering Mathematics", "19.9"], ["Graph Theory", "17.0"]] },
+];
+
+const ONGOING = [
+  { title: "Communication vs. load balancing in mixture-of-experts models", body: "Expert placement as a distributed computing problem with routing-driven random demands: converse bounds, and placements learned from observed routing data." },
+  { title: "Beyond independent sampling", body: "Extending the limits to correlated demands, with counting and min-entropy converse arguments." },
+  { title: "Certified resource budgets", body: "Distribution-free, finite-sample guarantees for system budgets calibrated from data." },
 ];
 
 const INTERESTS = [
@@ -1005,7 +1024,7 @@ const INTERESTS = [
 ];
 
 const HIGHLIGHTS = [
-  { big: "7th", small: "of 180,000+ candidates in Iran’s national university entrance exam (2017)" },
+  { big: "7th", small: "of 180,000+ candidates in Iran’s national university entrance examination" },
   { big: "½–½", small: "Drew against GM Vassilios Kotronias at the ISIT 2024 chess event" },
 ];
 
@@ -1044,10 +1063,10 @@ const PUBS = [
     year: "2026",
     title: "Fundamental Limits of Hypergraph Edge Partitioning under Independent Edge Sampling",
     authors: ["Javad Maheri", "K. K. Krishnan Namboodiri", "Petros Elia"],
-    venue: "SIAM Journal on Discrete Mathematics",
-    status: "Under review",
+    venue: "IEEE Transactions on Information Theory",
+    status: "Submitted",
     arxiv: "2606.13491",
-    bibtex: "@misc{maheri2026hypergraph,\n  title = {Fundamental Limits of Hypergraph Edge Partitioning under Independent Edge Sampling},\n  author = {Maheri, Javad and Namboodiri, K. K. Krishnan and Elia, Petros},\n  year = {2026},\n  eprint = {2606.13491},\n  archivePrefix = {arXiv},\n  note = {Under review, SIAM Journal on Discrete Mathematics}\n}",
+    bibtex: "@misc{maheri2026hypergraph,\n  title = {Fundamental Limits of Hypergraph Edge Partitioning under Independent Edge Sampling},\n  author = {Maheri, Javad and Namboodiri, K. K. Krishnan and Elia, Petros},\n  year = {2026},\n  eprint = {2606.13491},\n  archivePrefix = {arXiv},\n  note = {Submitted to IEEE Transactions on Information Theory}\n}",
     topic: "hypergraph-partitioning",
     slug: "hypergraph-edge-partitioning",
   },
@@ -1056,21 +1075,21 @@ const PUBS = [
     title: "Universal and Asymptotically Optimal Data and Task Allocation in Distributed Computing",
     authors: ["Javad Maheri", "K. K. Krishnan Namboodiri", "Petros Elia"],
     venue: "IEEE Transactions on Information Theory",
-    status: "Under revision",
+    status: "Accepted",
     arxiv: "2601.05873",
-    bibtex: "@misc{maheri2026universal,\n  title = {Universal and Asymptotically Optimal Data and Task Allocation in Distributed Computing},\n  author = {Maheri, Javad and Namboodiri, K. K. Krishnan and Elia, Petros},\n  year = {2026},\n  eprint = {2601.05873},\n  archivePrefix = {arXiv},\n  note = {Under revision, IEEE Transactions on Information Theory}\n}",
+    bibtex: "@article{maheri2026universal,\n  title = {Universal and Asymptotically Optimal Data and Task Allocation in Distributed Computing},\n  author = {Maheri, Javad and Namboodiri, K. K. Krishnan and Elia, Petros},\n  journal = {IEEE Transactions on Information Theory},\n  year = {2026},\n  note = {Accepted},\n  eprint = {2601.05873},\n  archivePrefix = {arXiv}\n}",
     topic: "allocation",
     slug: "universal-allocation",
   },
   {
     year: "2026",
-    title: "Order Optimal Task Allocation in Distributed Computing via Interweaved Cliques",
+    title: "Order-Optimal Task Allocation in Distributed Computing via Interweaved Cliques",
     authors: ["Javad Maheri", "K. K. Krishnan Namboodiri", "Petros Elia"],
     venue: "IEEE International Symposium on Information Theory (ISIT) 2026",
     status: "Conference",
     topic: "allocation",
     slug: "interweaved-cliques",
-    bibtex: "@inproceedings{maheri2026interweaved,\n  title = {Order Optimal Task Allocation in Distributed Computing via Interweaved Cliques},\n  author = {Maheri, Javad and Namboodiri, K. K. Krishnan and Elia, Petros},\n  booktitle = {Proc. IEEE International Symposium on Information Theory (ISIT)},\n  year = {2026}\n}",
+    bibtex: "@inproceedings{maheri2026interweaved,\n  title = {Order-Optimal Task Allocation in Distributed Computing via Interweaved Cliques},\n  author = {Maheri, Javad and Namboodiri, K. K. Krishnan and Elia, Petros},\n  booktitle = {Proc. IEEE International Symposium on Information Theory (ISIT)},\n  year = {2026}\n}",
   },
   {
     year: "2025",
@@ -1085,32 +1104,32 @@ const PUBS = [
 ];
 
 const JOURNEY = [
-  { when: "2017–2022", where: "Sharif University of Technology", what: "B.Sc. Electrical Engineering & Mathematics — double major, high honors" },
+  { when: "2016–2021", where: "Sharif University of Technology", what: "B.Sc. Electrical Engineering & Mathematics, high honors; then graduate coursework, 2021–2022" },
   { when: "2021", where: "MAPNA", what: "Scene-graph GNNs for safety video analytics" },
-  { when: "2022", where: "Zarebin", what: "PageRank on Spark / GraphX, graph Laplacian learning" },
-  { when: "2023–2026", where: "Sorbonne Université · EURECOM", what: "PhD, Huawei France Chair for Future Wireless Networks" },
+  { when: "2022", where: "Sharif & Zarebin", what: "Graph Laplacian learning, PageRank-style algorithms on Spark / GraphX" },
+  { when: "2023–2026", where: "Sorbonne Université · EURECOM", what: "PhD in Communication Systems, advised by Prof. Petros Elia" },
   { when: "Sep 2026", where: "PhD awarded", what: "Defended July 2026 · Universally Optimal Combinatorial Schemes for Distributed Computing and Learning", now: true },
 ];
 
 const ROLES = [
   {
-    role: "PhD Researcher",
+    role: "Doctoral Researcher",
     org: "Sorbonne Université · EURECOM",
-    meta: "Huawei France Chair · Biot, France · Apr 2023 – Jul 2026",
+    meta: "Biot, France · Apr 2023 – Jul 2026",
     points: [
-      "Built the first universally optimal allocation schemes: one task-blind assignment that is optimal for every downstream workload at once.",
-      "Derived matching information-theoretic lower bounds with explicit combinatorial constructions, cutting inter-node communication to its provable minimum on MapReduce-style workloads.",
-      "Designed and ran the full experimental program in Python (PyTorch, NumPy).",
+      "Proved information-theoretic converse bounds on the communication load of distributed computing and matched them with explicit schemes: order-optimal, and exactly optimal asymptotically over broad parameter regimes.",
+      "Designed universal (task-blind) data and task allocations on new clique- and hypergraph-decomposition constructions, with guarantees for every set of requested computations.",
+      "Characterized fundamental limits under random sampling of the requested computations, combining counting arguments with concentration inequalities and high-dimensional probability.",
+      "Planned, carried out and published this program largely independently; implemented constructions and numerical evaluations in Python.",
     ],
   },
   {
-    role: "Data Scientist / ML Engineer",
-    org: "Zarebin",
-    meta: "Tehran · Mar 2022 – Dec 2022",
+    role: "Undergraduate Researcher — Graph learning & large-scale graph algorithms",
+    org: "Sharif University of Technology & Zarebin",
+    meta: "Tehran · Jun – Dec 2022",
     points: [
-      "Ran PageRank and personalized PageRank over multi-million-edge graphs on Apache Spark / GraphX with Pregel-style message passing.",
-      "Learned market-dependency graphs from raw price series with convex graph Laplacian estimation under smoothness and sparsity constraints.",
-      "Benchmarked learned graphs against correlation baselines and delivered the pipeline to the client’s analytics team.",
+      "Investigated graph Laplacian learning to infer graph structure from multivariate stock-market data; formulated and solved the underlying convex programs.",
+      "Developed scalable PageRank-style algorithms on massive graphs with Apache Spark / GraphX.",
     ],
   },
   {
@@ -1124,6 +1143,19 @@ const ROLES = [
     ],
   },
 ];
+
+const EARLIER = [
+  { when: "Sep 2021 – Mar 2022", title: "Undergraduate thesis — Statistical signal processing", where: "Sharif University of Technology", body: "Adaptive and Kalman filtering pipelines for ECG denoising and source separation." },
+  { when: "Jun – Aug 2019", title: "Research intern — Applied deep learning", where: "Sharif University of Technology", body: "Leukocyte-nuclei segmentation in blood-smear images via color transforms and deep networks; peer-reviewed publication." },
+];
+
+const TEACHING = {
+  when: "2019 – 2023",
+  where: "EURECOM & Sharif University of Technology",
+  role: "Teaching Assistant",
+  courses: ["Digital Communications", "Probability & Statistics", "Digital Signal Processing", "Engineering Mathematics (tutorials)", "Graph Signal Processing (tutorials)"],
+  body: "Problem classes, problem sets and solutions, office hours, and grading.",
+};
 
 /* ------------------------------------------------------------------ */
 /* Sections                                                            */
@@ -1281,7 +1313,7 @@ function Hero() {
             <ArrowDown className="mr-2 h-3.5 w-3.5 shrink-0 text-white/70 transition-colors group-hover:text-white" />
           </motion.a>
           <motion.div {...rise(0.45)} className="mt-8 font-mono text-xs uppercase tracking-[0.2em] text-white/70 md:text-sm">
-            Information theory · Distributed learning · Graphs
+            Information theory · Distributed computing & learning · Learning theory · Combinatorics
           </motion.div>
           <BlurText
             as="h1"
@@ -1306,7 +1338,7 @@ function Hero() {
           <motion.dl {...rise(1.3)} className="mt-10 grid max-w-xl grid-cols-1 gap-4 border-t border-white/15 pt-6 sm:grid-cols-2">
             {[
               { name: "Sorbonne Université", sub: "PhD · EURECOM · 2026" },
-              { name: "Sharif University of Technology", sub: "B.Sc. · 2017–2022" },
+              { name: "Sharif University of Technology", sub: "B.Sc. · 2016–2021" },
             ].map((u) => (
               <div key={u.name} className="min-w-0">
                 <dt className="font-mono text-[11px] uppercase tracking-[0.15em] text-white/70">{u.sub}</dt>
@@ -1387,6 +1419,43 @@ function News() {
   );
 }
 
+function Coursework() {
+  const rise = useRiseInView();
+  return (
+    <motion.div {...rise(0)} className="mt-20" aria-labelledby="coursework-title">
+      <div className="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <Kicker>// Coursework — Sharif University of Technology</Kicker>
+          <h3 id="coursework-title" className="font-heading text-3xl font-medium leading-tight tracking-tight text-white md:text-4xl">The foundations</h3>
+        </div>
+        <div className="rounded-[1.25rem] border border-white/15 px-5 py-3">
+          <div className="font-mono text-[11px] uppercase tracking-[0.15em] text-white/70">Graduate GPA</div>
+          <div className="mt-1 font-heading text-3xl font-medium leading-none text-white tabular-nums">
+            19.04<span className="font-body text-base text-white/70"> / 20</span>
+          </div>
+          <div className="mt-1 font-body text-xs text-white/70">Cohort average 16.37</div>
+        </div>
+      </div>
+      <div className="mt-8 grid grid-cols-1 gap-x-8 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
+        {COURSEWORK.map((g) => (
+          <div key={g.area} className="min-w-0 border-t border-white/15 pt-4">
+            <h4 className="font-mono text-[11px] uppercase tracking-[0.15em] text-accent">{g.area}</h4>
+            <ul className="mt-3 flex flex-col gap-2">
+              {g.courses.map(([name, grade]) => (
+                <li key={name} className="flex items-baseline justify-between gap-4 font-body text-sm">
+                  <span className="text-white/90">{name}</span>
+                  <span className="shrink-0 font-mono text-xs text-white tabular-nums">{grade}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <p className="mt-6 font-body text-xs text-white/70">Grades out of 20.</p>
+    </motion.div>
+  );
+}
+
 function Portrait() {
   return (
     <figure className="relative aspect-[4/5] w-full max-w-[380px] overflow-hidden rounded-[1.5rem] bg-white/5 ring-1 ring-white/15">
@@ -1428,13 +1497,14 @@ function About() {
               Sorbonne Université, prepared at EURECOM under Prof. Petros Elia: defended in July 2026 and awarded in September 2026.
             </p>
             <p>
-              My work asks a precise question: what is the best a distributed system can do, exactly? I prove information-theoretic
-              lower bounds and build explicit combinatorial schemes that meet them, so the gap closes at every finite size rather than
-              only in the limit.
+              I characterize exact communication limits of distributed computing and learning: which data each worker should hold
+              so that any requested set of computations is served with minimum communication. My results pair information-theoretic
+              converse bounds with explicit, task-blind constructions that meet them, and extend to random sampling of the requested
+              computations through concentration and high-dimensional probability.
             </p>
             <p>
-              Before the PhD I studied Electrical Engineering and Mathematics at Sharif University of Technology, and built graph-based
-              ML systems in industry: PageRank on Spark, learned market graphs, and GNNs for industrial safety video.
+              Before the PhD I studied Electrical Engineering and Mathematics at Sharif University of Technology, followed graduate
+              coursework in communication systems, and worked on graph learning and large-scale graph algorithms.
             </p>
           </motion.div>
           <motion.dl {...rise(0.25)} className="mt-10 grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
@@ -1448,17 +1518,29 @@ function About() {
         </div>
       </div>
 
+      <Coursework />
+
       <div className="mt-20 grid grid-cols-1 gap-6 lg:grid-cols-2">
         <motion.div {...rise(0)} className="liquid-glass rounded-[1.5rem] p-6 md:p-8">
-          <Kicker>// What I want to work on</Kicker>
+          <Kicker>// What I’m working on next</Kicker>
           <p className="font-heading text-2xl italic leading-snug text-white md:text-3xl">
-            Taking exact limits from distributed computing to the rest of graph-structured learning.
+            Exact limits for large-model training.
           </p>
           <p className="mt-4 max-w-[60ch] font-body text-sm leading-relaxed text-white/85 md:text-base">
-            The same toolkit — matching converses paired with constructions that achieve them — extends to graph neural networks,
-            graph signal processing, causal inference and ISAC. Different graphs, the same underlying question.
+            I’m bringing this toolkit to the communication and load-balancing tradeoff of mixture-of-experts models, where the
+            router samples the requested computations at every step, together with finite-sample guarantees for placements
+            learned from observed routing data.
           </p>
-          <ul className="mt-6 flex flex-wrap gap-2">
+          <ul className="mt-6 flex flex-col gap-4 border-t border-white/15 pt-5">
+            {ONGOING.map((o) => (
+              <li key={o.title}>
+                <div className="font-body text-sm font-medium text-white">{o.title}</div>
+                <p className="mt-1 font-body text-sm leading-snug text-white/80">{o.body}</p>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-6 font-mono text-[11px] uppercase tracking-[0.15em] text-white/70">Also interested in</div>
+          <ul className="mt-3 flex flex-wrap gap-2">
             {INTERESTS.map((t) => (
               <li key={t} className="rounded-full border border-white/15 px-3 py-1 font-body text-xs text-white/70">{t}</li>
             ))}
@@ -1624,6 +1706,33 @@ function Experience() {
             </ul>
           </motion.article>
         ))}
+      </div>
+      <div className="mt-14 grid grid-cols-1 gap-10 lg:grid-cols-2">
+        <motion.div {...rise(0)}>
+          <Kicker>// Earlier research</Kicker>
+          <ul className="flex flex-col">
+            {EARLIER.map((e) => (
+              <li key={e.title} className="border-t border-white/15 py-4">
+                <div className="font-mono text-[11px] text-white/70">{e.when} · {e.where}</div>
+                <div className="mt-1 font-body text-base font-medium text-white">{e.title}</div>
+                <p className="mt-1 font-body text-sm leading-snug text-white/80">{e.body}</p>
+              </li>
+            ))}
+          </ul>
+        </motion.div>
+        <motion.div {...rise(0.1)}>
+          <Kicker>// Teaching</Kicker>
+          <div className="border-t border-white/15 py-4">
+            <div className="font-mono text-[11px] text-white/70">{TEACHING.when} · {TEACHING.where}</div>
+            <div className="mt-1 font-body text-base font-medium text-white">{TEACHING.role}</div>
+            <ul className="mt-3 flex flex-wrap gap-2">
+              {TEACHING.courses.map((c) => (
+                <li key={c} className="rounded-full border border-white/15 px-3 py-1 font-body text-xs text-white/80">{c}</li>
+              ))}
+            </ul>
+            <p className="mt-3 font-body text-sm leading-snug text-white/80">{TEACHING.body}</p>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -1895,6 +2004,10 @@ const TOPICS = {
       { title: "Matching converses", body: "Information-theoretic lower bounds that the constructions meet, cutting inter-node communication to its provable minimum on MapReduce-style workloads." },
     ],
     gap: true,
+    next: {
+      text: "Next: mixture-of-experts models, where expert placement is a distributed computing problem whose demands are drawn by the router at every step.",
+      items: ["Communication vs. load balancing", "Converse bounds for routing-driven demands", "Placements learned from routing data"],
+    },
   },
   "hypergraph-partitioning": {
     kicker: "Combinatorics & probability",
@@ -1915,6 +2028,10 @@ const TOPICS = {
       { title: "Exact combinatorics", body: "Enumerative and constructive arguments instead of concentration-of-measure heuristics, because the goal is a bound that is tight at finite size, not only asymptotically." },
       { title: "Structure in complete hypergraphs", body: "Related work constructs Hamiltonian decompositions of complete k-uniform hypergraphs: explicit structure inside the most symmetric hypergraphs." },
     ],
+    next: {
+      text: "Beyond independent sampling: extending these limits to correlated demands, with counting and min-entropy converse arguments.",
+      items: ["Correlated demands", "Min-entropy converses", "Distribution-free, finite-sample guarantees"],
+    },
   },
   "graph-learning": {
     kicker: "Machine learning",
@@ -1942,7 +2059,7 @@ const TOPICS = {
     next: {
       text: "The same toolkit, matching converses paired with constructions that achieve them, extends to graph neural networks, graph signal processing, causal inference and integrated sensing and communication.",
       items: ["Graph neural networks and graph signal processing", "Causal inference for spatiotemporal data", "Integrated sensing and communication (ISAC)"],
-      foundations: "Coursework at Sharif: Graph Signal Processing 20/20 · Theory of Machine Learning 20/20 · Deep Learning 19.1/20",
+      foundations: "Coursework at Sharif: Theory of Machine Learning 20/20 · Deep Learning 19.1/20 · Tensor Decompositions 19.4/20 · Graph Theory 17.0/20",
     },
   },
 };
@@ -2105,7 +2222,7 @@ function ResearchPage({ slug }) {
             <ul className="mt-6 flex flex-wrap gap-2">
               {t.next.items.map((item) => <li key={item} className={TAG_CLASS}>{item}</li>)}
             </ul>
-            <p className="mt-6 font-mono text-[11px] text-white/70">{t.next.foundations}</p>
+            {t.next.foundations && <p className="mt-6 font-mono text-[11px] text-white/70">{t.next.foundations}</p>}
           </motion.div>
         </section>
       )}
