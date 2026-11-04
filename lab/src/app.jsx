@@ -14,7 +14,11 @@ import {
 /* ------------------------------------------------------------------ */
 
 const FADE_MS = 500;
-const white = (a) => `rgba(255,255,255,${a})`;
+// Canvas palette; keep in sync with the colors in lab/tailwind.config.js.
+const INK = "#1c2226";
+const CHALK = "#edebe4";
+const white = (a) => `rgba(237,235,228,${a})`;
+const accent = (a) => `rgba(240,203,90,${a})`;
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 const easeInOut = (k) => (k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2);
 
@@ -274,9 +278,9 @@ function HypergraphField({
       for (const e of state.hyper) {
         const a = e.age < FADE_MS ? e.age / FADE_MS : e.age > FADE_MS + HYPER_HOLD_MS ? (life - e.age) / FADE_MS : 1;
         if (blobPath(ctx, e.members.map((i) => P[i]), 16)) {
-          ctx.fillStyle = white(0.05 * a);
+          ctx.fillStyle = accent(0.06 * a);
           ctx.fill();
-          ctx.strokeStyle = white(0.35 * a);
+          ctx.strokeStyle = accent(0.45 * a);
           ctx.stroke();
         }
         for (const i of e.members) nodes[i].glow = Math.max(nodes[i].glow, 0.45 * a);
@@ -323,8 +327,8 @@ function HypergraphField({
       const a = P[pu.from], b = P[pu.to];
       const x = a.x + (b.x - a.x) * k, y = a.y + (b.y - a.y) * k;
       const g = ctx.createRadialGradient(x, y, 0, x, y, 7);
-      g.addColorStop(0, white(0.9 * pu.k));
-      g.addColorStop(1, white(0));
+      g.addColorStop(0, accent(0.95 * pu.k));
+      g.addColorStop(1, accent(0));
       ctx.fillStyle = g;
       ctx.beginPath(); ctx.arc(x, y, 7, 0, 6.283); ctx.fill();
       if (k < 1) { next.push(pu); continue; }
@@ -446,8 +450,8 @@ function AllocationViz({ className = "h-40" }) {
         ctx.beginPath();
         ctx.roundRect(x, y, cell, cell, 2);
         if (has && on > 0) {
-          const active = filled - j < 1.6 ? 1 : 0;
-          ctx.fillStyle = white((0.35 + 0.55 * on + 0.1 * active) * fade);
+          const fresh = filled - j < 1.6;
+          ctx.fillStyle = fresh ? accent(0.95 * fade) : white((0.35 + 0.55 * on) * fade);
           ctx.fill();
         } else {
           ctx.strokeStyle = white(0.1);
@@ -468,12 +472,12 @@ function AllocationViz({ className = "h-40" }) {
     ctx.beginPath(); ctx.roundRect(left, by, gw * load, 5, 3); ctx.fill();
     const cx = left + gw * conv;
     ctx.setLineDash([3, 3]);
-    ctx.strokeStyle = white(progress >= 1 ? 0.9 : 0.5);
+    ctx.strokeStyle = progress >= 1 ? accent(1) : white(0.5);
     ctx.beginPath(); ctx.moveTo(cx, by - 6); ctx.lineTo(cx, by + 11); ctx.stroke();
     ctx.setLineDash([]);
     ctx.fillStyle = white(0.45);
     ctx.fillText("load", 0, by + 2.5);
-    ctx.fillStyle = white(progress >= 1 ? 0.9 : 0.55);
+    ctx.fillStyle = progress >= 1 ? accent(1) : white(0.55);
     ctx.fillText("converse", cx + 5, by + 16);
   });
   return (
@@ -534,9 +538,9 @@ function EdgeSamplingViz({ className = "h-40" }) {
       if (!state.active[i]) return;
       const isCut = ES_CUT.includes(e);
       if (blobPath(ctx, e.map(pt), 7)) {
-        ctx.fillStyle = white(isCut ? 0.09 : 0.04);
+        ctx.fillStyle = isCut ? accent(0.1) : white(0.04);
         ctx.fill();
-        ctx.strokeStyle = white(isCut ? 0.6 : 0.22);
+        ctx.strokeStyle = isCut ? accent(0.75) : white(0.22);
         ctx.lineWidth = 1;
         ctx.stroke();
       }
@@ -549,7 +553,7 @@ function EdgeSamplingViz({ className = "h-40" }) {
     ES_NODES.forEach((_, i) => {
       const p = pt(i);
       ctx.beginPath(); ctx.arc(p.x, p.y, 3, 0, 6.283);
-      if (ES_PART_B.has(i)) { ctx.strokeStyle = white(0.9); ctx.lineWidth = 1.2; ctx.fillStyle = "#000"; ctx.fill(); ctx.stroke(); }
+      if (ES_PART_B.has(i)) { ctx.strokeStyle = white(0.9); ctx.lineWidth = 1.2; ctx.fillStyle = INK; ctx.fill(); ctx.stroke(); }
       else { ctx.fillStyle = white(0.95); ctx.fill(); }
     });
     ctx.font = `9px ${MONO}`;
@@ -572,7 +576,7 @@ function EdgeSamplingViz({ className = "h-40" }) {
     ctx.beginPath(); ctx.moveTo(hx, bottom + 0.5); ctx.lineTo(hx + hw, bottom + 0.5); ctx.stroke();
     if (state.n >= 15) {
       const a = Math.min(1, (state.n - 15) / 40);
-      ctx.strokeStyle = white(0.9 * a);
+      ctx.strokeStyle = accent(0.95 * a);
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       smoothLine(ctx, ES_PMF.map((p, k) => ({ x: hx + k * bw + bw / 2, y: bottom - ((p * state.n) / yMax) * hh })));
@@ -581,10 +585,10 @@ function EdgeSamplingViz({ className = "h-40" }) {
     }
     const mx = hx + (ES_M * ES_P) * bw + bw / 2;
     ctx.setLineDash([3, 3]);
-    ctx.strokeStyle = white(0.6);
+    ctx.strokeStyle = accent(0.7);
     ctx.beginPath(); ctx.moveTo(mx, top - 4); ctx.lineTo(mx, bottom); ctx.stroke();
     ctx.setLineDash([]);
-    ctx.fillStyle = white(0.6);
+    ctx.fillStyle = accent(0.85);
     ctx.fillText("E[cut] = mp", Math.min(mx + 4, w - 64), top - 4);
     ctx.fillStyle = white(0.45);
     const label = `n = ${Math.round(state.n)}`;
@@ -646,7 +650,7 @@ function GraphSignalViz({ className = "h-40" }) {
     for (let i = 0; i < 12; i++) {
       const v = clamp(x[i], 0, 1);
       if (v > 0.25) {
-        ctx.fillStyle = white(0.12 * v);
+        ctx.fillStyle = accent(0.18 * v);
         ctx.beginPath(); ctx.arc(P[i].x, P[i].y, 8 + 14 * v, 0, 6.283); ctx.fill();
       }
       ctx.fillStyle = white(0.3 + 0.7 * v);
@@ -729,14 +733,14 @@ function GapChart({ progressRef, readoutRef }) {
       C.forEach((p, i) => (i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)));
       for (let i = A.length - 1; i >= 0; i--) ctx.lineTo(A[i].x, A[i].y);
       ctx.closePath();
-      ctx.fillStyle = white(0.08);
+      ctx.fillStyle = accent(0.1);
       ctx.fill();
     }
-    const stroke = (pts, width, alpha, dash) => {
+    const stroke = (pts, width, alpha, dash, color = white) => {
       if (pts.length < 2) return;
       ctx.setLineDash(dash || []);
       ctx.lineWidth = width;
-      ctx.strokeStyle = white(alpha);
+      ctx.strokeStyle = color(alpha);
       ctx.beginPath();
       pts.forEach((p, i) => (i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y)));
       ctx.stroke();
@@ -745,18 +749,18 @@ function GapChart({ progressRef, readoutRef }) {
     stroke(Bc, 1.5, 0.45, [6, 6]);
     stroke(A, 2, 0.95);
     ctx.save();
-    ctx.shadowColor = white(0.7);
+    ctx.shadowColor = accent(0.6);
     ctx.shadowBlur = 14;
-    stroke(C, 2.5, 1);
+    stroke(C, 2.5, 1, null, accent);
     ctx.restore();
     const merged = e > 0.985;
     for (let r = 1; r <= Math.floor(rEnd); r++) {
       ctx.beginPath();
       ctx.arc(X(r), Y(thisWork(r)), 4, 0, 6.283);
-      ctx.fillStyle = merged ? "#fff" : "#000";
+      ctx.fillStyle = merged ? accent(1) : INK;
       ctx.fill();
       ctx.lineWidth = 1.5;
-      ctx.strokeStyle = white(1);
+      ctx.strokeStyle = accent(1);
       ctx.stroke();
     }
     ctx.lineWidth = 1;
@@ -838,20 +842,6 @@ const ArrowUpRight = ({ className = "h-5 w-5" }) => (
 const ArrowDown = ({ className = "h-4 w-4" }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M12 5v14" /><path d="M19 12l-7 7-7-7" />
-  </svg>
-);
-const TouchingCurves = () => (
-  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
-    <path d="M3 5c6 0 8 9 11 9s5-9 11-9" />
-    <path d="M3 23c6 0 8-9 11-9s5 9 11 9" opacity="0.6" />
-    <circle cx="14" cy="14" r="1.6" fill="#fff" />
-  </svg>
-);
-const PaperStack = () => (
-  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" aria-hidden="true">
-    <rect x="7" y="4" width="15" height="19" rx="2" />
-    <path d="M4 8v15a2 2 0 0 0 2 2h12" opacity="0.6" />
-    <path d="M11 10h7M11 14h7M11 18h4" />
   </svg>
 );
 const MaterialIcon = ({ d }) => (
@@ -944,7 +934,7 @@ function SocialRow({ size = "h-11 w-11", className = "", only }) {
             {...(s.external ? NEW_TAB : {})}
             aria-label={s.label}
             title={s.label}
-            className={`liquid-glass focus-ring flex ${size} items-center justify-center rounded-full text-white/85 transition-colors hover:bg-white hover:text-black`}
+            className={`liquid-glass focus-ring flex ${size} items-center justify-center rounded-full text-white/85 transition-colors hover:bg-accent hover:text-black`}
           >
             {s.icon}
           </a>
@@ -955,7 +945,7 @@ function SocialRow({ size = "h-11 w-11", className = "", only }) {
 }
 
 const NEWS = [
-  { when: "Jul 2026", text: "Defended my PhD at EURECOM / Sorbonne Université.", href: homeHref("about") },
+  { when: "Jul 2026", text: "Defended my PhD at Sorbonne Université · EURECOM.", href: homeHref("about") },
   { when: "Jun 2026", text: "New preprint: Fundamental Limits of Hypergraph Edge Partitioning under Independent Edge Sampling — under review at SIAM J. Discrete Mathematics.", href: researchHref("hypergraph-partitioning", "paper-hypergraph-edge-partitioning") },
   { when: "2026", text: "Order Optimal Task Allocation in Distributed Computing via Interweaved Cliques — accepted at ISIT 2026.", href: researchHref("allocation", "paper-interweaved-cliques") },
   { when: "Jan 2026", text: "New preprint: Universal and Asymptotically Optimal Data and Task Allocation in Distributed Computing — under revision at IEEE Transactions on Information Theory.", href: researchHref("allocation", "paper-universal-allocation") },
@@ -965,7 +955,7 @@ const NEWS = [
 
 const FACTS = [
   { k: "Based in", v: "Sophia Antipolis, France" },
-  { k: "PhD", v: "Communication Systems — EURECOM / Sorbonne Université, 2026" },
+  { k: "PhD", v: "Communication Systems — Sorbonne Université · EURECOM, 2026" },
   { k: "B.Sc.", v: "Electrical Engineering & Mathematics — Sharif University of Technology, high honors" },
   { k: "Toolbox", v: "Python, PyTorch, NumPy, Spark / GraphX, MATLAB, C/C++" },
   { k: "Languages", v: "English (fluent) · French (B1) · Persian (native)" },
@@ -1065,14 +1055,14 @@ const JOURNEY = [
   { when: "2017–2022", where: "Sharif University of Technology", what: "B.Sc. Electrical Engineering & Mathematics — double major, high honors" },
   { when: "2021", where: "MAPNA", what: "Scene-graph GNNs for safety video analytics" },
   { when: "2022", where: "Zarebin", what: "PageRank on Spark / GraphX, graph Laplacian learning" },
-  { when: "2023–2026", where: "EURECOM / Sorbonne Université", what: "PhD, Huawei France Chair for Future Wireless Networks" },
+  { when: "2023–2026", where: "Sorbonne Université · EURECOM", what: "PhD, Huawei France Chair for Future Wireless Networks" },
   { when: "July 2026", where: "PhD defended", what: "Universally Optimal Combinatorial Schemes for Distributed Computing and Learning", now: true },
 ];
 
 const ROLES = [
   {
     role: "PhD Researcher",
-    org: "EURECOM / Sorbonne Université",
+    org: "Sorbonne Université · EURECOM",
     meta: "Huawei France Chair · Biot, France · Apr 2023 – Jul 2026",
     points: [
       "Built the first universally optimal allocation schemes: one task-blind assignment that is optimal for every downstream workload at once.",
@@ -1134,7 +1124,7 @@ function Navbar() {
             {l.label}
           </a>
         ))}
-        <a href={CV_URL} {...NEW_TAB} className="focus-ring ml-1 flex items-center gap-1 whitespace-nowrap rounded-full bg-white px-4 py-2 font-body text-sm font-medium text-black">
+        <a href={CV_URL} {...NEW_TAB} className="focus-ring ml-1 flex items-center gap-1 whitespace-nowrap rounded-full bg-accent px-4 py-2 font-body text-sm font-medium text-black transition-colors hover:bg-white">
           Download CV <ArrowUpRight className="h-4 w-4" />
         </a>
       </div>
@@ -1161,7 +1151,7 @@ function Navbar() {
               {l.label}
             </a>
           ))}
-          <a href={CV_URL} {...NEW_TAB} className="mt-1 flex items-center justify-center gap-1 rounded-full bg-white px-4 py-3 font-body text-sm font-medium text-black">
+          <a href={CV_URL} {...NEW_TAB} className="mt-1 flex items-center justify-center gap-1 rounded-full bg-accent px-4 py-3 font-body text-sm font-medium text-black">
             Download CV <ArrowUpRight className="h-4 w-4" />
           </a>
         </motion.div>
@@ -1193,7 +1183,7 @@ function SectionRail() {
           {i > 0 && <span className="h-7 w-px" style={{ background: white(i <= active ? 0.6 : 0.15) }} />}
           <a href={`#${s.id}`} tabIndex={-1} className="group relative flex h-4 w-4 items-center justify-center">
             <motion.span
-              className="block rounded-full bg-white"
+              className={`block rounded-full ${i === active ? "bg-accent" : "bg-white"}`}
               animate={{ width: i === active ? 10 : 5, height: i === active ? 10 : 5, opacity: i <= active ? 1 : 0.35 }}
               transition={{ duration: 0.3 }}
             />
@@ -1217,8 +1207,8 @@ function Hero() {
       <div className="relative z-10 flex flex-1 flex-col">
         <div className="flex flex-1 flex-col items-center justify-center px-4 pb-10 pt-28 text-center">
           <motion.a {...rise(0.3)} href="#news" className="liquid-glass focus-ring group flex items-center gap-2 rounded-full p-1 transition-colors hover:bg-white/10">
-            <span className="rounded-full bg-white px-3 py-1 font-body text-xs font-semibold text-black">New</span>
-            <span className="font-body text-xs text-white/90 sm:text-sm">PhD defended — EURECOM / Sorbonne Université, July 2026</span>
+            <span className="rounded-full bg-accent px-3 py-1 font-body text-xs font-semibold text-black">New</span>
+            <span className="font-body text-xs text-white/90 sm:text-sm">PhD defended at Sorbonne Université · EURECOM, July 2026</span>
             <ArrowDown className="mr-2 h-3.5 w-3.5 text-white/60 transition-colors group-hover:text-white" />
           </motion.a>
           <motion.div {...rise(0.45)} className="mt-6 font-mono text-xs uppercase tracking-[0.2em] text-white/70 md:text-sm">
@@ -1235,9 +1225,9 @@ function Hero() {
           </motion.p>
           <motion.p {...rise(1.05)} className="mt-4 max-w-3xl font-body text-sm font-light leading-snug text-white/85 md:text-base">
             Information theorist and ML engineer · PhD,{" "}
-            <a href="https://www.eurecom.fr/" {...NEW_TAB} className="underline decoration-white/30 underline-offset-4 hover:decoration-white">EURECOM</a>
-            {" / "}
-            <a href="https://www.sorbonne-universite.fr/" {...NEW_TAB} className="underline decoration-white/30 underline-offset-4 hover:decoration-white">Sorbonne Université</a>
+            <a href="https://www.sorbonne-universite.fr/" {...NEW_TAB} className="underline decoration-white/30 underline-offset-4 hover:text-accent hover:decoration-accent">Sorbonne Université</a>
+            {" · "}
+            <a href="https://www.eurecom.fr/" {...NEW_TAB} className="underline decoration-white/30 underline-offset-4 hover:text-accent hover:decoration-accent">EURECOM</a>
             {" "}· Sophia Antipolis, France
           </motion.p>
           <motion.div {...rise(1.15)} className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-4">
@@ -1246,24 +1236,6 @@ function Hero() {
             </a>
             <span className="hidden h-6 w-px bg-white/20 sm:block" aria-hidden="true" />
             <SocialRow />
-          </motion.div>
-          <motion.div {...rise(1.35)} className="mt-8 flex w-full flex-wrap items-stretch justify-center gap-4">
-            {[
-              { icon: <TouchingCurves />, num: "PhD", label: "EURECOM / Sorbonne Université, defended July 2026", href: "#about" },
-              { icon: <PaperStack />, num: "4 Papers", label: "ISIT ’25 · ISIT ’26 · IEEE T-IT · SIAM J. DM", href: "#publications" },
-              { icon: <MaterialIcon d={SHARE_PATH} />, num: "3 Roles", label: "Research at EURECOM, ML engineering at Zarebin and MAPNA", href: "#experience" },
-            ].map((s, i) => (
-              <a key={s.num} href={s.href} className={`liquid-glass glass-hover focus-ring group ${i === 2 ? "hidden sm:flex" : "flex"} w-[calc(50%-8px)] max-w-[220px] flex-col justify-between gap-5 rounded-[1.25rem] p-4 text-left transition-transform hover:-translate-y-0.5 sm:w-[220px] sm:p-5`}>
-                <div className="flex items-start justify-between">
-                  {s.icon}
-                  <ArrowDown className="h-4 w-4 text-white/40 transition-colors group-hover:text-white" />
-                </div>
-                <div>
-                  <div className="font-heading text-3xl italic leading-none tracking-[-1px] text-white sm:text-4xl">{s.num}</div>
-                  <div className="mt-2 font-body text-xs font-light text-white">{s.label}</div>
-                </div>
-              </a>
-            ))}
           </motion.div>
         </div>
         <motion.a
@@ -1283,9 +1255,17 @@ function Hero() {
           <ScrollChevron />
         </motion.a>
         <motion.div {...rise(1.5)} className="flex flex-col items-center gap-4 px-4 pb-8">
-          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/55">Research & engineering with</span>
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 font-heading text-2xl italic tracking-tight text-white md:gap-x-14 md:text-3xl">
-            {["EURECOM", "Sorbonne Université", "Sharif", "MAPNA", "Zarebin"].map((n) => <span key={n}>{n}</span>)}
+          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/55">Education</span>
+          <div className="flex flex-wrap items-start justify-center gap-x-12 gap-y-4 md:gap-x-20">
+            {[
+              { name: "Sorbonne Université", sub: "EURECOM · PhD" },
+              { name: "Sharif University of Technology", sub: "B.Sc." },
+            ].map((u) => (
+              <div key={u.name} className="flex flex-col items-center gap-1">
+                <span className="font-heading text-2xl italic leading-none tracking-tight text-white md:text-3xl">{u.name}</span>
+                <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-white/55">{u.sub}</span>
+              </div>
+            ))}
           </div>
         </motion.div>
       </div>
@@ -1321,7 +1301,7 @@ function News() {
               <>
                 <span className="w-20 shrink-0 font-mono text-xs text-white/55 tabular-nums">{n.when}</span>
                 <span className="flex-1 font-body text-sm font-light leading-snug text-white/90 md:text-base">{n.text}</span>
-                {n.href && <ArrowUpRight className="mt-0.5 h-4 w-4 shrink-0 text-white/40 transition-colors group-hover:text-white" />}
+                {n.href && <ArrowUpRight className="mt-0.5 h-4 w-4 shrink-0 text-white/40 transition-colors group-hover:text-accent" />}
               </>
             );
             return (
@@ -1379,7 +1359,7 @@ function About() {
           <motion.div {...rise(0.15)} className="mt-8 flex max-w-[62ch] flex-col gap-4 font-body text-base font-light leading-relaxed text-white/90 md:text-lg">
             <p>
               I’m a researcher in information theory and machine learning. I defended my PhD in Communication Systems at
-              EURECOM / Sorbonne Université in July 2026, supervised by Prof. Petros Elia.
+              Sorbonne Université, at EURECOM, in July 2026, supervised by Prof. Petros Elia.
             </p>
             <p>
               My work asks a precise question: what is the best a distributed system can do, exactly? I prove information-theoretic
@@ -1433,7 +1413,13 @@ function About() {
 }
 
 function Kicker({ children }) {
-  return <div className="mb-6 font-mono text-sm text-white/70">{children}</div>;
+  const text = String(children);
+  const marked = text.startsWith("//");
+  return (
+    <div className="mb-6 font-mono text-sm text-white/70">
+      {marked ? <><span className="text-accent">//</span>{text.slice(2)}</> : text}
+    </div>
+  );
 }
 
 function Research() {
@@ -1471,7 +1457,7 @@ function Research() {
               <div>
                 <h3 className="font-heading text-3xl italic leading-none tracking-[-1px] text-white md:text-4xl">{c.title}</h3>
                 <p className="mt-3 max-w-[36ch] font-body text-sm font-light leading-snug text-white/90">{c.body}</p>
-                <span className="mt-4 inline-flex items-center gap-1 font-body text-sm font-medium text-white">
+                <span className="mt-4 inline-flex items-center gap-1 font-body text-sm font-medium text-accent">
                   Explore this research <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </span>
               </div>
@@ -1516,7 +1502,7 @@ function GapSection() {
               <span className="inline-block w-4 border-t border-dashed border-white/60" /> order-optimal
             </span>
             <span className="flex items-center gap-2 pr-3 font-mono text-[11px] text-white/80">
-              <span className="inline-block h-[3px] w-4 bg-white shadow-[0_0_8px_white]" /> this work
+              <span className="inline-block h-[3px] w-4 bg-accent shadow-[0_0_8px_rgba(240,203,90,0.8)]" /> this work
             </span>
             <span ref={readoutRef} className="ml-auto font-mono text-xs text-white/80" aria-live="off">gap = {GAP_START.toFixed(3)}</span>
           </div>
@@ -1706,7 +1692,7 @@ function Journey() {
             >
               {JOURNEY[i].now && !reduced && (
                 <motion.span
-                  className="absolute inset-0 rounded-full bg-white"
+                  className="absolute inset-0 rounded-full bg-accent"
                   animate={{ scale: [1, 3], opacity: [0.5, 0] }}
                   transition={{ duration: 1.8, repeat: Infinity, ease: "easeOut" }}
                 />
@@ -1782,7 +1768,7 @@ function Contact() {
         <motion.p {...rise(0.4)} className="mt-6 max-w-xl font-body text-sm font-light text-white/90 md:text-base">
           Questions about my work or an idea for a collaboration? Write to me.
         </motion.p>
-        <motion.p {...rise(0.5)} className="mt-2 font-mono text-xs text-white/60">Javad Maheri · Sophia Antipolis, France · EURECOM / Sorbonne Université</motion.p>
+        <motion.p {...rise(0.5)} className="mt-2 font-mono text-xs text-white/60">Javad Maheri · Sophia Antipolis, France · Sorbonne Université · EURECOM</motion.p>
         <motion.div {...rise(0.6)} className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <a href="mailto:j.maheri95@gmail.com" className="liquid-glass-strong focus-ring flex items-center gap-2 rounded-full px-5 py-2.5 font-body text-sm font-medium text-white">
             j.maheri95@gmail.com <ArrowUpRight />
@@ -1911,7 +1897,7 @@ function InlineGapChart() {
       <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[11px] text-white/80">
         <span className="flex items-center gap-2"><span className="inline-block h-[2px] w-4 bg-white" /> converse</span>
         <span className="flex items-center gap-2"><span className="inline-block w-4 border-t border-dashed border-white/60" /> order-optimal</span>
-        <span className="flex items-center gap-2"><span className="inline-block h-[3px] w-4 bg-white shadow-[0_0_8px_white]" /> this work</span>
+        <span className="flex items-center gap-2"><span className="inline-block h-[3px] w-4 bg-accent shadow-[0_0_8px_rgba(240,203,90,0.8)]" /> this work</span>
         <span ref={readoutRef} className="ml-auto text-white/80">gap = {(reduced ? 0 : GAP_START).toFixed(3)}</span>
       </div>
       <div className="h-[clamp(220px,40svh,420px)]">
@@ -2076,7 +2062,7 @@ function ResearchPage({ slug }) {
                 <div className="font-mono text-[11px] text-white/55">{`Research ${TOPIC_ORDER.indexOf(s) + 1} — ${o.kicker}`}</div>
                 <h3 className="mt-3 font-heading text-3xl italic leading-none tracking-[-1px] text-white md:text-4xl">{o.title}</h3>
                 <p className="mt-3 max-w-[48ch] font-body text-sm font-light leading-snug text-white/85">{o.lead}</p>
-                <span className="mt-5 inline-flex items-center gap-1 font-body text-sm font-medium text-white">
+                <span className="mt-5 inline-flex items-center gap-1 font-body text-sm font-medium text-accent">
                   Explore this research <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </span>
               </motion.a>

@@ -12,12 +12,12 @@
 
 html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-body { background: #000; color: #fff; -webkit-font-smoothing: antialiased; }
-::selection { background: rgba(255,255,255,0.9); color: #000; }
+body { background: #1c2226; color: #edebe4; -webkit-font-smoothing: antialiased; }
+::selection { background: #f0cb5a; color: #1c2226; }
 
 @layer components {
 .liquid-glass {
-  background: rgba(255,255,255,0.01);
+  background: rgba(255,255,255,0.035);
   background-blend-mode: luminosity;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
@@ -44,7 +44,7 @@ body { background: #000; color: #fff; -webkit-font-smoothing: antialiased; }
   pointer-events: none;
 }
 .liquid-glass-strong {
-  background: rgba(255,255,255,0.01);
+  background: rgba(255,255,255,0.06);
   background-blend-mode: luminosity;
   backdrop-filter: blur(50px);
   -webkit-backdrop-filter: blur(50px);
@@ -83,4 +83,4 @@ body { background: #000; color: #fff; -webkit-font-smoothing: antialiased; }
 .glass-hover:hover::after { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25); }
 }
 
-.focus-ring:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.focus-ring:focus-visible { outline: 2px solid #f0cb5a; outline-offset: 3px; }
