@@ -34,12 +34,12 @@ author:
   bio              : "PhD, EURECOM / Sorbonne Université. Exact limits for distributed computing and learning on graph-structured data — and the systems that use them."
   location         : "Sophia Antipolis, France"
   employer         : "EURECOM / Sorbonne Université"
-  uri              : # URL
+  uri              : "https://javadmaheri.github.io/" # "Website" in the classic sidebar: back to the main site
   email            : "j.maheri95@gmail.com"
 
   # Academic websites
   academia         : # URL
-  arxiv            : # TODO(user): your arXiv author page URL, e.g. https://arxiv.org/a/maheri_j_1
+  arxiv            : "https://arxiv.org/search/?searchtype=author&query=Maheri%2C+Javad"
   googlescholar    : "https://scholar.google.com/citations?user=jg3ifAUAAAAJ&hl=en"
   inspire-hep      : # URL
   impactstory      : # URL
