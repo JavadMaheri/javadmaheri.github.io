@@ -975,7 +975,8 @@ function SocialRow({ size = "h-11 w-11", className = "", only }) {
 }
 
 const NEWS = [
-  { when: "Jul 2026", text: "Defended my PhD at Sorbonne Université · EURECOM.", href: homeHref("about") },
+  { when: "Sep 2026", text: "PhD awarded by Sorbonne Université · EURECOM.", href: homeHref("about") },
+  { when: "Jul 2026", text: "Defended my PhD thesis, Universally Optimal Combinatorial Schemes for Distributed Computing and Learning.", href: homeHref("about") },
   { when: "Jun 2026", text: "New preprint: Fundamental Limits of Hypergraph Edge Partitioning under Independent Edge Sampling — under review at SIAM J. Discrete Mathematics.", href: researchHref("hypergraph-partitioning", "paper-hypergraph-edge-partitioning") },
   { when: "2026", text: "Order Optimal Task Allocation in Distributed Computing via Interweaved Cliques — accepted at ISIT 2026.", href: researchHref("allocation", "paper-interweaved-cliques") },
   { when: "Jan 2026", text: "New preprint: Universal and Asymptotically Optimal Data and Task Allocation in Distributed Computing — under revision at IEEE Transactions on Information Theory.", href: researchHref("allocation", "paper-universal-allocation") },
@@ -985,7 +986,7 @@ const NEWS = [
 
 const FACTS = [
   { k: "Based in", v: "Sophia Antipolis, France" },
-  { k: "PhD", v: "Communication Systems — Sorbonne Université · EURECOM, 2026" },
+  { k: "PhD", v: "Communication Systems — Sorbonne Université · EURECOM. Defended July 2026, awarded September 2026" },
   { k: "B.Sc.", v: "Electrical Engineering & Mathematics — Sharif University of Technology, high honors" },
   { k: "Toolbox", v: "Python, PyTorch, NumPy, Spark / GraphX, MATLAB, C/C++" },
   { k: "Languages", v: "English (fluent) · French (B1) · Persian (native)" },
@@ -1085,7 +1086,7 @@ const JOURNEY = [
   { when: "2021", where: "MAPNA", what: "Scene-graph GNNs for safety video analytics" },
   { when: "2022", where: "Zarebin", what: "PageRank on Spark / GraphX, graph Laplacian learning" },
   { when: "2023–2026", where: "Sorbonne Université · EURECOM", what: "PhD, Huawei France Chair for Future Wireless Networks" },
-  { when: "July 2026", where: "PhD defended", what: "Universally Optimal Combinatorial Schemes for Distributed Computing and Learning", now: true },
+  { when: "Sep 2026", where: "PhD awarded", what: "Defended July 2026 · Universally Optimal Combinatorial Schemes for Distributed Computing and Learning", now: true },
 ];
 
 const ROLES = [
@@ -1258,78 +1259,84 @@ function SectionRail() {
   );
 }
 
+// Masks that keep the decorative graphs out from behind text.
+const FADE_LEFT = { WebkitMaskImage: "linear-gradient(to right, transparent 0%, transparent 38%, #000 78%)", maskImage: "linear-gradient(to right, transparent 0%, transparent 38%, #000 78%)" };
+const CLEAR_CENTER = { WebkitMaskImage: "radial-gradient(ellipse 50% 42% at 50% 50%, transparent 45%, #000 100%)", maskImage: "radial-gradient(ellipse 50% 42% at 50% 50%, transparent 45%, #000 100%)" };
+const SOFT_EDGE = { WebkitMaskImage: "radial-gradient(closest-side, #000 62%, transparent 100%)", maskImage: "radial-gradient(closest-side, #000 62%, transparent 100%)" };
+
+// Text on the left on a clear ground; the live graph is a figure on the
+// right with its own caption, so nothing moves behind what people read.
 function Hero() {
   const rise = useRise();
   return (
-    <section id="home" className="relative flex min-h-[100svh] flex-col overflow-hidden bg-black">
-      <div className="absolute left-1/2 top-0 z-0 -translate-x-1/2" style={{ width: "120%", height: "120%" }}>
-        <HypergraphField />
-      </div>
-      <div className="relative z-10 flex flex-1 flex-col">
-        <div className="flex flex-1 flex-col items-center justify-center px-4 pb-10 pt-28 text-center">
-          <motion.a {...rise(0.3)} href="#news" className="liquid-glass focus-ring group flex items-center gap-2 rounded-full p-1 transition-colors hover:bg-white/10">
-            <span className="rounded-full bg-accent px-3 py-1 font-body text-xs font-semibold text-black">New</span>
-            <span className="font-body text-xs text-white/90 sm:text-sm">PhD defended at Sorbonne Université · EURECOM, July 2026</span>
-            <ArrowDown className="mr-2 h-3.5 w-3.5 text-white/70 transition-colors group-hover:text-white" />
+    <section id="home" className="relative overflow-hidden bg-black">
+      <div className="relative mx-auto grid max-w-[1440px] grid-cols-1 items-center gap-10 px-4 pb-6 pt-28 md:px-16 lg:min-h-[100svh] lg:grid-cols-12 lg:gap-8 lg:px-20 lg:pb-20">
+        <div className="lg:col-span-7">
+          <motion.a {...rise(0.3)} href="#news" className="liquid-glass focus-ring group inline-flex max-w-full items-center gap-2 rounded-full p-1 transition-colors hover:bg-white/10">
+            <span className="shrink-0 rounded-full bg-accent px-3 py-1 font-body text-xs font-semibold text-black">New</span>
+            <span className="font-body text-xs text-white/90 sm:text-sm">PhD awarded by Sorbonne Université · EURECOM, September 2026</span>
+            <ArrowDown className="mr-2 h-3.5 w-3.5 shrink-0 text-white/70 transition-colors group-hover:text-white" />
           </motion.a>
-          <motion.div {...rise(0.45)} className="mt-6 font-mono text-xs uppercase tracking-[0.2em] text-white/70 md:text-sm">
+          <motion.div {...rise(0.45)} className="mt-8 font-mono text-xs uppercase tracking-[0.2em] text-white/70 md:text-sm">
             Information theory · Distributed learning · Graphs
           </motion.div>
           <BlurText
             as="h1"
             text="Javad Maheri"
             delay={0.5}
+            justify="flex-start"
             className="mt-3 font-heading text-5xl font-medium leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl"
           />
           <motion.p {...rise(0.9)} className="mt-5 max-w-2xl font-heading text-xl italic leading-snug text-white/90 md:text-2xl">
             I prove exact, non-asymptotic limits for distributed computation and learning on graph-structured data — and I build the systems that use them.
           </motion.p>
-          <motion.p {...rise(1.05)} className="mt-4 max-w-3xl font-body text-sm leading-snug text-white/85 md:text-base">
+          <motion.p {...rise(1.05)} className="mt-4 max-w-2xl font-body text-sm leading-relaxed text-white/85 md:text-base">
             Information theorist and ML engineer · PhD,{" "}
             <a href="https://www.sorbonne-universite.fr/" {...NEW_TAB} className="underline decoration-white/30 underline-offset-4 hover:text-accent hover:decoration-accent">Sorbonne Université</a>
             {" · "}
             <a href="https://www.eurecom.fr/" {...NEW_TAB} className="underline decoration-white/30 underline-offset-4 hover:text-accent hover:decoration-accent">EURECOM</a>
             {" "}· Sophia Antipolis, France
           </motion.p>
-          <motion.div {...rise(1.15)} className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-4">
+          <motion.div {...rise(1.15)} className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-4">
             <a href="#about" className="liquid-glass-strong focus-ring flex h-11 items-center gap-2 rounded-full px-5 font-body text-sm font-medium text-white transition-colors hover:bg-white/10">
               Get to know me <ArrowDown />
             </a>
             <span className="hidden h-6 w-px bg-white/20 sm:block" aria-hidden="true" />
-            <SocialRow />
+            <SocialRow className="!justify-start" />
           </motion.div>
-        </div>
-        <motion.a
-          {...rise(1.7)}
-          href="#research"
-          className="focus-ring absolute left-16 top-[calc(100svh-5.5rem)] hidden max-w-[210px] font-mono text-[11px] leading-snug text-white/70 hover:text-white/90 xl:block"
-        >
-          Move your mouse over the graph: it passes messages between nodes, like a GNN. Why graphs? →
-        </motion.a>
-        <motion.a
-          {...rise(1.7)}
-          href="#about"
-          aria-label="Scroll to About"
-          className="focus-ring absolute right-16 top-[calc(100svh-4.75rem)] hidden flex-col items-center gap-1 font-mono text-[10px] uppercase tracking-[0.2em] text-white/70 hover:text-white xl:flex"
-        >
-          Scroll
-          <ScrollChevron />
-        </motion.a>
-        <motion.div {...rise(1.5)} className="flex flex-col items-center gap-4 px-4 pb-8">
-          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/70">Education</span>
-          <div className="flex flex-wrap items-start justify-center gap-x-12 gap-y-4 md:gap-x-20">
+          <motion.dl {...rise(1.3)} className="mt-10 grid max-w-xl grid-cols-1 gap-4 border-t border-white/15 pt-6 sm:grid-cols-2">
             {[
-              { name: "Sorbonne Université", sub: "EURECOM · PhD" },
-              { name: "Sharif University of Technology", sub: "B.Sc." },
+              { name: "Sorbonne Université", sub: "PhD · EURECOM · 2026" },
+              { name: "Sharif University of Technology", sub: "B.Sc. · 2017–2022" },
             ].map((u) => (
-              <div key={u.name} className="flex flex-col items-center gap-1">
-                <span className="font-heading text-xl leading-none tracking-tight text-white md:text-2xl">{u.name}</span>
-                <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-white/70">{u.sub}</span>
+              <div key={u.name} className="min-w-0">
+                <dt className="font-mono text-[11px] uppercase tracking-[0.15em] text-white/70">{u.sub}</dt>
+                <dd className="mt-1 font-heading text-xl leading-tight text-white">{u.name}</dd>
               </div>
             ))}
+          </motion.dl>
+        </div>
+
+        <motion.figure {...rise(0.8)} className="lg:col-span-5">
+          <div className="relative mx-auto aspect-[4/3] w-full max-w-[360px] sm:aspect-square sm:max-w-[420px] lg:max-w-[560px]" style={SOFT_EDGE}>
+            <HypergraphField density={0.6} topBias={false} label="Interactive hypergraph: hyperedges light up, and moving the pointer over a node sends messages to its neighbours" />
           </div>
-        </motion.div>
+          <figcaption className="mx-auto mt-2 max-w-[340px] text-center font-mono text-[11px] leading-snug text-white/70">
+            <span className="hidden [@media(hover:hover)]:inline">Move your mouse over the graph: it passes messages between nodes, like a GNN. </span>
+            <span className="[@media(hover:hover)]:hidden">This graph passes messages between nodes, like a GNN. </span>
+            <a href="#research" className="focus-ring rounded text-accent underline-offset-4 hover:underline">Why graphs? →</a>
+          </figcaption>
+        </motion.figure>
       </div>
+      <motion.a
+        {...rise(1.7)}
+        href="#news"
+        aria-label="Scroll to News"
+        className="focus-ring absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-1 font-mono text-[10px] uppercase tracking-[0.2em] text-white/70 hover:text-white lg:flex"
+      >
+        Scroll
+        <ScrollChevron />
+      </motion.a>
     </section>
   );
 }
@@ -1419,8 +1426,8 @@ function About() {
           </motion.div>
           <motion.div {...rise(0.15)} className="mt-8 flex max-w-[62ch] flex-col gap-4 font-body text-base leading-relaxed text-white/90 md:text-lg">
             <p>
-              I’m a researcher in information theory and machine learning. I defended my PhD in Communication Systems at
-              Sorbonne Université, at EURECOM, in July 2026, supervised by Prof. Petros Elia.
+              I’m a researcher in information theory and machine learning. I hold a PhD in Communication Systems from
+              Sorbonne Université, prepared at EURECOM under Prof. Petros Elia: defended in July 2026 and awarded in September 2026.
             </p>
             <p>
               My work asks a precise question: what is the best a distributed system can do, exactly? I prove information-theoretic
@@ -1487,7 +1494,7 @@ function Research() {
   const rise = useRiseInView();
   return (
     <section id="research" className="relative min-h-screen overflow-hidden bg-black">
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0" style={FADE_LEFT}>
         <HypergraphField density={0.5} edgeAlpha={0.08} hyperedges={false} interactive={false} topBias={false} seed={21} label="Sparse drifting graph in the background" />
       </div>
       <div className="relative z-10 flex min-h-screen flex-col px-4 pb-16 pt-28 md:px-16 lg:px-20">
@@ -1820,7 +1827,7 @@ function Contact() {
   const rise = useRiseInView();
   return (
     <section id="contact" className="relative flex min-h-[90svh] flex-col overflow-hidden bg-black">
-      <div className="absolute inset-0 z-0 opacity-50">
+      <div className="absolute inset-0 z-0 opacity-50" style={CLEAR_CENTER}>
         <HypergraphField density={0.7} seed={3} topBias={false} interactive={false} label="Drifting hypergraph in the background" />
       </div>
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 py-24 text-center">
@@ -2007,7 +2014,7 @@ function ResearchPage({ slug }) {
       <Navbar />
 
       <section className="relative overflow-hidden px-4 pb-12 pt-32 md:px-16 lg:px-20">
-        <div className="absolute inset-0 z-0 opacity-60">
+        <div className="absolute inset-0 z-0 opacity-60" style={FADE_LEFT}>
           <HypergraphField density={0.45} edgeAlpha={0.08} hyperedges={false} interactive={false} topBias={false} seed={31 + idx} label="Sparse drifting graph in the background" />
         </div>
         <div className="relative z-10">

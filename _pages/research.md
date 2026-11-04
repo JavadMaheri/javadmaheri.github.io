@@ -24,7 +24,7 @@ Thesis
 ======
 **Universally Optimal Combinatorial Schemes for Distributed Computing and Learning**
 
-Sorbonne Université / EURECOM — defended July 2026
+Sorbonne Université / EURECOM — defended July 2026, awarded September 2026
 
 Supervisor: Prof. Petros Elia
 

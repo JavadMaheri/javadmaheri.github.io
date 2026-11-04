@@ -23,7 +23,7 @@ description: "Resume / CV of Javad Maheri — PhD, EURECOM / Sorbonne Universit�
 
 Education
 ======
-- **Ph.D. in Communication Systems** — Sorbonne Université / EURECOM, Biot, France. Defended July 2026. *Thesis: Universally Optimal Combinatorial Schemes for Distributed Computing and Learning.* Supervisor: Prof. Petros Elia.
+- **Ph.D. in Communication Systems** — Sorbonne Université / EURECOM, Biot, France. Defended July 2026; awarded September 2026. *Thesis: Universally Optimal Combinatorial Schemes for Distributed Computing and Learning.* Supervisor: Prof. Petros Elia.
 - **B.Sc. in Electrical Engineering & Mathematics** (double major, high honors) — Sharif University of Technology, Tehran. 2017–2022. Selected grades: Theory of Machine Learning 20/20, Graph Signal Processing 20/20, Biomedical Signal Processing 19.5/20, Information Theory 19.4/20, Deep Learning 19.1/20.
 
 Work Experience
