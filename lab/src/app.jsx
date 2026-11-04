@@ -1051,7 +1051,7 @@ const CARDS = [
     icon: <MaterialIcon d={SHARE_PATH} />,
     tags: ["GNNs", "Graph Signal Processing", "Laplacian Learning", "Spatiotemporal"],
     title: "Learning on Graphs",
-    body: "GNNs, graph signal processing and Laplacian estimation — from market-dependency graphs to scene graphs for safety analytics.",
+    body: "GNNs, graph signal processing and Laplacian estimation: learning on graphs, and learning the graph itself from data.",
     viz: <GraphSignalViz />,
     caption: "A signal diffuses over the graph while edge weights adapt to what the data says",
     slug: "graph-learning",
@@ -1105,7 +1105,6 @@ const PUBS = [
 
 const JOURNEY = [
   { when: "2016–2021", where: "Sharif University of Technology", what: "B.Sc. Electrical Engineering & Mathematics, high honors; then graduate coursework, 2021–2022" },
-  { when: "2021", where: "MAPNA", what: "Scene-graph GNNs for safety video analytics" },
   { when: "2022", where: "Sharif & Zarebin", what: "Graph Laplacian learning, PageRank-style algorithms on Spark / GraphX" },
   { when: "2023–2026", where: "Sorbonne Université · EURECOM", what: "PhD in Communication Systems, advised by Prof. Petros Elia" },
   { when: "Sep 2026", where: "PhD awarded", what: "Defended July 2026 · Universally Optimal Combinatorial Schemes for Distributed Computing and Learning", now: true },
@@ -1830,12 +1829,15 @@ function Publications() {
 // Timeline drawn as a path graph that traces itself in on scroll.
 function Journey() {
   const reduced = useReducedMotion();
-  const ys = [26, 54, 26, 54, 26];
-  const xs = [10, 30, 50, 70, 90];
+  // One node per milestone, centred over its card, alternating up and down.
+  const n = JOURNEY.length;
+  const xs = JOURNEY.map((_, i) => ((i + 0.5) / n) * 100);
+  const ys = JOURNEY.map((_, i) => (i % 2 ? 54 : 26));
+  const half = (100 / n) * 5;
   const d = xs.reduce((acc, x, i) => {
     if (!i) return `M ${x * 10} ${ys[i]}`;
     const px = xs[i - 1] * 10;
-    return `${acc} C ${px + 100} ${ys[i - 1]}, ${x * 10 - 100} ${ys[i]}, ${x * 10} ${ys[i]}`;
+    return `${acc} C ${px + half} ${ys[i - 1]}, ${x * 10 - half} ${ys[i]}, ${x * 10} ${ys[i]}`;
   }, "");
   const view = { once: true, amount: 0.4 };
   return (
@@ -1876,7 +1878,7 @@ function Journey() {
             </span>
           ))}
         </div>
-        <div className="mt-6 grid grid-cols-5 gap-4">
+        <div className="mt-6 grid gap-4" style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))` }}>
           {JOURNEY.map((j, i) => (
             <motion.div
               key={j.when}
@@ -2043,18 +2045,17 @@ const TOPICS = {
     question: {
       heading: "When the data is a graph",
       paras: [
-        "Markets, cameras on an industrial site and wireless networks all produce data that lives on a graph. Learning well from it means using that structure, and often learning the structure itself.",
+        "Markets, sensor networks and wireless networks all produce data that lives on a graph. Learning well from it means using that structure, and often learning the structure itself.",
         "This is where my industry work started, and where I want to take the exact-limits toolkit next.",
       ],
     },
     approach: [
       { title: "Graph signal processing", body: "Signals on nodes, filtered and smoothed through the graph Laplacian. The animation above is one diffusion step after another." },
       { title: "Learning the structure", body: "Estimating the graph itself under smoothness and sparsity priors, instead of assuming it from raw correlations." },
-      { title: "Message passing", body: "GNNs that aggregate information over neighbours, for example to resolve occlusion and viewpoint ambiguity across overlapping cameras." },
+      { title: "Large-scale graph algorithms", body: "PageRank-style iterations on massive graphs with Apache Spark / GraphX, keeping the computation distributed across the cluster." },
     ],
     practice: [
-      { org: "Zarebin", meta: "Tehran · 2022", title: "Learning the graph from data", body: "Convex graph Laplacian estimation under smoothness and sparsity constraints to infer market-dependency graphs from raw price series, plus PageRank and personalized PageRank over multi-million-edge graphs on Spark / GraphX." },
-      { org: "MAPNA", meta: "Tehran · 2021–2022", title: "Scene-graph GNNs for safety", body: "People, machinery, PPE and restricted zones as nodes, spatial and temporal relations as edges: classifying safety violations from interactions, and treating camera placement as graph optimization." },
+      { org: "Sharif University of Technology & Zarebin", meta: "Tehran · Jun – Dec 2022", title: "Learning the graph from data", body: "Investigated graph Laplacian learning to infer graph structure from multivariate stock-market data, formulating and solving the underlying convex programs, and developed scalable PageRank-style algorithms on massive graphs with Apache Spark / GraphX." },
     ],
     next: {
       text: "The same toolkit, matching converses paired with constructions that achieve them, extends to graph neural networks, graph signal processing, causal inference and integrated sensing and communication.",
@@ -2201,7 +2202,7 @@ function ResearchPage({ slug }) {
       {t.practice && (
         <section className="px-4 pt-24 md:px-16 lg:px-20">
           <motion.div {...rise(0)}><SectionHead kicker="// In practice" title="Where I’ve built it" /></motion.div>
-          <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className={`mt-10 grid grid-cols-1 gap-6 ${t.practice.length > 1 ? "md:grid-cols-2" : "max-w-3xl"}`}>
             {t.practice.map((r, i) => (
               <motion.article key={r.org} {...rise(0.08 * i)} className="liquid-glass rounded-[1.25rem] p-6">
                 <div className="font-mono text-[11px] text-white/70">{r.meta}</div>
